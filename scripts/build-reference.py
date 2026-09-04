@@ -156,6 +156,7 @@ def sty(s):
 # --- odata.txt --------------------------------------------------------------
 schemas = sw['components']['schemas']
 NOISE = {'extraProperties', 'concurrencyStamp', 'creatorId', 'lastModifierId', 'cargonerdsCustomerId'}
+BROKEN = {('Event', 'isMilestone'): '!500-in-nested-select'}  # verified server bugs, flagged inline so agents avoid them
 
 
 def nested_types(entities):
@@ -174,7 +175,7 @@ def nested_types(entities):
         for k, v in schemas[key].get('properties', {}).items():
             if k in NOISE:
                 continue
-            ty = sty(v)
+            ty = sty(v) + BROKEN.get((t, k), '')
             base = ty.rstrip('[]')
             if base in top or base in targets:
                 rels.append(f"{k}:{ty}")

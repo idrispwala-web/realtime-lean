@@ -33,7 +33,7 @@ const TOOLS = [
   },
   {
     name: "rt_query",
-    description: "OData query (entity sets in odata.txt). select is REQUIRED. Use where (model-checked) over filter. count:true + top:0 gives a count only. expand supports nested $select: containers($select=containerNumber). Wrong nested names are dropped silently: take them from odata.txt. Null-valued fields are omitted from rows: a missing key means null, not a failed select.",
+    description: "OData query (entity sets in odata.txt). select is REQUIRED. Use where (model-checked) over filter. count:true + top:0 gives a count only. expand supports nested $select: containers($select=containerNumber). Wrong nested names are dropped silently: take them from odata.txt. Never put isMilestone in a nested $select (server 500). Shipment milestones with labels: expand events($select=actualDate,expectedDate,locationUnlocode;$expand=code($select=code,actualLabel)). Null-valued fields are omitted from rows: a missing key means null, not a failed select.",
     inputSchema: {
       type: "object",
       properties: {
@@ -135,7 +135,8 @@ function compact(text) {
 // ---- local reference grep ------------------------------------------------------
 function ref(q, file) {
   const files = file ? [file] : ["odata", "catalog", "dtos"];
-  const m = q.match(/^\/(.+)\/([a-z]*)$/);
+  q = q.trim().replace(/\s+key=.*$/, "").replace(/^\^([\w./-]+)\s*$/, "$1");  // "Event key=", "^Shipment " -> bare name
+  const m = q.match(/^\/(.+)\/([a-z]*)$/) || (q.startsWith("^") ? [null, q, ""] : null);  // other ^anchors count as regex
   const re = m ? new RegExp(m[1], m[2].includes("i") ? m[2] : m[2] + "i") : new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
   // Every file is blocks: a header line (no indent) + indented detail lines.
   // 1) header whose first token equals q (or starts with q + "/"): return that block only.
@@ -163,7 +164,23 @@ function ref(q, file) {
     }
     if (out.length >= 40) { out.push("... truncated: narrow q, set file, or use the exact name"); break; }
   }
-  return out.length ? out.join("\n") : `no match for ${q}. Try a shorter substring, or rt_describe.`;
+  return out.length ? out.join("\n") : `no match for ${q}. Use the bare entity or DTO name (Event, Shipment, CreateUpdateTagDto), an endpoint id part (hub/tag), or a property name; rt_describe as last resort.`;
+}
+
+// ---- known server bugs: refuse before the round trip, explain after a failure ------------------
+const KNOWN = [
+  [/isMilestone/i, "isMilestone inside a nested $select returns HTTP 500. Drop it: every row of events is returned anyway."],
+  [/\$(orderby|top|skip)=/i, "$orderby/$top/$skip inside expand(...) fail on this server. Order or limit at the top level instead."],
+];
+function preflight(a) {
+  for (const [re, msg] of KNOWN) if (re.test(a.expand || "")) return "refused before calling upstream: " + msg;
+  if ((a.filter || "").split(/\s+or\s+/i).length > 2) return "refused before calling upstream: a raw filter with several 'or' terms fails upstream. One where per lookup, or at most one 'or'.";
+  return null;
+}
+function hint(text) {
+  if (!/server error|request failed/i.test(text)) return text;
+  return text + "\nKnown causes on this server: a wrong nested property name inside $select/$expand (take names from rt_ref odata), " +
+    "expand depth over 2, a set marked !NOT-QUERYABLE, or several calls in flight at once. Fix the shape and retry once; do not retry the same call.";
 }
 
 // ---- tool dispatch --------------------------------------------------------------
@@ -173,12 +190,14 @@ async function call(name, a = {}) {
       return ref(a.q, a.file);
     case "rt_query": {
       if (!a.select) throw new Error("select is required: name the properties you will read");
+      const bad = preflight(a);
+      if (bad) throw new Error(bad);
       const r = await upstream("query_odata", a);
-      return r.isError ? r.text : compact(r.text);
+      return r.isError ? hint(r.text) : compact(r.text);
     }
     case "rt_call": {
       const r = await upstream("call_endpoint", a);
-      return r.isError ? r.text : compact(r.text);
+      return r.isError ? hint(r.text) : compact(r.text);
     }
     case "rt_describe": {
       const r = a.endpoint

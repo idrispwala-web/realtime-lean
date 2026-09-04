@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "realtime": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://api.mcp.cargonerds.dev/mcp", "--header", "X-Api-Key: ${RT_API_KEY}"]
+    }
+  }
+}

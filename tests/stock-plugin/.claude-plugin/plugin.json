@@ -1,0 +1,8 @@
+{
+  "name": "realtime-stock",
+  "version": "0.0.1",
+  "description": "Benchmark control: the stock realtime MCP (38 tools, no skill) via mcp-remote. Not for daily use.",
+  "author": { "name": "Idris Presswala" },
+  "license": "MIT",
+  "keywords": ["benchmark", "control"]
+}

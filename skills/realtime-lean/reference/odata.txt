@@ -406,8 +406,8 @@ DangerousGoodsInfo (nested; reach via expand)
   properShippingName:string subLabel1:string subLabel2:string unNumber:string variant:string
 Event (nested; reach via expand)
   id:guid creationTime:dt lastModificationTime:dt shipment:object shipmentId:guid locationUnlocode:string
-  versionNumber:int expectedDate:dt actualDate:dt isMilestone:bool codeId:guid customIcon:string
-  externalIdentifiers:ExternalEventIdentifier[]
+  versionNumber:int expectedDate:dt actualDate:dt isMilestone:bool!500-in-nested-select codeId:guid
+  customIcon:string externalIdentifiers:ExternalEventIdentifier[]
   expand:
     code:EventCode note:ShipmentNote
 ExchangeRate (nested; reach via expand)
