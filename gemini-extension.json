@@ -1,0 +1,13 @@
+{
+  "name": "realtime-lean",
+  "version": "0.1.0",
+  "description": "Token-lean access to the Cargonerds realtime MCP.",
+  "contextFileName": "AGENTS.md",
+  "mcpServers": {
+    "realtime": {
+      "command": "node",
+      "args": ["${extensionPath}/mcp/server.mjs"],
+      "env": { "RT_API_KEY": "$RT_API_KEY" }
+    }
+  }
+}

@@ -1,0 +1,1556 @@
+# Non-OData endpoints for call_endpoint. Block: `id METHOD route` then indented ?param:type (query or route) body:Dto ->Response
+# odata/X routes are NOT listed: use query_odata + odata.txt. Body DTO fields: dtos.txt.
+# Grep anchored: `^hub/tag/` for a controller, `^[a-z-]+/[a-z-]+/create` for an action. No hit? The thing is an OData set: odata.txt.
+
+abp/abp-api-definition/get GET api/abp/api-definition
+  ?IncludeTypes:bool ->ApplicationApiDescriptionModel
+abp/abp-application-configuration/get GET api/abp/application-configuration
+  ?IncludeLocalizationResources:bool ->ApplicationConfigurationDto
+abp/abp-application-localization/get GET api/abp/application-localization
+  ?CultureName:string ?OnlyDynamics:bool ->ApplicationLocalizationDto
+account-pro-admin/account-settings/get GET api/account-admin/settings
+  ->AccountSettingsDto
+account-pro-admin/account-settings/get-external-provider GET api/account-admin/settings/external-provider
+  ->AccountExternalProviderSettingsDto
+account-pro-admin/account-settings/get-idle GET api/account-admin/settings/idle
+  ->AccountIdleSettingsDto
+account-pro-admin/account-settings/get-passkey GET api/account-admin/settings/passkey
+  ->AccountPasskeySettingsDto
+account-pro-admin/account-settings/get-recaptcha GET api/account-admin/settings/recaptcha
+  ->AccountRecaptchaSettingsDto
+account-pro-admin/account-settings/get-two-factor GET api/account-admin/settings/two-factor
+  ->AccountTwoFactorSettingsDto
+account-pro-admin/account-settings/update PUT api/account-admin/settings
+  body:AccountSettingsDto
+account-pro-admin/account-settings/update-external-provider PUT api/account-admin/settings/external-provider
+  body:AccountExternalProviderSettingsDto
+account-pro-admin/account-settings/update-idle PUT api/account-admin/settings/idle
+  body:AccountIdleSettingsDto
+account-pro-admin/account-settings/update-passkey PUT api/account-admin/settings/passkey
+  body:AccountPasskeySettingsDto
+account-pro-admin/account-settings/update-recaptcha PUT api/account-admin/settings/recaptcha
+  body:AccountRecaptchaSettingsDto
+account-pro-admin/account-settings/update-two-factor PUT api/account-admin/settings/two-factor
+  body:AccountTwoFactorSettingsDto
+account-pro-public/account-external-login/delete DELETE api/account/externallogin/{loginProvider}/{providerKey}
+  ?loginProvider:string ?providerKey:string
+account-pro-public/account-external-login/get-list GET api/account/externallogin
+  ->AccountExternalLoginDto[]
+account-pro-public/account-external-login/has-password-verified GET api/account/externallogin/password-verified/{userId}/{loginProvider}/{providerKey}
+  ?userId:guid ?loginProvider:string ?providerKey:string ->bool
+account-pro-public/account-external-login/remove-password-verified DELETE api/account/externallogin/{loginProvider}/{providerKey}/password-verified
+  ?loginProvider:string ?providerKey:string
+account-pro-public/account-external-login/set-password-verified POST api/account/externallogin/password-verified/{loginProvider}/{providerKey}
+  ?loginProvider:string ?providerKey:string
+account-pro-public/account-external-provider/get-all GET api/account/external-provider
+  ->ExternalProviderDto
+account-pro-public/account-external-provider/get-by-name GET api/account/external-provider/by-name
+  ?TenantId:guid ?Name:string ->ExternalProviderItemWithSecretDto
+account-pro-public/account-session/get GET api/account/sessions/{id}
+  ?id:guid ->IdentitySessionDto
+account-pro-public/account-session/get-list GET api/account/sessions
+  ?Device:string ?ClientId:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object
+  ->PagedResult<IdentitySessionDto>
+account-pro-public/account-session/revoke DELETE api/account/sessions/{id}
+  ?id:guid
+account-pro-public/account/change-email POST api/account/change-email
+  body:ChangeEmailInput
+account-pro-public/account/check-email-confirmation-code POST api/account/check-email-confirmation-code
+  body:CheckEmailConfirmationCodeDto
+account-pro-public/account/confirm-email POST api/account/confirm-email
+  body:ConfirmEmailInput
+account-pro-public/account/confirm-phone-number POST api/account/confirm-phone-number
+  body:ConfirmPhoneNumberInput
+account-pro-public/account/get-authenticator-info GET api/account/authenticator-info
+  ->AuthenticatorInfoDto
+account-pro-public/account/get-confirmation-state GET api/account/confirmation-state
+  ?id:guid ->IdentityUserConfirmationStateDto
+account-pro-public/account/get-email-confirmation-code-limit GET api/account/email-confirmation-code-limit
+  ?emailAddress:string ->EmailConfirmationCodeLimitDto
+account-pro-public/account/get-profile-picture GET api/account/profile-picture/{id}
+  ?id:guid ->ProfilePictureSourceDto
+account-pro-public/account/get-profile-picture-file GET api/account/profile-picture-file/{id}
+  ?id:guid ->string
+account-pro-public/account/get-security-log-list GET api/account/security-logs
+  ?StartTime:dt ?EndTime:dt ?ApplicationName:string ?Identity:string ?Action:string ?UserName:string
+  ?ClientId:string ?CorrelationId:string ?ClientIpAddress:string ?Sorting:string ?SkipCount:int
+  ?MaxResultCount:int ?ExtraProperties:object ->PagedResult<IdentitySecurityLogDto>
+account-pro-public/account/get-two-factor-providers GET api/account/two-factor-providers
+  ?UserId:guid ?Token:string ->string[]
+account-pro-public/account/has-authenticator GET api/account/has-authenticator-key
+  ->bool
+account-pro-public/account/recaptcha GET api/account/recaptcha-validate
+  ?captchaResponse:string
+account-pro-public/account/register POST api/account/register
+  body:RegisterDto ->IdentityUserDto
+account-pro-public/account/reset-authenticator POST api/account/reset-authenticator
+account-pro-public/account/reset-password POST api/account/reset-password
+  body:ResetPasswordDto
+account-pro-public/account/send-email-confirmation-code POST api/account/send-email-confirmation-code
+  body:SendEmailConfirmationCodeDto
+account-pro-public/account/send-email-confirmation-token POST api/account/send-email-confirmation-token
+  body:SendEmailConfirmationTokenDto
+account-pro-public/account/send-password-reset-code POST api/account/send-password-reset-code
+  body:SendPasswordResetCodeDto
+account-pro-public/account/send-phone-number-confirmation-token POST api/account/send-phone-number-confirmation-token
+  body:SendPhoneNumberConfirmationTokenDto
+account-pro-public/account/send-two-factor-code POST api/account/send-two-factor-code
+  body:SendTwoFactorCodeInput
+account-pro-public/account/set-profile-picture POST api/account/profile-picture
+  ?Type:ProfilePictureType body:object
+account-pro-public/account/verify-authenticator-code POST api/account/verify-authenticator-code
+  body:VerifyAuthenticatorCodeInput ->VerifyAuthenticatorCodeDto
+account-pro-public/account/verify-change-email-token POST api/account/verify-change-email-token
+  body:VerifyChangeEmailTokenInput ->bool
+account-pro-public/account/verify-email-confirmation-token POST api/account/verify-email-confirmation-token
+  body:VerifyEmailConfirmationTokenInput ->bool
+account-pro-public/account/verify-password-reset-token POST api/account/verify-password-reset-token
+  body:VerifyPasswordResetTokenInput ->bool
+account-pro-public/dynamic-claims/refresh POST api/account/dynamic-claims/refresh
+account-pro-public/identity-link-user/generate-link-login-token POST api/account/link-user/generate-link-login-token
+  ->string
+account-pro-public/identity-link-user/generate-link-token POST api/account/link-user/generate-link-token
+  ->string
+account-pro-public/identity-link-user/get-all-list GET api/account/link-user
+  ->ListResult<LinkUserDto>
+account-pro-public/identity-link-user/is-linked POST api/account/link-user/is-linked
+  body:IsLinkedInput ->bool
+account-pro-public/identity-link-user/link POST api/account/link-user/link
+  body:LinkUserInput
+account-pro-public/identity-link-user/unlink POST api/account/link-user/unlink
+  body:UnLinkUserInput
+account-pro-public/identity-link-user/verify-link-login-token POST api/account/link-user/verify-link-login-token
+  body:VerifyLinkLoginTokenInput ->bool
+account-pro-public/identity-link-user/verify-link-token POST api/account/link-user/verify-link-token
+  body:VerifyLinkTokenInput ->bool
+account-pro-public/identity-user-delegation/delegate-new-user POST api/account/user-delegation/delegate-new-user
+  body:DelegateNewUserInput
+account-pro-public/identity-user-delegation/delete-delegation POST api/account/user-delegation/delete-delegation
+  ?id:guid
+account-pro-public/identity-user-delegation/get-active-delegations GET api/account/user-delegation/active-delegations
+  ->ListResult<UserDelegationDto>
+account-pro-public/identity-user-delegation/get-delegated-users GET api/account/user-delegation/delegated-users
+  ->ListResult<UserDelegationDto>
+account-pro-public/identity-user-delegation/get-my-delegated-users GET api/account/user-delegation/my-delegated-users
+  ->ListResult<UserDelegationDto>
+account-pro-public/identity-user-delegation/get-user-lookup GET api/account/user-delegation/user-lookup
+  ?UserName:string ->ListResult<UserLookupDto>
+account-pro-public/profile/can-enable-two-factor GET api/account/my-profile/can-enable-two-factor
+  ->bool
+account-pro-public/profile/change-password POST api/account/my-profile/change-password
+  body:ChangePasswordInput
+account-pro-public/profile/get GET api/account/my-profile
+  ->ProfileDto
+account-pro-public/profile/get-passkeys GET api/account/my-profile/passkeys
+  ->PasskeyDto[]
+account-pro-public/profile/get-timezones GET api/account/my-profile/timezones
+  ->NameValue[]
+account-pro-public/profile/get-two-factor-enabled GET api/account/my-profile/two-factor-enabled
+  ->bool
+account-pro-public/profile/remove-passkey DELETE api/account/my-profile/passkeys
+  ?credential:string
+account-pro-public/profile/set-two-factor-enabled POST api/account/my-profile/set-two-factor-enabled
+  ?enabled:bool
+account-pro-public/profile/update PUT api/account/my-profile
+  body:UpdateProfileDto ->ProfileDto
+asp-net-core-mvc-ui-multi-tenancy/abp-tenant/find-tenant-by-id GET api/abp/multi-tenancy/tenants/by-id/{id}
+  ?id:guid ->FindTenantResultDto
+asp-net-core-mvc-ui-multi-tenancy/abp-tenant/find-tenant-by-name GET api/abp/multi-tenancy/tenants/by-name/{name}
+  ?name:string ->FindTenantResultDto
+asp-net-core-o-data/metadata/get-service-document GET odata
+  ->ODataServiceDocument
+audit-logging/audit-log-settings/get GET api/audit-logging/settings
+  ->AuditLogSettingsDto
+audit-logging/audit-log-settings/get-global GET api/audit-logging/settings/global
+  ->AuditLogGlobalSettingsDto
+audit-logging/audit-log-settings/update PUT api/audit-logging/settings
+  body:AuditLogSettingsDto
+audit-logging/audit-log-settings/update-global PUT api/audit-logging/settings/global
+  body:AuditLogGlobalSettingsDto
+audit-logging/audit-logs/download-excel GET api/audit-logging/audit-logs/download-excel/{fileName}
+  ?fileName:string ->string
+audit-logging/audit-logs/export-entity-changes-to-excel GET api/audit-logging/audit-logs/export-entity-changes-to-excel
+  ?StartDate:dt ?EndDate:dt ?EntityChangeType:EntityChangeType ?EntityId:string ?EntityTypeFullName:string
+  ?Sorting:string ->ExportEntityChangesOutput
+audit-logging/audit-logs/export-to-excel GET api/audit-logging/audit-logs/export-to-excel
+  ?StartTime:dt ?EndTime:dt ?Url:string ?ClientId:string ?UserName:string ?ApplicationName:string
+  ?ClientIpAddress:string ?CorrelationId:string ?HttpMethod:string ?HttpStatusCode:HttpStatusCode
+  ?MaxExecutionDuration:int ?MinExecutionDuration:int ?HasException:bool ?Sorting:string
+  ->ExportAuditLogsOutput
+audit-logging/audit-logs/get GET api/audit-logging/audit-logs/{id}
+  ?id:guid ->AuditLogDto
+audit-logging/audit-logs/get-average-execution-duration-per-day GET api/audit-logging/audit-logs/statistics/average-execution-duration-per-day
+  ?StartDate:dt ?EndDate:dt ->GetAverageExecutionDurationPerDayOutput
+audit-logging/audit-logs/get-entity-change GET api/audit-logging/audit-logs/entity-changes/{entityChangeId}
+  ?entityChangeId:guid ->EntityChangeDto
+audit-logging/audit-logs/get-entity-change-with-username GET api/audit-logging/audit-logs/entity-change-with-username/{entityChangeId}
+  ?entityChangeId:guid ->EntityChangeWithUsernameDto
+audit-logging/audit-logs/get-entity-changes GET api/audit-logging/audit-logs/entity-changes
+  ?AuditLogId:guid ?EntityChangeType:EntityChangeType ?EntityId:string ?EntityTypeFullName:string
+  ?StartDate:dt ?EndDate:dt ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<EntityChangeDto>
+audit-logging/audit-logs/get-entity-changes-with-username GET api/audit-logging/audit-logs/entity-changes-with-username
+  ?EntityId:string ?EntityTypeFullName:string ->EntityChangeWithUsernameDto[]
+audit-logging/audit-logs/get-error-rate GET api/audit-logging/audit-logs/statistics/error-rate
+  ?StartDate:dt ?EndDate:dt ->GetErrorRateOutput
+audit-logging/audit-logs/get-list GET api/audit-logging/audit-logs
+  ?StartTime:dt ?EndTime:dt ?Url:string ?ClientId:string ?UserName:string ?ApplicationName:string
+  ?ClientIpAddress:string ?CorrelationId:string ?HttpMethod:string ?HttpStatusCode:HttpStatusCode
+  ?MaxExecutionDuration:int ?MinExecutionDuration:int ?HasException:bool ?Sorting:string ?SkipCount:int
+  ?MaxResultCount:int ->PagedResult<AuditLogDto>
+cargonerds-http-api-host/swagger-ui/get-css GET swagger-ui/swagger-ui.css
+cargonerds-http-api-host/swagger/redirect-incorrect-auth-server-url GET swagger/swagger/index.html
+cargonerds/api-key-permission/delete-resource DELETE api/app/api-key-permission/resource
+  ?providerName:string ?providerKey:string ?resourceProviderName:string ?resourceProviderKey:string
+cargonerds/api-key-permission/get GET api/app/api-key-permission
+  ?providerName:string ?providerKey:string ->GetPermissionListResultDto
+cargonerds/api-key-permission/get-by-group GET api/app/api-key-permission/by-group
+  ?groupName:string ?providerName:string ?providerKey:string ->GetPermissionListResultDto
+cargonerds/api-key-permission/get-resource GET api/app/api-key-permission/resource
+  ?providerName:string ?providerKey:string ->GetResourcePermissionListResultDto
+cargonerds/api-key-permission/get-resource-by-provider GET api/app/api-key-permission/resource-by-provider
+  ?providerName:string ?providerKey:string ?resourceProviderName:string ?resourceProviderKey:string
+  ->GetResourcePermissionWithProviderListResultDto
+cargonerds/api-key-permission/get-resource-definitions GET api/app/api-key-permission/resource-definitions
+  ?providerName:string ->GetResourcePermissionDefinitionListResultDto
+cargonerds/api-key-permission/get-resource-provider-key-lookup-services GET api/app/api-key-permission/resource-provider-key-lookup-services
+  ?providerName:string ->GetResourceProviderListResultDto
+cargonerds/api-key-permission/search-resource-provider-key POST api/app/api-key-permission/search-resource-provider-key
+  ?providerName:string ?lookupServiceTypeFullName:string ?filter:string ?maxResultCount:int
+  ->SearchProviderKeyListResultDto
+cargonerds/api-key-permission/update PUT api/app/api-key-permission
+  ?providerName:string ?providerKey:string body:UpdatePermissionsDto
+cargonerds/api-key-permission/update-resource PUT api/app/api-key-permission/resource
+  ?providerName:string ?providerKey:string body:UpdateResourcePermissionsDto
+cargonerds/api-key/create POST api/app/api-key
+  body:CreateApiKeyDto ->ApiKeyCreateResultDto
+cargonerds/api-key/delete DELETE api/app/api-key/{id}
+  ?id:guid
+cargonerds/api-key/get GET api/app/api-key/{id}
+  ?id:guid ->ApiKeyDto
+cargonerds/api-key/get-list GET api/app/api-key
+  ?Name:string ?IncludeAllUsers:bool ?UserId:guid ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ->PagedResult<ApiKeyDto>
+cargonerds/api-key/update PUT api/app/api-key/{id}
+  ?id:guid body:UpdateApiKeyDto ->ApiKeyDto
+cargonerds/client-settings/delete DELETE api/app/client-settings
+  ?key:string ?perUser:bool
+cargonerds/client-settings/get GET api/app/client-settings
+  ?key:string ->ClientSettingDto
+cargonerds/client-settings/get-all-keys GET api/app/client-settings/keys
+  ->string[]
+cargonerds/client-settings/get-all-settings GET api/app/client-settings/settings
+  ->ClientSettingDto[]
+cargonerds/client-settings/set POST api/app/client-settings/set
+  body:ClientSettingDto
+cargonerds/comment-public/create POST api/app/comment-public
+  ?entityType:string ?entityId:string body:CreateCommentInput ->CommentDto
+cargonerds/comment-public/delete DELETE api/app/comment-public/{id}
+  ?id:guid
+cargonerds/comment-public/get-latest-comment-updates GET api/app/comment-public/latest-comment-updates
+  ?skipCount:int ?maxResultCount:int ?entityType:string ->PagedResult<CommentWithAuthorDto>
+cargonerds/comment-public/get-list GET api/app/comment-public
+  ?entityType:string ?entityId:string ->ListResult<CommentWithDetailsDto>
+cargonerds/comment-public/update PUT api/app/comment-public/{id}
+  ?id:guid body:UpdateCommentInput ->CommentDto
+cargonerds/comment-public/update-comment-status PUT api/app/comment-public/{id}/comment-status
+  ?id:guid body:CommentStatusUpdateInputDto ->CommentDto
+cargonerds/current-organization/get-accessible-organization-units GET api/app/current-organization/accessible-organization-units
+  ->OrganizationUnitDto[]
+cargonerds/current-organization/get-accessible-organizations GET api/app/current-organization/accessible-organizations
+  ->OrganizationDto[]
+cargonerds/current-organization/get-accessible-users GET api/app/current-organization/accessible-users
+  ->IdentityUserDto[]
+cargonerds/current-organization/get-all-organizations GET api/app/current-organization/organizations
+  ->OrganizationDto[]
+cargonerds/current-organization/get-available-organizations GET api/app/current-organization/available-organizations
+  ?userId:string ->OrganizationDto[]
+cargonerds/current-organization/get-available-users GET api/app/current-organization/available-users
+  ?userId:string ->IdentityUserDto[]
+cargonerds/current-organization/get-current-organization-unit-ids GET api/app/current-organization/current-organization-unit-ids
+  ->guid[]
+cargonerds/current-organization/get-default-organization-unit-id GET api/app/current-organization/default-organization-unit-id
+  ->guid
+cargonerds/current-organization/get-organization-list GET api/app/current-organization/organization-list
+  ->OrganizationUnitDto[]
+cargonerds/current-organization/get-organizations-for-organization-units GET api/app/current-organization/organizations-for-organization-units
+  ?organizationUnitIds:guid[] ->guid[]
+cargonerds/current-organization/get-user-assigned-org-unit-users GET api/app/current-organization/user-assigned-org-unit-users
+  ?userId:string ->IdentityUserDto[]
+cargonerds/current-organization/get-user-assigned-organization-ids GET api/app/current-organization/user-assigned-organization-ids
+  ?userId:string ->guid[]
+cargonerds/current-organization/get-user-assigned-organization-unit-ids GET api/app/current-organization/user-assigned-organization-unit-ids
+  ?userId:string ->guid[]
+cargonerds/current-organization/get-user-assigned-organization-unit-owners GET api/app/current-organization/user-assigned-organization-unit-owners
+  ?userId:string ->IdentityUserDto[]
+cargonerds/current-organization/get-user-assigned-organization-units GET api/app/current-organization/user-assigned-organization-units
+  ?userId:string ->OrganizationUnitDto[]
+cargonerds/current-organization/get-user-assigned-organizations GET api/app/current-organization/user-assigned-organizations
+  ?userId:string ->OrganizationDto[]
+cargonerds/current-organization/set-current-organization-unit-ids POST api/app/current-organization/set-current-organization-unit-ids
+  body:guid[]
+cargonerds/custom-script-setting/get GET api/app/custom-script-setting
+  ->CustomScriptSettingsDto
+cargonerds/custom-script-setting/update PUT api/app/custom-script-setting
+  body:CustomScriptSettingsDto
+cargonerds/dynamic-report-widget-data/calculate POST api/app/dynamic-report-widget-data/calculate
+  body:WidgetDataRequest ->WidgetDataDto
+cargonerds/dynamic-report/create POST api/app/dynamic-report
+  body:CreateDynamicReportDto ->DynamicReportDto
+cargonerds/dynamic-report/delete DELETE api/app/dynamic-report/{id}
+  ?id:guid
+cargonerds/dynamic-report/delete-subscription DELETE api/app/dynamic-report/subscription/{reportId}
+  ?reportId:guid
+cargonerds/dynamic-report/delete-widget DELETE api/app/dynamic-report/widget
+  ?reportId:guid ?widgetId:guid
+cargonerds/dynamic-report/generate-dashboard-from-ai POST api/app/dynamic-report/generate-dashboard-from-ai
+  body:GenerateDashboardFromAiInput ->DynamicReportWithWidgetsDto
+cargonerds/dynamic-report/get GET api/app/dynamic-report/{id}
+  ?id:guid ->DynamicReportWithWidgetsDto
+cargonerds/dynamic-report/get-ai-availability GET api/app/dynamic-report/ai-availability
+  ->bool
+cargonerds/dynamic-report/get-list GET api/app/dynamic-report
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<DynamicReportDto>
+cargonerds/dynamic-report/get-my-org-units GET api/app/dynamic-report/my-org-units
+  ->DynamicReportOrgUnitNodeDto[]
+cargonerds/dynamic-report/update PUT api/app/dynamic-report/{id}
+  ?id:guid body:UpdateDynamicReportDto ->DynamicReportDto
+cargonerds/dynamic-report/upsert-subscription POST api/app/dynamic-report/upsert-subscription/{reportId}
+  ?reportId:guid body:CreateUpdateDynamicReportSubscriptionDto ->DynamicReportSubscriptionDto
+cargonerds/dynamic-report/upsert-widget POST api/app/dynamic-report/upsert-widget/{reportId}
+  ?reportId:guid body:CreateUpdateDynamicReportWidgetDto ->DynamicReportWidgetDto
+cargonerds/entity-access-check/check-access POST api/app/entity-access-check/check-access
+  body:CheckEntityAccessInput ->CheckEntityAccessResultDto
+cargonerds/entity-access-check/find-invoice POST api/app/entity-access-check/find-invoice
+  ?search:string ->InvoiceLookupResultDto
+cargonerds/entity-access-check/get-supported-entity-types GET api/app/entity-access-check/supported-entity-types
+  ->EntityTypeDto[]
+cargonerds/entity-access-check/search-entities-stream GET api/app/entity-access-check/search-entities-stream
+  ?entityTypeName:string ?searchTerm:string ?maxResultCount:int
+cargonerds/global-search/search POST api/app/global-search/search
+  body:GlobalSearchRequestDto ->GlobalSearchResultDto
+cargonerds/global-search/search-stream GET api/app/global-search/search-stream
+  ?searchTerm:string ?maxResultCount:int ?skipCount:int ?entityType:string
+cargonerds/identity-user/create POST api/app/identity-user
+  body:IdentityUserCreateDto ->IdentityUserDto
+cargonerds/identity-user/delete DELETE api/app/identity-user/{id}
+  ?id:guid
+cargonerds/identity-user/find-by-email POST api/app/identity-user/find-by-email
+  ?email:string ->IdentityUserDto
+cargonerds/identity-user/find-by-id POST api/app/identity-user/{id}/find-by-id
+  ?id:guid ->IdentityUserDto
+cargonerds/identity-user/find-by-username POST api/app/identity-user/find-by-username
+  ?username:string ->IdentityUserDto
+cargonerds/identity-user/get GET api/app/identity-user/{id}
+  ?id:guid ->IdentityUserDto
+cargonerds/identity-user/get-all-claim-types GET api/app/identity-user/claim-types
+  ->ClaimTypeDto[]
+cargonerds/identity-user/get-assignable-roles GET api/app/identity-user/assignable-roles
+  ->ListResult<IdentityRoleDto>
+cargonerds/identity-user/get-available-organization-units GET api/app/identity-user/available-organization-units
+  ->ListResult<OrganizationUnitWithDetailsDto>
+cargonerds/identity-user/get-claims GET api/app/identity-user/{id}/claims
+  ?id:guid ->IdentityUserClaimDto[]
+cargonerds/identity-user/get-download-token GET api/app/identity-user/download-token
+  ->DownloadTokenResultDto
+cargonerds/identity-user/get-external-login-providers GET api/app/identity-user/external-login-providers
+  ->ExternalLoginProviderDto[]
+cargonerds/identity-user/get-import-invalid-users-file GET api/app/identity-user/import-invalid-users-file
+  ?Token:string ->string
+cargonerds/identity-user/get-import-users-sample-file GET api/app/identity-user/import-users-sample-file
+  ?FileType:ImportUsersFromFileType ?Token:string ->string
+cargonerds/identity-user/get-list GET api/app/identity-user
+  ?Filter:string ?RoleId:guid ?OrganizationUnitId:guid ?Id:guid ?UserName:string ?PhoneNumber:string
+  ?EmailAddress:string ?Name:string ?Surname:string ?IsLockedOut:bool ?NotActive:bool ?EmailConfirmed:bool
+  ?IsExternal:bool ?MaxCreationTime:dt ?MinCreationTime:dt ?MaxModifitionTime:dt ?MinModifitionTime:dt
+  ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object ->PagedResult<IdentityUserDto>
+cargonerds/identity-user/get-list-as-csv-file GET api/app/identity-user/as-csv-file
+  ?Token:string ?Filter:string ?RoleId:guid ?OrganizationUnitId:guid ?Id:guid ?UserName:string
+  ?PhoneNumber:string ?EmailAddress:string ?Name:string ?Surname:string ?IsLockedOut:bool ?NotActive:bool
+  ?EmailConfirmed:bool ?IsExternal:bool ?MaxCreationTime:dt ?MinCreationTime:dt ?MaxModifitionTime:dt
+  ?MinModifitionTime:dt ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object ->string
+cargonerds/identity-user/get-list-as-excel-file GET api/app/identity-user/as-excel-file
+  ?Token:string ?Filter:string ?RoleId:guid ?OrganizationUnitId:guid ?Id:guid ?UserName:string
+  ?PhoneNumber:string ?EmailAddress:string ?Name:string ?Surname:string ?IsLockedOut:bool ?NotActive:bool
+  ?EmailConfirmed:bool ?IsExternal:bool ?MaxCreationTime:dt ?MinCreationTime:dt ?MaxModifitionTime:dt
+  ?MinModifitionTime:dt ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object ->string
+cargonerds/identity-user/get-odata-list GET api/app/identity-user/o-data-list
+  ?Filter:string ?RoleId:guid ?OrganizationUnitId:guid ?Id:guid ?UserName:string ?PhoneNumber:string
+  ?EmailAddress:string ?Name:string ?Surname:string ?IsLockedOut:bool ?NotActive:bool ?EmailConfirmed:bool
+  ?IsExternal:bool ?MaxCreationTime:dt ?MinCreationTime:dt ?MaxModifitionTime:dt ?MinModifitionTime:dt
+  ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object ->PagedResult<IdentityUserDto>
+cargonerds/identity-user/get-organization-unit-lookup GET api/app/identity-user/organization-unit-lookup
+  ->OrganizationUnitLookupDto[]
+cargonerds/identity-user/get-organization-units GET api/app/identity-user/{id}/organization-units
+  ?id:guid ->OrganizationUnitDto[]
+cargonerds/identity-user/get-role-lookup GET api/app/identity-user/role-lookup
+  ->IdentityRoleLookupDto[]
+cargonerds/identity-user/get-roles GET api/app/identity-user/{id}/roles
+  ?id:guid ->ListResult<IdentityRoleDto>
+cargonerds/identity-user/get-two-factor-enabled GET api/app/identity-user/{id}/two-factor-enabled
+  ?id:guid ->bool
+cargonerds/identity-user/get-users-by-permission GET api/app/identity-user/users-by-permission
+  ?Search:string ?Permission:string ?OrganizationUnitId:guid ?Sorting:string ?SkipCount:int
+  ?MaxResultCount:int ->IdentityUserDto[]
+cargonerds/identity-user/import-external-user POST api/app/identity-user/import-external-user
+  body:ImportExternalUserInput ->IdentityUserDto
+cargonerds/identity-user/import-users-from-file POST api/app/identity-user/import-users-from-file
+  ?FileType:ImportUsersFromFileType body:object ->ImportUsersFromFileOutput
+cargonerds/identity-user/lock POST api/app/identity-user/{id}/lock
+  ?id:guid ?lockoutEnd:dt
+cargonerds/identity-user/send-admin-welcome-mail POST api/app/identity-user/send-admin-welcome-mail/{userId}
+  ?userId:guid
+cargonerds/identity-user/set-two-factor-enabled POST api/app/identity-user/{id}/set-two-factor-enabled
+  ?id:guid ?enabled:bool
+cargonerds/identity-user/unlock POST api/app/identity-user/{id}/unlock
+  ?id:guid
+cargonerds/identity-user/update PUT api/app/identity-user/{id}
+  ?id:guid body:IdentityUserUpdateDto ->IdentityUserDto
+cargonerds/identity-user/update-claims PUT api/app/identity-user/{id}/claims
+  ?id:guid body:IdentityUserClaimDto[]
+cargonerds/identity-user/update-password PUT api/app/identity-user/{id}/password
+  ?id:guid body:IdentityUserUpdatePasswordInput
+cargonerds/identity-user/update-roles PUT api/app/identity-user/{id}/roles
+  ?id:guid body:IdentityUserUpdateRolesDto
+cargonerds/mcp-descriptor/get GET api/app/mcp-descriptor
+  ->McpIntegrationInfoDto
+cargonerds/notification-trigger/get-candidate-counts GET api/app/notification-trigger/candidate-counts
+  ?EventType:NotificationEventType ?EntityIds:guid[] ->object
+cargonerds/notification-trigger/get-init GET api/app/notification-trigger/init
+  ->TriggerPageInitDto
+cargonerds/notification-trigger/get-prefill-candidates GET api/app/notification-trigger/prefill-candidates/{entityId}
+  ?eventType:NotificationEventType ?entityId:guid ->PrefillCandidateDto[]
+cargonerds/notification-trigger/preview POST api/app/notification-trigger/preview
+  body:TriggerNotificationInput ->TriggerPreviewResultDto
+cargonerds/notification-trigger/trigger POST api/app/notification-trigger/trigger
+  body:TriggerNotificationInput
+cargonerds/notification-trigger/trigger-batch POST api/app/notification-trigger/trigger-batch
+  body:TriggerBatchInput ->TriggerBatchResultDto
+cargonerds/organization-unit/add-members POST api/app/organization-unit/{id}/members
+  ?id:guid body:OrganizationUnitUserInput
+cargonerds/organization-unit/add-roles POST api/app/organization-unit/{id}/roles
+  ?id:guid body:OrganizationUnitRoleInput
+cargonerds/organization-unit/assign-org-code POST api/app/organization-unit/assign-org-code
+  ?ouId:guid ?orgCodeId:guid
+cargonerds/organization-unit/bulk-move POST api/app/organization-unit/{id}/bulk-move
+  ?id:guid body:OrganizationUnitBulkMoveInput
+cargonerds/organization-unit/create POST api/app/organization-unit
+  body:OrganizationUnitCreateDto ->OrganizationUnitWithDetailsDto
+cargonerds/organization-unit/delete DELETE api/app/organization-unit/{id}
+  ?id:guid
+cargonerds/organization-unit/export-org-units-to-excel POST api/app/organization-unit/export-org-units-to-excel
+  ->string
+cargonerds/organization-unit/export-org-units-to-json POST api/app/organization-unit/export-org-units-to-json
+  ->string
+cargonerds/organization-unit/get GET api/app/organization-unit/{id}
+  ?id:guid ->OrganizationUnitWithDetailsDto
+cargonerds/organization-unit/get-account-owners GET api/app/organization-unit/{id}/account-owners
+  ?id:guid ->IdentityUserDto[]
+cargonerds/organization-unit/get-available-roles GET api/app/organization-unit/available-roles
+  ?Filter:string ?Id:guid ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object
+  ->PagedResult<IdentityRoleDto>
+cargonerds/organization-unit/get-available-users GET api/app/organization-unit/available-users
+  ?Filter:string ?Id:guid ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object
+  ->PagedResult<IdentityUserDto>
+cargonerds/organization-unit/get-importers GET api/app/organization-unit/importers
+  ->OrganizationImporterDescriptor[]
+cargonerds/organization-unit/get-list GET api/app/organization-unit
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object
+  ->PagedResult<OrganizationUnitWithDetailsDto>
+cargonerds/organization-unit/get-list-all GET api/app/organization-unit/all
+  ->ListResult<OrganizationUnitWithDetailsDto>
+cargonerds/organization-unit/get-list-by-organization-id GET api/app/organization-unit/by-organization-id
+  ?organizationIds:guid[] ->OrganizationUnitWithDetailsDto[]
+cargonerds/organization-unit/get-members GET api/app/organization-unit/{id}/members
+  ?id:guid ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<IdentityUserDto>
+cargonerds/organization-unit/get-my-ous GET api/app/organization-unit/my-ous
+  ?skipCount:int ?maxResultCount:int ?searchText:string ->PagedResult<OuTreeNodeDto>
+cargonerds/organization-unit/get-org-code-ids GET api/app/organization-unit/org-code-ids/{ouId}
+  ?ouId:guid ->guid[]
+cargonerds/organization-unit/get-ou-children GET api/app/organization-unit/ou-children/{parentId}
+  ?parentId:guid ->OuTreeNodeDto[]
+cargonerds/organization-unit/get-ou-roots GET api/app/organization-unit/ou-roots
+  ?skipCount:int ?maxResultCount:int ->PagedResult<OuTreeNodeDto>
+cargonerds/organization-unit/get-roles GET api/app/organization-unit/{id}/roles
+  ?id:guid ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<IdentityRoleDto>
+cargonerds/organization-unit/import-stream POST api/app/organization-unit/import-stream
+  ?importerName:string
+cargonerds/organization-unit/move POST api/app/organization-unit/{id}/move
+  ?id:guid body:OrganizationUnitMoveInput
+cargonerds/organization-unit/move-all-users POST api/app/organization-unit/{id}/move-all-users/{targetOrganizationId}
+  ?id:guid ?targetOrganizationId:guid
+cargonerds/organization-unit/remove-member DELETE api/app/organization-unit/{id}/member/{memberId}
+  ?id:guid ?memberId:guid
+cargonerds/organization-unit/remove-role DELETE api/app/organization-unit/{id}/role/{roleId}
+  ?id:guid ?roleId:guid
+cargonerds/organization-unit/search-ou-tree POST api/app/organization-unit/search-ou-tree
+  ?searchText:string ?skipCount:int ?maxResultCount:int ->OuTreeSearchResultDto
+cargonerds/organization-unit/set-members POST api/app/organization-unit/{id}/set-members
+  ?id:guid body:OrganizationUnitUserInput
+cargonerds/organization-unit/synchronize-org-codes POST api/app/organization-unit/synchronize-org-codes
+cargonerds/organization-unit/unassign-org-code POST api/app/organization-unit/unassign-org-code
+  ?ouId:guid ?orgCodeId:guid
+cargonerds/organization-unit/update PUT api/app/organization-unit/{id}
+  ?id:guid body:OrganizationUnitUpdateDto ->OrganizationUnitWithDetailsDto
+cargonerds/security-log-export/export POST api/app/security-log-export/export
+  body:GetIdentitySecurityLogListInput ->string
+cargonerds/user-import/analyze-file POST api/app/user-import/analyze-file
+  ->UserImportFileSchemaDto !NOTCALLABLE
+cargonerds/user-import/import-users-stream POST api/app/user-import/import-users-stream
+  ?usernameField:string ?emailField:string ?nameField:string ?phoneField:string ?orgCodeField:string
+  ?orgNameField:string ?missingOrgBehavior:UserImportMissingOrgBehavior ?roleIds:guid[] ?orgUnitIds:guid[]
+  ?orgUnitAssignMode:UserImportOrgUnitAssignMode ?setEmailConfirmed:bool !NOTCALLABLE
+chat/contact/get-contacts GET api/chat/contact/contacts
+  ?Filter:string ?IncludeOtherContacts:bool ->ChatContactDto[]
+chat/contact/get-total-unread-message-count GET api/chat/contact/total-unread-message-count
+  ->int
+chat/conversation/delete-conversation DELETE api/chat/conversation/delete-conversation
+  ?TargetUserId:guid
+chat/conversation/delete-message DELETE api/chat/conversation/delete-message
+  ?TargetUserId:guid ?MessageId:guid
+chat/conversation/get-conversation GET api/chat/conversation/conversation
+  ?TargetUserId:guid ?SkipCount:int ?MaxResultCount:int ->ChatConversationDto
+chat/conversation/mark-conversation-as-read POST api/chat/conversation/mark-conversation-as-read
+  body:MarkConversationAsReadInput
+chat/conversation/send-message POST api/chat/conversation/send-message
+  body:SendMessageInput ->ChatMessageDto
+chat/settings/get GET api/chat/settings
+  ->ChatSettingsDto
+chat/settings/set-send-on-enter-setting POST api/chat/settings/send-on-enter
+  body:SendOnEnterSettingDto
+chat/settings/update PUT api/chat/settings
+  body:ChatSettingsDto
+cms-kit-admin/blog-admin/create POST api/cms-kit-admin/blogs
+  body:CreateBlogDto ->BlogDto
+cms-kit-admin/blog-admin/delete DELETE api/cms-kit-admin/blogs/{id}
+  ?id:guid
+cms-kit-admin/blog-admin/get GET api/cms-kit-admin/blogs/{id}
+  ?id:guid ->BlogDto
+cms-kit-admin/blog-admin/get-all-list GET api/cms-kit-admin/blogs/all
+  ->ListResult<BlogDto>
+cms-kit-admin/blog-admin/get-list GET api/cms-kit-admin/blogs
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<BlogDto>
+cms-kit-admin/blog-admin/move-all-blog-posts PUT api/cms-kit-admin/blogs/{id}/move-all-blog-posts
+  ?blogId:guid ?assignToBlogId:guid ?id:string
+cms-kit-admin/blog-admin/update PUT api/cms-kit-admin/blogs/{id}
+  ?id:guid body:UpdateBlogDto ->BlogDto
+cms-kit-admin/blog-feature-admin/get-list GET api/cms-kit-admin/blogs/{blogId}/features
+  ?blogId:guid ->BlogFeatureDto[]
+cms-kit-admin/blog-feature-admin/set PUT api/cms-kit-admin/blogs/{blogId}/features
+  ?blogId:guid body:BlogFeatureInputDto
+cms-kit-admin/blog-post-admin/create POST api/cms-kit-admin/blogs/blog-posts
+  body:CreateBlogPostDto ->BlogPostDto
+cms-kit-admin/blog-post-admin/create-and-publish POST api/cms-kit-admin/blogs/blog-posts/create-and-publish
+  body:CreateBlogPostDto ->BlogPostDto
+cms-kit-admin/blog-post-admin/create-and-send-to-review POST api/cms-kit-admin/blogs/blog-posts/create-and-send-to-review
+  body:CreateBlogPostDto ->BlogPostDto
+cms-kit-admin/blog-post-admin/delete DELETE api/cms-kit-admin/blogs/blog-posts/{id}
+  ?id:guid
+cms-kit-admin/blog-post-admin/draft POST api/cms-kit-admin/blogs/blog-posts/{id}/draft
+  ?id:guid
+cms-kit-admin/blog-post-admin/get GET api/cms-kit-admin/blogs/blog-posts/{id}
+  ?id:guid ->BlogPostDto
+cms-kit-admin/blog-post-admin/get-list GET api/cms-kit-admin/blogs/blog-posts
+  ?Filter:string ?BlogId:guid ?AuthorId:guid ?TagId:guid ?Status:BlogPostStatus ?Sorting:string
+  ?SkipCount:int ?MaxResultCount:int ->PagedResult<BlogPostListDto>
+cms-kit-admin/blog-post-admin/has-blog-post-waiting-for-review GET api/cms-kit-admin/blogs/blog-posts/has-blogpost-waiting-for-review
+  ->bool
+cms-kit-admin/blog-post-admin/publish POST api/cms-kit-admin/blogs/blog-posts/{id}/publish
+  ?id:guid
+cms-kit-admin/blog-post-admin/send-to-review POST api/cms-kit-admin/blogs/blog-posts/{id}/send-to-review
+  ?id:guid
+cms-kit-admin/blog-post-admin/update PUT api/cms-kit-admin/blogs/blog-posts/{id}
+  ?id:guid body:UpdateBlogPostDto ->BlogPostDto
+cms-kit-admin/comment-admin/delete DELETE api/cms-kit-admin/comments/{id}
+  ?id:guid
+cms-kit-admin/comment-admin/get GET api/cms-kit-admin/comments/{id}
+  ?id:guid ->CommentWithAuthorDto
+cms-kit-admin/comment-admin/get-list GET api/cms-kit-admin/comments
+  ?EntityType:string ?Text:string ?RepliedCommentId:guid ?Author:string ?CreationStartDate:dt
+  ?CreationEndDate:dt ?CommentApproveState:CommentApproveState ?Sorting:string ?SkipCount:int
+  ?MaxResultCount:int ->PagedResult<CommentWithAuthorDto>
+cms-kit-admin/comment-admin/get-waiting-count GET api/cms-kit-admin/comments/waiting-count
+  ->int
+cms-kit-admin/comment-admin/update-approval-status PUT api/cms-kit-admin/comments/{id}/approval-status
+  ?id:guid body:CommentApprovalDto
+cms-kit-admin/comment-admin/update-settings POST api/cms-kit-admin/comments/settings
+  body:CommentSettingsDto
+cms-kit-admin/entity-tag-admin/add-tag-to-entity POST api/cms-kit-admin/entity-tags
+  body:EntityTagCreateDto
+cms-kit-admin/entity-tag-admin/remove-tag-from-entity DELETE api/cms-kit-admin/entity-tags
+  ?TagId:guid ?EntityType:string ?EntityId:string
+cms-kit-admin/entity-tag-admin/set-entity-tags PUT api/cms-kit-admin/entity-tags
+  body:EntityTagSetDto
+cms-kit-admin/global-resource-admin/get GET api/cms-kit-admin/global-resources
+  ->GlobalResourcesDto
+cms-kit-admin/global-resource-admin/set-global-resources POST api/cms-kit-admin/global-resources
+  body:GlobalResourcesUpdateDto
+cms-kit-admin/media-descriptor-admin/create POST api/cms-kit-admin/media/{entityType}
+  ?entityType:string ?Name:string body:object ->MediaDescriptorDto
+cms-kit-admin/media-descriptor-admin/delete DELETE api/cms-kit-admin/media/{id}
+  ?id:guid
+cms-kit-admin/menu-item-admin/create POST api/cms-kit-admin/menu-items
+  body:MenuItemCreateInput ->MenuItemDto
+cms-kit-admin/menu-item-admin/delete DELETE api/cms-kit-admin/menu-items/{id}
+  ?id:guid
+cms-kit-admin/menu-item-admin/get GET api/cms-kit-admin/menu-items/{id}
+  ?id:guid ->MenuItemWithDetailsDto
+cms-kit-admin/menu-item-admin/get-available-menu-order GET api/cms-kit-admin/menu-items/available-order
+  ?parentId:guid ->int
+cms-kit-admin/menu-item-admin/get-list GET api/cms-kit-admin/menu-items
+  ->ListResult<MenuItemDto>
+cms-kit-admin/menu-item-admin/get-page-lookup GET api/cms-kit-admin/menu-items/lookup/pages
+  ?Filter:string ?Status:PageStatus ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ->PagedResult<PageLookupDto>
+cms-kit-admin/menu-item-admin/get-permission-lookup GET api/cms-kit-admin/menu-items/lookup/permissions
+  ?Filter:string ->ListResult<PermissionLookupDto>
+cms-kit-admin/menu-item-admin/move-menu-item PUT api/cms-kit-admin/menu-items/{id}/move
+  ?id:guid body:MenuItemMoveInput
+cms-kit-admin/menu-item-admin/update PUT api/cms-kit-admin/menu-items/{id}
+  ?id:guid body:MenuItemUpdateInput ->MenuItemDto
+cms-kit-admin/page-admin/create POST api/cms-kit-admin/pages
+  body:CreatePageInputDto ->PageDto
+cms-kit-admin/page-admin/delete DELETE api/cms-kit-admin/pages/{id}
+  ?id:guid
+cms-kit-admin/page-admin/get GET api/cms-kit-admin/pages/{id}
+  ?id:guid ->PageDto
+cms-kit-admin/page-admin/get-list GET api/cms-kit-admin/pages
+  ?Filter:string ?Status:PageStatus ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<PageDto>
+cms-kit-admin/page-admin/set-as-home-page PUT api/cms-kit-admin/pages/setashomepage/{id}
+  ?id:guid
+cms-kit-admin/page-admin/update PUT api/cms-kit-admin/pages/{id}
+  ?id:guid body:UpdatePageInputDto ->PageDto
+cms-kit-admin/tag-admin/create POST api/cms-kit-admin/tags
+  body:TagCreateDto ->TagDto
+cms-kit-admin/tag-admin/delete DELETE api/cms-kit-admin/tags/{id}
+  ?id:guid
+cms-kit-admin/tag-admin/get GET api/cms-kit-admin/tags/{id}
+  ?id:guid ->TagDto
+cms-kit-admin/tag-admin/get-list GET api/cms-kit-admin/tags
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<TagDto>
+cms-kit-admin/tag-admin/get-tag-definitions GET api/cms-kit-admin/tags/tag-definitions
+  ->TagDefinitionDto[]
+cms-kit-admin/tag-admin/update PUT api/cms-kit-admin/tags/{id}
+  ?id:guid body:TagUpdateDto ->TagDto
+cms-kit-common/blog-feature/get-or-default GET api/cms-kit/blogs/{blogId}/features/{featureName}
+  ?blogId:guid ?featureName:string ->BlogFeatureDto
+cms-kit-common/media-descriptor/download GET api/cms-kit/media/{id}
+  ?id:guid ->string
+cms-kit-pro-admin/contact-setting/get GET api/cms-kit-admin/contact/settings
+  ->CmsKitContactSettingDto
+cms-kit-pro-admin/contact-setting/update POST api/cms-kit-admin/contact/settings
+  body:UpdateCmsKitContactSettingDto
+cms-kit-pro-admin/faq-group-admin/create POST api/cms-kit-admin/faq-group
+  body:CreateFaqGroupDto ->FaqGroupDto
+cms-kit-pro-admin/faq-group-admin/delete DELETE api/cms-kit-admin/faq-group/{id}
+  ?id:guid
+cms-kit-pro-admin/faq-group-admin/get GET api/cms-kit-admin/faq-group/{id}
+  ?id:guid ->FaqGroupDto
+cms-kit-pro-admin/faq-group-admin/get-all GET api/cms-kit-admin/faq-group/all
+  ->FaqGroupWithSectionCountDto[]
+cms-kit-pro-admin/faq-group-admin/get-list GET api/cms-kit-admin/faq-group
+  ?Filter:string ?Name:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ->PagedResult<FaqGroupWithSectionCountDto>
+cms-kit-pro-admin/faq-group-admin/update PUT api/cms-kit-admin/faq-group/{id}
+  ?id:guid body:UpdateFaqGroupDto ->FaqGroupDto
+cms-kit-pro-admin/faq-question-admin/create POST api/cms-kit-admin/faq-question
+  body:CreateFaqQuestionDto ->FaqQuestionDto
+cms-kit-pro-admin/faq-question-admin/delete DELETE api/cms-kit-admin/faq-question
+  ?id:guid
+cms-kit-pro-admin/faq-question-admin/get GET api/cms-kit-admin/faq-question/{id}
+  ?id:guid ->FaqQuestionDto
+cms-kit-pro-admin/faq-question-admin/get-list GET api/cms-kit-admin/faq-question
+  ?SectionId:guid ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ->PagedResult<FaqQuestionDto>
+cms-kit-pro-admin/faq-question-admin/get-max-order GET api/cms-kit-admin/faq-question/max-order/{sectionId}
+  ?sectionId:guid ->int
+cms-kit-pro-admin/faq-question-admin/move-down PUT api/cms-kit-admin/faq-question/moveDown/{id}
+  ?id:guid
+cms-kit-pro-admin/faq-question-admin/move-up PUT api/cms-kit-admin/faq-question/moveUp/{id}
+  ?id:guid
+cms-kit-pro-admin/faq-question-admin/update PUT api/cms-kit-admin/faq-question
+  ?id:guid body:UpdateFaqQuestionDto ->FaqQuestionDto
+cms-kit-pro-admin/faq-section-admin/create POST api/cms-kit-admin/faq-section
+  body:CreateFaqSectionDto ->FaqSectionDto
+cms-kit-pro-admin/faq-section-admin/delete DELETE api/cms-kit-admin/faq-section
+  ?id:guid
+cms-kit-pro-admin/faq-section-admin/get GET api/cms-kit-admin/faq-section/{id}
+  ?id:guid ->FaqSectionDto
+cms-kit-pro-admin/faq-section-admin/get-list GET api/cms-kit-admin/faq-section
+  ?Filter:string ?GroupId:guid ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ->PagedResult<FaqSectionWithQuestionCountDto>
+cms-kit-pro-admin/faq-section-admin/update PUT api/cms-kit-admin/faq-section
+  ?id:guid body:UpdateFaqSectionDto ->FaqSectionDto
+cms-kit-pro-admin/newsletter-record-admin/get GET api/cms-kit-admin/newsletter/{id}
+  ?id:guid ->NewsletterRecordWithDetailsDto
+cms-kit-pro-admin/newsletter-record-admin/get-csv-responses GET api/cms-kit-admin/newsletter/export-csv
+  ?Preference:string ?Source:string ?EmailAddress:string ?Token:string ->string
+cms-kit-pro-admin/newsletter-record-admin/get-download-token GET api/cms-kit-admin/newsletter/download-token
+  ->DownloadTokenResultDto
+cms-kit-pro-admin/newsletter-record-admin/get-import-invalid-newsletters-file GET api/cms-kit-admin/newsletter/download-import-invalid-newsletters-file
+  ?Token:string ->string
+cms-kit-pro-admin/newsletter-record-admin/get-import-newsletters-sample-file GET api/cms-kit-admin/newsletter/import-newsletters-sample-file
+  ?Token:string ->string
+cms-kit-pro-admin/newsletter-record-admin/get-list GET api/cms-kit-admin/newsletter
+  ?Preference:string ?Source:string ?EmailAddress:string ?SkipCount:int ?MaxResultCount:int
+  ->PagedResult<NewsletterRecordDto>
+cms-kit-pro-admin/newsletter-record-admin/get-newsletter-preferences GET api/cms-kit-admin/newsletter/preferences
+  ->string[]
+cms-kit-pro-admin/newsletter-record-admin/get-newsletter-preferences-get GET api/cms-kit-admin/newsletter/preferences/{emailAddress}
+  ?emailAddress:string ->NewsletterPreferenceDetailsDto[]
+cms-kit-pro-admin/newsletter-record-admin/get-newsletter-records-csv-detail GET api/cms-kit-admin/newsletter/csv-detail
+  ?Preference:string ?Source:string ?EmailAddress:string ?Token:string ->NewsletterRecordCsvDto[]
+cms-kit-pro-admin/newsletter-record-admin/import-newsletters-from-file POST api/cms-kit-admin/newsletter/import-newsletters-from-file
+  body:object ->ImportNewslettersFromFileOutput
+cms-kit-pro-admin/newsletter-record-admin/update-preferences PUT api/cms-kit-admin/newsletter/preferences
+  body:UpdatePreferenceInput
+cms-kit-pro-admin/page-feedback-admin/delete DELETE api/cms-kit-admin/page-feedback/{id}
+  ?id:guid
+cms-kit-pro-admin/page-feedback-admin/get GET api/cms-kit-admin/page-feedback/{id}
+  ?id:guid ->PageFeedbackDto
+cms-kit-pro-admin/page-feedback-admin/get-entity-types GET api/cms-kit-admin/page-feedback/entity-types
+  ->string[]
+cms-kit-pro-admin/page-feedback-admin/get-list GET api/cms-kit-admin/page-feedback
+  ?EntityType:string ?EntityId:string ?IsHandled:bool ?IsUseful:bool ?Url:string ?HasUserNote:bool
+  ?HasAdminNote:bool ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<PageFeedbackDto>
+cms-kit-pro-admin/page-feedback-admin/get-list-as-excel-file GET api/cms-kit-admin/page-feedback/export-as-excel
+  ?EntityType:string ?EntityId:string ?IsHandled:bool ?IsUseful:bool ?Url:string ?HasUserNote:bool
+  ?HasAdminNote:bool ->string
+cms-kit-pro-admin/page-feedback-admin/get-settings GET api/cms-kit-admin/page-feedback/settings
+  ->PageFeedbackSettingDto[]
+cms-kit-pro-admin/page-feedback-admin/update PUT api/cms-kit-admin/page-feedback/{id}
+  ?id:guid body:UpdatePageFeedbackDto ->PageFeedbackDto
+cms-kit-pro-admin/page-feedback-admin/update-settings PUT api/cms-kit-admin/page-feedback/settings
+  body:UpdatePageFeedbackSettingsInput
+cms-kit-pro-admin/page-feedback-settings/get GET api/cms-kit-admin/page-feedbacks/settings
+  ->CmsKitPageFeedbackSettingDto
+cms-kit-pro-admin/page-feedback-settings/update POST api/cms-kit-admin/page-feedbacks/settings
+  body:UpdateCmsKitPageFeedbackSettingDto
+cms-kit-pro-admin/poll-admin/create POST api/cms-kit-admin/poll
+  body:CreatePollDto ->PollWithDetailsDto
+cms-kit-pro-admin/poll-admin/delete DELETE api/cms-kit-admin/poll/{id}
+  ?id:guid
+cms-kit-pro-admin/poll-admin/get GET api/cms-kit-admin/poll/{id}
+  ?id:guid ->PollWithDetailsDto
+cms-kit-pro-admin/poll-admin/get-list GET api/cms-kit-admin/poll
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<PollDto>
+cms-kit-pro-admin/poll-admin/get-result GET api/cms-kit-admin/poll/result
+  ?id:guid ->GetResultDto
+cms-kit-pro-admin/poll-admin/get-widgets GET api/cms-kit-admin/poll/widgets
+  ->ListResult<PollWidgetDto>
+cms-kit-pro-admin/poll-admin/update PUT api/cms-kit-admin/poll/{id}
+  ?id:guid body:UpdatePollDto ->PollWithDetailsDto
+cms-kit-pro-admin/url-shorting-admin/create POST api/cms-kit-admin/url-shorting
+  body:CreateShortenedUrlDto ->ShortenedUrlDto
+cms-kit-pro-admin/url-shorting-admin/delete DELETE api/cms-kit-admin/url-shorting/{id}
+  ?id:guid
+cms-kit-pro-admin/url-shorting-admin/get GET api/cms-kit-admin/url-shorting/{id}
+  ?id:guid ->ShortenedUrlDto
+cms-kit-pro-admin/url-shorting-admin/get-list GET api/cms-kit-admin/url-shorting
+  ?ShortenedUrlFilter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ->PagedResult<ShortenedUrlDto>
+cms-kit-pro-admin/url-shorting-admin/update PUT api/cms-kit-admin/url-shorting/{id}
+  ?id:guid body:UpdateShortenedUrlDto ->ShortenedUrlDto
+cms-kit-pro-common/contact-public/send-message POST api/cms-kit-public/contacts
+  body:ContactCreateInput
+cms-kit-pro-common/faq-section-public/get-list-section-with-questions GET api/cms-kit-public/faq-section
+  ?GroupId:guid ?SectionName:string ->FaqSectionWithQuestionsDto[]
+cms-kit-pro-common/newsletter-record-public/confirm-email GET api/cms-kit-public/newsletter/confirm
+  ?emailAddress:string ?token:string ->bool
+cms-kit-pro-common/newsletter-record-public/confirm-email-post POST api/cms-kit-public/newsletter/confirm
+  body:ConfirmNewsletterEmailInput ->bool
+cms-kit-pro-common/newsletter-record-public/create POST api/cms-kit-public/newsletter
+  body:CreateNewsletterRecordInput ->CreateNewsletterRecordResultDto
+cms-kit-pro-common/newsletter-record-public/get-newsletter-preferences GET api/cms-kit-public/newsletter/emailAddress
+  ?emailAddress:string ->NewsletterPreferenceDetailsDto[]
+cms-kit-pro-common/newsletter-record-public/get-option-by-preference GET api/cms-kit-public/newsletter/preference-options
+  ?preference:string ->NewsletterEmailOptionsDto
+cms-kit-pro-common/newsletter-record-public/update-preferences PUT api/cms-kit-public/newsletter
+  body:UpdatePreferenceRequestInput
+cms-kit-pro-common/page-feedback-public/change-is-useful POST api/cms-kit-public/page-feedback/change-is-useful
+  body:ChangeIsUsefulInput ->PageFeedbackDto
+cms-kit-pro-common/page-feedback-public/create POST api/cms-kit-public/page-feedback
+  body:CreatePageFeedbackInput ->PageFeedbackDto
+cms-kit-pro-common/page-feedback-public/initialize-user-note POST api/cms-kit-public/page-feedback/initialize-user-note
+  body:InitializeUserNoteInput ->PageFeedbackDto
+cms-kit-pro-common/poll-public/find-by-available-widget GET api/cms-kit-public/poll/by-available-widget-name
+  ?widgetName:string ->PollWithDetailsDto
+cms-kit-pro-common/poll-public/find-by-code GET api/cms-kit-public/poll/by-code
+  ?code:string ->PollWithDetailsDto
+cms-kit-pro-common/poll-public/get-result GET api/cms-kit-public/poll/result/{id}
+  ?id:guid ->GetResultDto
+cms-kit-pro-common/poll-public/is-widget-name-available GET api/cms-kit-public/poll/widget-name-available
+  ?widgetName:string ->bool
+cms-kit-pro-common/poll-public/submit-vote POST api/cms-kit-public/poll/{id}
+  ?id:guid body:SubmitPollInput
+cms-kit-pro-common/url-shorting-public/find-by-source GET api/cms-kit-public/url-shorting
+  ?source:string ->ShortenedUrlDto
+cms-kit-public/blog-post-public/delete DELETE api/cms-kit-public/blog-posts/{id}
+  ?id:guid
+cms-kit-public/blog-post-public/get GET api/cms-kit-public/blog-posts/{blogSlug}/{blogPostSlug}
+  ?blogSlug:string ?blogPostSlug:string ->BlogPostCommonDto
+cms-kit-public/blog-post-public/get-author-has-blog-post GET api/cms-kit-public/blog-posts/authors/{id}
+  ?id:guid ->CmsUserDto
+cms-kit-public/blog-post-public/get-authors-has-blog-posts GET api/cms-kit-public/blog-posts/authors
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<CmsUserDto>
+cms-kit-public/blog-post-public/get-list GET api/cms-kit-public/blog-posts/{blogSlug}
+  ?blogSlug:string ?AuthorId:guid ?TagId:guid ?FilterOnFavorites:bool ?Sorting:string ?SkipCount:int
+  ?MaxResultCount:int ->PagedResult<BlogPostCommonDto>
+cms-kit-public/blog-post-public/get-tag-name GET api/cms-kit-public/blog-posts/tags/{id}
+  ?tagId:guid ?id:string ->string
+cms-kit-public/comment-public/create POST api/cms-kit-public/comments/{entityType}/{entityId}
+  ?entityType:string ?entityId:string body:CreateCommentInput ->CommentDto
+cms-kit-public/comment-public/delete DELETE api/cms-kit-public/comments/{id}
+  ?id:guid
+cms-kit-public/comment-public/get-list GET api/cms-kit-public/comments/{entityType}/{entityId}
+  ?entityType:string ?entityId:string ->ListResult<CommentWithDetailsDto>
+cms-kit-public/comment-public/update PUT api/cms-kit-public/comments/{id}
+  ?id:guid body:UpdateCommentInput ->CommentDto
+cms-kit-public/global-resource-public/get-global-script GET api/cms-kit-public/global-resources/script
+  ->GlobalResourceDto
+cms-kit-public/global-resource-public/get-global-style GET api/cms-kit-public/global-resources/style
+  ->GlobalResourceDto
+cms-kit-public/marked-item-public/get-for-user GET api/cms-kit-public/marked-items/{entityType}/{entityId}
+  ?entityType:string ?entityId:string ->MarkedItemWithToggleDto
+cms-kit-public/marked-item-public/toggle PUT api/cms-kit-public/marked-items/{entityType}/{entityId}
+  ?entityType:string ?entityId:string ->bool
+cms-kit-public/menu-item-public/get-list GET api/cms-kit-public/menu-items
+  ->MenuItemDto[]
+cms-kit-public/pages-public/does-slug-exist GET api/cms-kit-public/pages/exist
+  ?slug:string ->bool
+cms-kit-public/pages-public/find-by-slug GET api/cms-kit-public/pages/by-slug
+  ?slug:string ->PageDto
+cms-kit-public/pages-public/find-default-home-page GET api/cms-kit-public/pages/home
+  ->PageDto
+cms-kit-public/rating-public/create PUT api/cms-kit-public/ratings/{entityType}/{entityId}
+  ?entityType:string ?entityId:string body:CreateUpdateRatingInput ->RatingDto
+cms-kit-public/rating-public/delete DELETE api/cms-kit-public/ratings/{entityType}/{entityId}
+  ?entityType:string ?entityId:string
+cms-kit-public/rating-public/get-grouped-star-counts GET api/cms-kit-public/ratings/{entityType}/{entityId}
+  ?entityType:string ?entityId:string ->RatingWithStarCountDto[]
+cms-kit-public/reaction-public/create PUT api/cms-kit-public/reactions/{entityType}/{entityId}/{reaction}
+  ?entityType:string ?entityId:string ?reaction:string
+cms-kit-public/reaction-public/delete DELETE api/cms-kit-public/reactions/{entityType}/{entityId}/{reaction}
+  ?entityType:string ?entityId:string ?reaction:string
+cms-kit-public/reaction-public/get-for-selection GET api/cms-kit-public/reactions/{entityType}/{entityId}
+  ?entityType:string ?entityId:string ->ListResult<ReactionWithSelectionDto>
+cms-kit-public/tag-public/get-all-related-tags GET api/cms-kit-public/tags/{entityType}/{entityId}
+  ?entityType:string ?entityId:string ->TagDto[]
+cms-kit-public/tag-public/get-popular-tags GET api/cms-kit-public/tags/popular/{entityType}/{maxCount}
+  ?entityType:string ?maxCount:int ->PopularTagDto[]
+feature-management/features/delete DELETE api/feature-management/features
+  ?providerName:string ?providerKey:string
+feature-management/features/get GET api/feature-management/features
+  ?providerName:string ?providerKey:string ->GetFeatureListResultDto
+feature-management/features/update PUT api/feature-management/features
+  ?providerName:string ?providerKey:string body:UpdateFeaturesDto
+file-management/directory-descriptor/create POST api/file-management/directory-descriptor
+  body:CreateDirectoryInput ->DirectoryDescriptorDto
+file-management/directory-descriptor/delete DELETE api/file-management/directory-descriptor/{id}
+  ?id:guid
+file-management/directory-descriptor/get GET api/file-management/directory-descriptor/{id}
+  ?id:guid ->DirectoryDescriptorDto
+file-management/directory-descriptor/get-content GET api/file-management/directory-descriptor
+  ?Filter:string ?Id:guid ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ->PagedResult<DirectoryContentDto>
+file-management/directory-descriptor/get-list GET api/file-management/directory-descriptor/sub-directories
+  ?parentId:guid ->ListResult<DirectoryDescriptorInfoDto>
+file-management/directory-descriptor/move POST api/file-management/directory-descriptor/move
+  body:MoveDirectoryInput ->DirectoryDescriptorDto
+file-management/directory-descriptor/rename POST api/file-management/directory-descriptor/{id}
+  ?id:guid body:RenameDirectoryInput ->DirectoryDescriptorDto
+file-management/file-descriptor/create POST api/file-management/file-descriptor/upload
+  ?directoryId:guid ?Name:string ?OverrideExisting:bool ?ExtraProperties:object body:object
+  ->FileDescriptorDto
+file-management/file-descriptor/delete DELETE api/file-management/file-descriptor/{id}
+  ?id:guid
+file-management/file-descriptor/download GET api/file-management/file-descriptor/download/{id}
+  ?id:guid ?token:string ->string
+file-management/file-descriptor/download-share-file GET api/file-management/file-descriptor/share
+  ?shareToken:string ->string
+file-management/file-descriptor/get GET api/file-management/file-descriptor/{id}
+  ?id:guid ->FileDescriptorDto
+file-management/file-descriptor/get-content GET api/file-management/file-descriptor/content
+  ?id:guid ->string
+file-management/file-descriptor/get-download-token GET api/file-management/file-descriptor/download/{id}/token
+  ?id:guid ->DownloadTokenResultDto
+file-management/file-descriptor/get-list GET api/file-management/file-descriptor
+  ?directoryId:guid ->ListResult<FileDescriptorDto>
+file-management/file-descriptor/get-pre-info POST api/file-management/file-descriptor/pre-upload-info
+  body:FileUploadPreInfoRequest[] ->FileUploadPreInfoDto[]
+file-management/file-descriptor/get-storage-size-info GET api/file-management/file-descriptor/storage-info
+  ->StorageSizeInfoDto
+file-management/file-descriptor/move POST api/file-management/file-descriptor/move
+  body:MoveFileInput ->FileDescriptorDto
+file-management/file-descriptor/rename POST api/file-management/file-descriptor/{id}
+  ?id:guid body:RenameFileInput ->FileDescriptorDto
+file-management/file-descriptor/share-file POST api/file-management/file-descriptor/{id}/share
+  ?id:guid ?enable:bool
+gdpr/gdpr-request/delete-user-data DELETE api/gdpr/requests
+gdpr/gdpr-request/get-download-token GET api/gdpr/requests/download-token
+  ?id:guid ->DownloadTokenResultDto
+gdpr/gdpr-request/get-list GET api/gdpr/requests/list
+  ?UserId:guid ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<GdprRequestDto>
+gdpr/gdpr-request/get-user-data GET api/gdpr/requests/data/{requestId}
+  ?requestId:guid ?token:string ->string
+gdpr/gdpr-request/is-new-request-allowed GET api/gdpr/requests/is-request-allowed
+  ->bool
+gdpr/gdpr-request/prepare-user-data POST api/gdpr/requests/prepare-data
+hub/address/get-place-details GET api/app/address/{id}/place-details
+  ?id:string ->AddressDto
+hub/address/search GET api/app/address/search
+  ?search:string ?transportModeCode:string ->AddressSearchResultDto
+hub/brokerage/can-upload-document GET api/app/brokerage/can-upload-document/{shipmentId}
+  ?shipmentId:guid ->bool
+hub/brokerage/create POST api/app/brokerage
+  body:CombinedShipmentDto ->CombinedShipmentDto
+hub/brokerage/create-booking POST api/app/brokerage/booking
+  body:CreateUpdateBookingDto ->CombinedShipmentDto
+hub/brokerage/deactivate-booking POST api/app/brokerage/deactivate-booking/{shipmentId}
+  ?shipmentId:guid ->CombinedShipmentDto
+hub/brokerage/delete DELETE api/app/brokerage/{id}
+  ?id:guid
+hub/brokerage/get GET api/app/brokerage/{id}
+  ?id:string ->CombinedShipmentDto
+hub/brokerage/get-all-tracking-containers GET api/app/brokerage/tracking-containers
+  ->TrackingContainerDto[]
+hub/brokerage/get-last-activity GET api/app/brokerage/last-activity/{shipmentId}
+  ?shipmentId:guid ->ShipmentActivityDto[]
+hub/brokerage/get-list GET api/app/brokerage
+  ?QuickFilter:string ?SubscribedOnly:bool ?TagIds:guid[] ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ?force:bool ?FacetBuilderOptions.* ->PagedResult+F<CombinedShipmentDto>
+hub/brokerage/get-new-documents GET api/app/brokerage/new-documents
+  ?SkipCount:int ?MaxResultCount:int ?includeTotalCount:bool ->PagedResult<NewDocumentDto>
+hub/brokerage/get-property-updates GET api/app/brokerage/property-updates
+  ?SkipCount:int ?MaxResultCount:int ?properties:string[] ?includeTotalCount:bool
+  ->PagedResult<ShipmentBaseDto>
+hub/brokerage/get-property-updates-get GET api/app/brokerage/property-updates/{shipmentId}
+  ?properties:string[] ?shipmentId:guid ->EntityChangeInfoDto[]
+hub/brokerage/get-recent-status-changes GET api/app/brokerage/recent-status-changes
+  ?SkipCount:int ?MaxResultCount:int ->PagedResult<StatusUpdateDto>
+hub/brokerage/get-tracking GET api/app/brokerage/{id}/tracking
+  ?id:guid ->TrackingContainerDto[]
+hub/brokerage/get-tracking-new GET api/app/brokerage/{id}/tracking-new
+  ?id:guid ->TrackingContainerNewDto[]
+hub/brokerage/get-upcoming-shipments GET api/app/brokerage/upcoming-shipments
+  ?QuickFilter:string ?SubscribedOnly:bool ?TagIds:guid[] ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ?startDate:dt ?endDate:dt ?FacetBuilderOptions.* ->PagedResult+F<CombinedShipmentDto>
+hub/brokerage/send-booking-to-cw1 POST api/app/brokerage/send-booking-to-cw1/{shipmentId}
+  ?shipmentId:guid ->CombinedShipmentDto
+hub/brokerage/update PUT api/app/brokerage/{id}
+  ?id:guid body:CombinedShipmentDto ->CombinedShipmentDto
+hub/brokerage/upload-documents POST api/app/brokerage/upload-documents/{shipmentId}
+  ?shipmentId:guid body:CreateDocumentDto[] ->CombinedShipmentDto
+hub/calculated-shipment/get-get-4 GET api/app/calculated-shipment/{id}
+  ?id:string ->CalculatedShipmentDto
+hub/calculated-shipment/get-list GET api/app/calculated-shipment
+  ?QuickFilter:string ?SubscribedOnly:bool ?TagIds:guid[] ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ?force:bool ?FacetBuilderOptions.* ->PagedResult+F<CalculatedShipmentDto>
+hub/calculated-shipment/get-shipment-insights GET api/app/calculated-shipment/shipment-insights
+  ?BuildFacets:bool ?ComputeDynamicLists:bool ?DisjunctiveFacets:bool ?DisjunctiveByGroupOperator:bool
+  ?DefaultTopDistinct:int ?ParallelizeRanges:bool ?MaxDbParallelism:int ?BuildLiterals:bool
+  ?IsDisjunctiveBuild:bool ->InsightsResultDto
+hub/calculated-shipment/invalidate-shipment-cache POST api/app/calculated-shipment/invalidate-shipment-cache
+hub/commodity/bulk-update POST api/app/commodity/bulk-update
+  body:CommodityDto[] ->CommodityDto[]
+hub/commodity/create POST api/app/commodity
+  body:CommodityDto ->CommodityDto
+hub/commodity/get-get-4 GET api/app/commodity/{id}
+  ?id:string ->CommodityDto
+hub/commodity/get-list GET api/app/commodity
+  ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?force:bool ?FacetBuilderOptions.*
+  ->PagedResult+F<CommodityDto>
+hub/commodity/get-settings GET api/app/commodity/settings
+  ->CodeEntitySettingDto
+hub/commodity/set-setting POST api/app/commodity/set-setting
+  body:CodeEntitySettingDto
+hub/commodity/update PUT api/app/commodity/{id}
+  ?id:guid body:CommodityDto ->CommodityDto
+hub/dashboard/date-updates POST api/app/dashboard/date-updates
+  body:DateUpdatesFilterDto ->DashboardDateUpdatesDto
+hub/dashboard/get-all GET api/app/dashboard
+  ->DashboardAllDto
+hub/dashboard/milestone-event-updates POST api/app/dashboard/milestone-event-updates
+  body:DateUpdatesFilterDto ->DashboardMilestoneChangesResultDto
+hub/dashboard/milestones POST api/app/dashboard/milestones
+  body:MilestoneFilterDto ->DashboardMilestoneDto[]
+hub/document/create-view-token-by-id POST api/app/document/view-token-by-id/{documentId}
+  ?documentId:guid ->DocumentViewTokenResultDto
+hub/document/get GET api/app/document/{id}
+  ?id:guid ->string
+hub/document/get-list GET api/app/document
+  ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?force:bool ?FacetBuilderOptions.*
+  ->PagedResult+F<DocumentDto>
+hub/document/get-stream-by-token GET api/app/document/stream-by-token
+  ?token:string ?download:bool ->string
+hub/excel-export/calculate-next-run-time POST api/app/excel-export/calculate-next-run-time
+  body:ExportScheduleDto ->dt
+hub/excel-export/delete-job DELETE api/app/excel-export/job/{jobId}
+  ?jobId:guid
+hub/excel-export/delete-scheduled-job DELETE api/app/excel-export/{id}/scheduled-job
+  ?id:guid
+hub/excel-export/download-export GET api/app/excel-export/download-export
+  ?token:guid ->string
+hub/excel-export/get-scheduled-jobs GET api/app/excel-export/scheduled-jobs
+  ->ScheduledExcelExportDto[]
+hub/excel-export/get-status GET api/app/excel-export/status/{jobId}
+  ?jobId:guid ->BackgroundJobInfo
+hub/excel-export/get-waiting-jobs GET api/app/excel-export/waiting-jobs
+  ->BackgroundJobInfo[]
+hub/excel-export/queue-export POST api/app/excel-export/queue-export
+  body:ExportFilterDto ->ExcelExportResponseDto
+hub/excel-export/stream-export POST api/app/excel-export/stream-export
+  body:ExportFilterDto
+hub/excel-export/update-scheduled-job PUT api/app/excel-export/{id}/scheduled-job
+  ?id:guid body:ExportFilterDto
+hub/excel-export/update-scheduled-job-layout PUT api/app/excel-export/{id}/scheduled-job-layout
+  ?id:guid body:ExportColumnConfigDto[]
+hub/hub-organization/get GET api/app/hub-organization/{id}
+  ?id:guid ->OrganizationDto
+hub/hub-organization/get-by-ids GET api/app/hub-organization/by-ids
+  ?ids:guid[] ->OrganizationDto[]
+hub/hub-organization/get-from-external-identifiers GET api/app/hub-organization/from-external-identifiers
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?exclude:guid[]
+  ->PagedResult<OrganizationDto>
+hub/hub-organization/get-list GET api/app/hub-organization
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?exclude:guid[]
+  ->PagedResult<OrganizationDto>
+hub/hub-organization/get-search GET api/app/hub-organization/search
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?exclude:guid[]
+  ->PagedResult<OrganizationDto>
+hub/insight-shipments/get-chart-data GET api/app/insight-shipments/chart-data
+  ?GroupBy:string ?ShipmentType:string ?DateField:string ?DateFrom:dt ?DateTo:dt ?TransportModes:string[]
+  ?TradeLanes:string[] ?Origins:string[] ?Destinations:string[] ?PackageModes:string[]
+  ?ConsigneeNames:string[] ?ConsignorNames:string[] ?ImporterNames:string[] ?SupplierNames:string[]
+  ?CarrierNames:string[] ?Incoterms:string[] ?ServiceLevels:string[] ->InsightsChartDataPointDto[]
+hub/insight-shipments/get-facets GET api/app/insight-shipments/facets
+  ?ShipmentType:string ?DateField:string ?DateFrom:dt ?DateTo:dt ?TransportModes:string[]
+  ?TradeLanes:string[] ?Origins:string[] ?Destinations:string[] ?PackageModes:string[]
+  ?ConsigneeNames:string[] ?ConsignorNames:string[] ?ImporterNames:string[] ?SupplierNames:string[]
+  ?CarrierNames:string[] ?Incoterms:string[] ?ServiceLevels:string[] ->InsightsFacetGroupDto[]
+hub/insight-shipments/get-totals GET api/app/insight-shipments/totals
+  ?ShipmentType:string ?DateField:string ?DateFrom:dt ?DateTo:dt ?TransportModes:string[]
+  ?TradeLanes:string[] ?Origins:string[] ?Destinations:string[] ?PackageModes:string[]
+  ?ConsigneeNames:string[] ?ConsignorNames:string[] ?ImporterNames:string[] ?SupplierNames:string[]
+  ?CarrierNames:string[] ?Incoterms:string[] ?ServiceLevels:string[] ->InsightsTotalsDto
+hub/insight-shipments/get-trade-lane-data GET api/app/insight-shipments/trade-lane-data
+  ?SkipCount:int ?MaxResultCount:int ?OrderBy:string ?Desc:bool ?ShipmentType:string ?DateField:string
+  ?DateFrom:dt ?DateTo:dt ?TransportModes:string[] ?TradeLanes:string[] ?Origins:string[]
+  ?Destinations:string[] ?PackageModes:string[] ?ConsigneeNames:string[] ?ConsignorNames:string[]
+  ?ImporterNames:string[] ?SupplierNames:string[] ?CarrierNames:string[] ?Incoterms:string[]
+  ?ServiceLevels:string[] ->InsightsTradeLaneRowDto[]
+hub/insight-shipments/get-transport-modes GET api/app/insight-shipments/transport-modes
+  ?GroupBy:string ?ShipmentType:string ?DateField:string ?DateFrom:dt ?DateTo:dt ?TransportModes:string[]
+  ?TradeLanes:string[] ?Origins:string[] ?Destinations:string[] ?PackageModes:string[]
+  ?ConsigneeNames:string[] ?ConsignorNames:string[] ?ImporterNames:string[] ?SupplierNames:string[]
+  ?CarrierNames:string[] ?Incoterms:string[] ?ServiceLevels:string[] ->InsightsTransportModesDto
+hub/margin/get GET api/app/margin/{id}
+  ?id:string ->MarginDto
+hub/margin/get-list GET api/app/margin
+  ?OrganizationUnitId:guid ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?force:bool
+  ?FacetBuilderOptions.* ->PagedResult+F<MarginDto>
+hub/margin/save-margins POST api/app/margin/save-margins/{organizationUnitId}
+  ?organizationUnitId:guid body:MarginDto[]
+hub/my-insights/email-export POST api/app/my-insights/email-export
+  ->bool
+hub/my-insights/export POST api/app/my-insights/export
+  ->string
+hub/my-insights/get-list GET api/app/my-insights
+  ?BuildFacets:bool ?ComputeDynamicLists:bool ?DisjunctiveFacets:bool ?DisjunctiveByGroupOperator:bool
+  ?DefaultTopDistinct:int ?ParallelizeRanges:bool ?MaxDbParallelism:int ?BuildLiterals:bool
+  ?IsDisjunctiveBuild:bool ->PagedResult+F<MyInsightsData>
+hub/my-insights/import POST api/app/my-insights/import
+  body:object
+hub/notification-setting/get-my-subscriptions GET api/app/notification-setting/my-subscriptions
+  ->EntitySubscriptionResultDto[]
+hub/notification-setting/get-settings GET api/app/notification-setting/settings
+  ->NotificationSettingDto[]
+hub/notification-setting/is-subscribed POST api/app/notification-setting/is-subscribed/{entityId}
+  ?category:NotificationCategory ?entityId:guid ->bool
+hub/notification-setting/subscribe-to-entity POST api/app/notification-setting/subscribe-to-entity
+  body:EntitySubscriptionDto
+hub/notification-setting/unsubscribe-from-entity POST api/app/notification-setting/unsubscribe-from-entity
+  body:EntitySubscriptionDto
+hub/notification-setting/update-setting PUT api/app/notification-setting/setting
+  body:UpdateNotificationSettingDto
+hub/notification/get-inbox GET api/app/notification/inbox
+  ?Category:NotificationCategory ?ShowDone:bool ?Search:string ?Sorting:string ?SkipCount:int
+  ?MaxResultCount:int ->InboxDto
+hub/notification/get-unread-count GET api/app/notification/unread-count
+  ->int
+hub/notification/mark-as-done POST api/app/notification/mark-as-done
+  body:MarkDoneDto
+hub/notification/mark-as-read POST api/app/notification/mark-as-read/{recipientId}
+  ?recipientId:guid
+hub/order/get-get-4 GET api/app/order/{id}
+  ?id:string ->OrderDto
+hub/order/get-list GET api/app/order
+  ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?force:bool ?FacetBuilderOptions.*
+  ->PagedResult+F<OrderDto>
+hub/profile/can-enable-two-factor POST api/app/profile/can-enable-two-factor
+  ->bool
+hub/profile/change-password POST api/app/profile/change-password
+  body:ChangePasswordInput
+hub/profile/get GET api/app/profile
+  ->ProfileDto
+hub/profile/get-passkeys GET api/app/profile/passkeys
+  ->PasskeyDto[]
+hub/profile/get-preference-options GET api/app/profile/preference-options
+  ->PreferenceOptionsDto
+hub/profile/get-preferences GET api/app/profile/preferences
+  ->UserPreferences
+hub/profile/get-timezones GET api/app/profile/timezones
+  ->NameValue[]
+hub/profile/get-two-factor-enabled GET api/app/profile/two-factor-enabled
+  ->bool
+hub/profile/remove-passkey DELETE api/app/profile/passkey
+  ?credential:string
+hub/profile/set-two-factor-enabled POST api/app/profile/set-two-factor-enabled
+  ?enabled:bool
+hub/profile/update PUT api/app/profile
+  body:UpdateProfileDto ->ProfileDto
+hub/profile/update-preferences PUT api/app/profile/preferences
+  body:UserPreferences
+hub/purchase-order/get-filter-values GET api/app/purchase-order/filter-values
+  ?SkipCount:int ?MaxResultCount:int ?SortField:string ?SortDirection:string ?SearchText:string
+  ?BuyerIds:guid[] ?SupplierIds:guid[] ?ShipToIds:guid[] ?OrderStatusIds:guid[] ?TransportModeIds:guid[]
+  ?ContainerModeIds:guid[] ?FreightRateCurrencyCodes:string[] ?IncoTermIds:guid[] ?ShipmentIds:guid[]
+  ->PurchaseOrderFilterValuesDto
+hub/purchase-order/get-list GET api/app/purchase-order
+  ?SkipCount:int ?MaxResultCount:int ?SortField:string ?SortDirection:string ?SearchText:string
+  ?BuyerIds:guid[] ?SupplierIds:guid[] ?ShipToIds:guid[] ?OrderStatusIds:guid[] ?TransportModeIds:guid[]
+  ?ContainerModeIds:guid[] ?FreightRateCurrencyCodes:string[] ?IncoTermIds:guid[] ?ShipmentIds:guid[]
+  ->PurchaseOrderListResultDto
+hub/purchase-order/get-status-counters GET api/app/purchase-order/status-counters
+  ->PurchaseOrderStatusCountersDto
+hub/shipment/can-upload-document GET api/app/shipment/can-upload-document/{shipmentId}
+  ?shipmentId:guid ->bool
+hub/shipment/create POST api/app/shipment
+  body:CombinedShipmentDto ->CombinedShipmentDto
+hub/shipment/create-booking POST api/app/shipment/booking
+  body:CreateUpdateBookingDto ->CombinedShipmentDto
+hub/shipment/deactivate-booking POST api/app/shipment/deactivate-booking/{shipmentId}
+  ?shipmentId:guid ->CombinedShipmentDto
+hub/shipment/delete DELETE api/app/shipment/{id}
+  ?id:guid
+hub/shipment/get-all-tracking-containers GET api/app/shipment/tracking-containers
+  ->TrackingContainerDto[]
+hub/shipment/get-get-4 GET api/app/shipment/{id}
+  ?id:string ->CombinedShipmentDto
+hub/shipment/get-last-activity GET api/app/shipment/last-activity/{shipmentId}
+  ?shipmentId:guid ->ShipmentActivityDto[]
+hub/shipment/get-list GET api/app/shipment
+  ?QuickFilter:string ?SubscribedOnly:bool ?TagIds:guid[] ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ?force:bool ?FacetBuilderOptions.* ->PagedResult+F<CombinedShipmentDto>
+hub/shipment/get-new-documents GET api/app/shipment/new-documents
+  ?SkipCount:int ?MaxResultCount:int ?includeTotalCount:bool ->PagedResult<NewDocumentDto>
+hub/shipment/get-property-updates GET api/app/shipment/property-updates
+  ?SkipCount:int ?MaxResultCount:int ?properties:string[] ?includeTotalCount:bool
+  ->PagedResult<ShipmentBaseDto>
+hub/shipment/get-property-updates-get GET api/app/shipment/property-updates/{shipmentId}
+  ?properties:string[] ?shipmentId:guid ->EntityChangeInfoDto[]
+hub/shipment/get-recent-status-changes GET api/app/shipment/recent-status-changes
+  ?SkipCount:int ?MaxResultCount:int ->PagedResult<StatusUpdateDto>
+hub/shipment/get-tracking GET api/app/shipment/{id}/tracking
+  ?id:guid ->TrackingContainerDto[]
+hub/shipment/get-tracking-new GET api/app/shipment/{id}/tracking-new
+  ?id:guid ->TrackingContainerNewDto[]
+hub/shipment/get-upcoming-shipments GET api/app/shipment/upcoming-shipments
+  ?QuickFilter:string ?SubscribedOnly:bool ?TagIds:guid[] ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ?startDate:dt ?endDate:dt ?FacetBuilderOptions.* ->PagedResult+F<CombinedShipmentDto>
+hub/shipment/send-booking-to-cw1 POST api/app/shipment/send-booking-to-cw1/{shipmentId}
+  ?shipmentId:guid ->CombinedShipmentDto
+hub/shipment/update PUT api/app/shipment/{id}
+  ?id:guid body:CombinedShipmentDto ->CombinedShipmentDto
+hub/shipment/upload-documents POST api/app/shipment/upload-documents/{shipmentId}
+  ?shipmentId:guid body:CreateDocumentDto[] ->CombinedShipmentDto
+hub/tag/add-tag-by-id POST api/app/tag/tag-by-id
+  ?shipmentBaseId:guid ?tagId:guid
+hub/tag/create POST api/app/tag
+  body:CreateUpdateTagDto ->TagDto
+hub/tag/delete DELETE api/app/tag/{id}
+  ?id:guid
+hub/tag/get GET api/app/tag/{id}
+  ?id:string ->TagDto
+hub/tag/get-list GET api/app/tag
+  ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?force:bool ?FacetBuilderOptions.*
+  ->PagedResult+F<TagDto>
+hub/tag/get-tags-by-id GET api/app/tag/tags-by-id/{shipmentId}
+  ?shipmentId:guid ->TagDto[]
+hub/tag/get-tags-by-ids GET api/app/tag/tags-by-ids
+  ?shipmentIds:guid[] ->object
+hub/tag/get-visible-tags-queryable GET api/app/tag/visible-tags-queryable
+  ->Tag[]
+hub/tag/remove-tag-by-id DELETE api/app/tag/tag-by-id
+  ?shipmentBaseId:guid ?tagId:guid
+hub/tag/update PUT api/app/tag/{id}
+  ?id:guid body:CreateUpdateTagDto ->TagDto
+hub/template-preview/render-preview POST api/app/template-preview/render-preview
+  body:RenderTemplatePreviewInput ->string
+hub/template-preview/send-template-as-email POST api/app/template-preview/send-template-as-email
+  ?templateName:string ?modelTypeName:string ?modelJson:string
+identity/identity-claim-type/create POST api/identity/claim-types
+  body:CreateClaimTypeDto ->ClaimTypeDto
+identity/identity-claim-type/delete DELETE api/identity/claim-types/{id}
+  ?id:guid
+identity/identity-claim-type/get GET api/identity/claim-types/{id}
+  ?id:guid ->ClaimTypeDto
+identity/identity-claim-type/get-list GET api/identity/claim-types
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object
+  ->PagedResult<ClaimTypeDto>
+identity/identity-claim-type/update PUT api/identity/claim-types/{id}
+  ?id:guid body:UpdateClaimTypeDto ->ClaimTypeDto
+identity/identity-external-login/create-or-update POST api/identity/external-login
+identity/identity-role/create POST api/identity/roles
+  body:IdentityRoleCreateDto ->IdentityRoleDto
+identity/identity-role/delete DELETE api/identity/roles/{id}
+  ?id:guid
+identity/identity-role/get GET api/identity/roles/{id}
+  ?id:guid ->IdentityRoleDto
+identity/identity-role/get-all-claim-types GET api/identity/roles/all-claim-types
+  ->ClaimTypeDto[]
+identity/identity-role/get-all-list GET api/identity/roles/all
+  ->ListResult<IdentityRoleDto>
+identity/identity-role/get-claims GET api/identity/roles/{id}/claims
+  ?id:guid ->IdentityRoleClaimDto[]
+identity/identity-role/get-list GET api/identity/roles
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object
+  ->PagedResult<IdentityRoleDto>
+identity/identity-role/move-all-users PUT api/identity/roles/{id}/move-all-users
+  ?id:guid ?roleId:guid
+identity/identity-role/update PUT api/identity/roles/{id}
+  ?id:guid body:IdentityRoleUpdateDto ->IdentityRoleDto
+identity/identity-role/update-claims PUT api/identity/roles/{id}/claims
+  ?id:guid body:IdentityRoleClaimDto[]
+identity/identity-security-log/get GET api/identity/security-logs/{id}
+  ?id:guid ->IdentitySecurityLogDto
+identity/identity-security-log/get-list GET api/identity/security-logs
+  ?StartTime:dt ?EndTime:dt ?ApplicationName:string ?Identity:string ?Action:string ?UserName:string
+  ?ClientId:string ?CorrelationId:string ?ClientIpAddress:string ?Sorting:string ?SkipCount:int
+  ?MaxResultCount:int ?ExtraProperties:object ->PagedResult<IdentitySecurityLogDto>
+identity/identity-session/get GET api/identity/sessions/{id}
+  ?id:guid ->IdentitySessionDto
+identity/identity-session/get-list GET api/identity/sessions
+  ?UserId:guid ?Device:string ?ClientId:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int
+  ?ExtraProperties:object ->PagedResult<IdentitySessionDto>
+identity/identity-session/revoke DELETE api/identity/sessions/{id}
+  ?id:guid
+identity/identity-settings/get GET api/identity/settings
+  ->IdentitySettingsDto
+identity/identity-settings/get-ldap GET api/identity/settings/ldap
+  ->IdentityLdapSettingsDto
+identity/identity-settings/get-oauth GET api/identity/settings/oauth
+  ->IdentityOAuthSettingsDto
+identity/identity-settings/get-session GET api/identity/settings/session
+  ->IdentitySessionSettingsDto
+identity/identity-settings/update PUT api/identity/settings
+  body:IdentitySettingsDto
+identity/identity-settings/update-ldap PUT api/identity/settings/ldap
+  body:IdentityLdapSettingsDto
+identity/identity-settings/update-oauth PUT api/identity/settings/oauth
+  body:IdentityOAuthSettingsDto
+identity/identity-settings/update-session PUT api/identity/settings/session
+  body:IdentitySessionSettingsDto
+identity/identity-user-lookup/find-by-id GET api/identity/users/lookup/{id}
+  ?id:guid ->UserData
+identity/identity-user-lookup/find-by-user-name GET api/identity/users/lookup/by-username/{userName}
+  ?userName:string ->UserData
+identity/identity-user-lookup/get-count GET api/identity/users/lookup/count
+  ?Filter:string ->int
+identity/identity-user-lookup/search GET api/identity/users/lookup/search
+  ?Sorting:string ?Filter:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object
+  ->ListResult<UserData>
+identity/identity-user/create POST api/identity/users
+  body:IdentityUserCreateDto ->IdentityUserDto
+identity/identity-user/delete DELETE api/identity/users/{id}
+  ?id:guid
+identity/identity-user/find-by-email GET api/identity/users/by-email/{email}
+  ?email:string ->IdentityUserDto
+identity/identity-user/find-by-id GET api/identity/users/by-id/{id}
+  ?id:guid ->IdentityUserDto
+identity/identity-user/find-by-username GET api/identity/users/by-username/{username}
+  ?username:string ->IdentityUserDto
+identity/identity-user/get GET api/identity/users/{id}
+  ?id:guid ->IdentityUserDto
+identity/identity-user/get-all-claim-types GET api/identity/users/all-claim-types
+  ->ClaimTypeDto[]
+identity/identity-user/get-assignable-roles GET api/identity/users/assignable-roles
+  ->ListResult<IdentityRoleDto>
+identity/identity-user/get-available-organization-units GET api/identity/users/available-organization-units
+  ->ListResult<OrganizationUnitWithDetailsDto>
+identity/identity-user/get-claims GET api/identity/users/{id}/claims
+  ?id:guid ->IdentityUserClaimDto[]
+identity/identity-user/get-download-token GET api/identity/users/download-token
+  ->DownloadTokenResultDto
+identity/identity-user/get-external-login-providers GET api/identity/users/external-login-Providers
+  ->ExternalLoginProviderDto[]
+identity/identity-user/get-import-invalid-users-file GET api/identity/users/download-import-invalid-users-file
+  ?Token:string ->string
+identity/identity-user/get-import-users-sample-file GET api/identity/users/import-users-sample-file
+  ?FileType:ImportUsersFromFileType ?Token:string ->string
+identity/identity-user/get-list GET api/identity/users
+  ?Filter:string ?RoleId:guid ?OrganizationUnitId:guid ?Id:guid ?UserName:string ?PhoneNumber:string
+  ?EmailAddress:string ?Name:string ?Surname:string ?IsLockedOut:bool ?NotActive:bool ?EmailConfirmed:bool
+  ?IsExternal:bool ?MaxCreationTime:dt ?MinCreationTime:dt ?MaxModifitionTime:dt ?MinModifitionTime:dt
+  ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object ->PagedResult<IdentityUserDto>
+identity/identity-user/get-list-as-csv-file GET api/identity/users/export-as-csv
+  ?Token:string ?Filter:string ?RoleId:guid ?OrganizationUnitId:guid ?Id:guid ?UserName:string
+  ?PhoneNumber:string ?EmailAddress:string ?Name:string ?Surname:string ?IsLockedOut:bool ?NotActive:bool
+  ?EmailConfirmed:bool ?IsExternal:bool ?MaxCreationTime:dt ?MinCreationTime:dt ?MaxModifitionTime:dt
+  ?MinModifitionTime:dt ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object ->string
+identity/identity-user/get-list-as-excel-file GET api/identity/users/export-as-excel
+  ?Token:string ?Filter:string ?RoleId:guid ?OrganizationUnitId:guid ?Id:guid ?UserName:string
+  ?PhoneNumber:string ?EmailAddress:string ?Name:string ?Surname:string ?IsLockedOut:bool ?NotActive:bool
+  ?EmailConfirmed:bool ?IsExternal:bool ?MaxCreationTime:dt ?MinCreationTime:dt ?MaxModifitionTime:dt
+  ?MinModifitionTime:dt ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object ->string
+identity/identity-user/get-organization-unit-lookup GET api/identity/users/lookup/organization-units
+  ->OrganizationUnitLookupDto[]
+identity/identity-user/get-organization-units GET api/identity/users/{id}/organization-units
+  ?id:guid ->OrganizationUnitDto[]
+identity/identity-user/get-role-lookup GET api/identity/users/lookup/roles
+  ->IdentityRoleLookupDto[]
+identity/identity-user/get-roles GET api/identity/users/{id}/roles
+  ?id:guid ->ListResult<IdentityRoleDto>
+identity/identity-user/get-two-factor-enabled GET api/identity/users/{id}/two-factor-enabled
+  ?id:guid ->bool
+identity/identity-user/import-external-user POST api/identity/users/import-external-user
+  body:ImportExternalUserInput ->IdentityUserDto
+identity/identity-user/import-users-from-file POST api/identity/users/import-users-from-file
+  ?FileType:ImportUsersFromFileType body:object ->ImportUsersFromFileOutput
+identity/identity-user/lock PUT api/identity/users/{id}/lock/{lockoutEnd}
+  ?id:guid ?lockoutEnd:dt
+identity/identity-user/set-two-factor-enabled PUT api/identity/users/{id}/two-factor/{enabled}
+  ?id:guid ?enabled:bool
+identity/identity-user/unlock PUT api/identity/users/{id}/unlock
+  ?id:guid
+identity/identity-user/update PUT api/identity/users/{id}
+  ?id:guid body:IdentityUserUpdateDto ->IdentityUserDto
+identity/identity-user/update-claims PUT api/identity/users/{id}/claims
+  ?id:guid body:IdentityUserClaimDto[]
+identity/identity-user/update-password PUT api/identity/users/{id}/change-password
+  ?id:guid body:IdentityUserUpdatePasswordInput
+identity/identity-user/update-roles PUT api/identity/users/{id}/roles
+  ?id:guid body:IdentityUserUpdateRolesDto
+identity/organization-unit/add-members PUT api/identity/organization-units/{id}/members
+  ?id:guid body:OrganizationUnitUserInput
+identity/organization-unit/add-roles PUT api/identity/organization-units/{id}/roles
+  ?id:guid body:OrganizationUnitRoleInput
+identity/organization-unit/create POST api/identity/organization-units
+  body:OrganizationUnitCreateDto ->OrganizationUnitWithDetailsDto
+identity/organization-unit/delete DELETE api/identity/organization-units
+  ?id:guid
+identity/organization-unit/get GET api/identity/organization-units/{id}
+  ?id:guid ->OrganizationUnitWithDetailsDto
+identity/organization-unit/get-available-roles GET api/identity/organization-units/available-roles
+  ?Filter:string ?Id:guid ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object
+  ->PagedResult<IdentityRoleDto>
+identity/organization-unit/get-available-users GET api/identity/organization-units/available-users
+  ?Filter:string ?Id:guid ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object
+  ->PagedResult<IdentityUserDto>
+identity/organization-unit/get-list GET api/identity/organization-units
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?ExtraProperties:object
+  ->PagedResult<OrganizationUnitWithDetailsDto>
+identity/organization-unit/get-list-all GET api/identity/organization-units/all
+  ->ListResult<OrganizationUnitWithDetailsDto>
+identity/organization-unit/get-members GET api/identity/organization-units/{id}/members
+  ?id:guid ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<IdentityUserDto>
+identity/organization-unit/get-roles GET api/identity/organization-units/{id}/roles
+  ?id:guid ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<IdentityRoleDto>
+identity/organization-unit/move PUT api/identity/organization-units/{id}/move
+  ?id:guid body:OrganizationUnitMoveInput
+identity/organization-unit/move-all-users PUT api/identity/organization-units/{id}/move-all-users
+  ?id:guid ?organizationId:guid
+identity/organization-unit/remove-member DELETE api/identity/organization-units/{id}/members/{memberId}
+  ?id:guid ?memberId:guid
+identity/organization-unit/remove-role DELETE api/identity/organization-units/{id}/roles/{roleId}
+  ?id:guid ?roleId:guid
+identity/organization-unit/update PUT api/identity/organization-units/{id}
+  ?id:guid body:OrganizationUnitUpdateDto ->OrganizationUnitWithDetailsDto
+language-management/language-text/get GET api/language-management/language-texts/{resourceName}/{cultureName}/{name}
+  ?resourceName:string ?cultureName:string ?name:string ?baseCultureName:string ->LanguageTextDto
+language-management/language-text/get-list GET api/language-management/language-texts
+  ?Filter:string ?ResourceName:string ?BaseCultureName:string ?TargetCultureName:string
+  ?GetOnlyEmptyValues:bool ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<LanguageTextDto>
+language-management/language-text/restore-to-default PUT api/language-management/language-texts/{resourceName}/{cultureName}/{name}/restore
+  ?resourceName:string ?cultureName:string ?name:string
+language-management/language-text/update PUT api/language-management/language-texts/{resourceName}/{cultureName}/{name}
+  ?resourceName:string ?cultureName:string ?name:string ?value:string
+language-management/language/create POST api/language-management/languages
+  body:CreateLanguageDto ->LanguageDto
+language-management/language/delete DELETE api/language-management/languages/{id}
+  ?id:guid
+language-management/language/get GET api/language-management/languages/{id}
+  ?id:guid ->LanguageDto
+language-management/language/get-all-list GET api/language-management/languages/all
+  ->ListResult<LanguageDto>
+language-management/language/get-culturelist GET api/language-management/languages/culture-list
+  ->CultureInfoDto[]
+language-management/language/get-list GET api/language-management/languages
+  ?Filter:string ?ResourceName:string ?BaseCultureName:string ?TargetCultureName:string
+  ?GetOnlyEmptyValues:bool ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<LanguageDto>
+language-management/language/get-resources GET api/language-management/languages/resources
+  ->LanguageResourceDto[]
+language-management/language/set-as-default PUT api/language-management/languages/{id}/set-as-default
+  ?id:guid
+language-management/language/update PUT api/language-management/languages/{id}
+  ?id:guid body:UpdateLanguageDto ->LanguageDto
+openiddict/application/create POST api/openiddict/applications
+  body:CreateApplicationInput ->ApplicationDto
+openiddict/application/delete DELETE api/openiddict/applications
+  ?id:guid
+openiddict/application/get GET api/openiddict/applications/{id}
+  ?id:guid ->ApplicationDto
+openiddict/application/get-list GET api/openiddict/applications
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<ApplicationDto>
+openiddict/application/get-token-lifetime GET api/openiddict/applications/{id}/token-lifetime
+  ?id:guid ->ApplicationTokenLifetimeDto
+openiddict/application/set-token-lifetime PUT api/openiddict/applications/{id}/token-lifetime
+  ?id:guid body:ApplicationTokenLifetimeDto
+openiddict/application/update PUT api/openiddict/applications/{id}
+  ?id:guid body:UpdateApplicationInput ->ApplicationDto
+openiddict/scope/create POST api/openiddict/scopes
+  body:CreateScopeInput ->ScopeDto
+openiddict/scope/delete DELETE api/openiddict/scopes
+  ?id:guid
+openiddict/scope/get GET api/openiddict/scopes/{id}
+  ?id:guid ->ScopeDto
+openiddict/scope/get-all-scopes GET api/openiddict/scopes/all
+  ->ScopeDto[]
+openiddict/scope/get-list GET api/openiddict/scopes
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<ScopeDto>
+openiddict/scope/update PUT api/openiddict/scopes/{id}
+  ?id:guid body:UpdateScopeInput ->ScopeDto
+permission-management/permissions/delete-resource DELETE api/permission-management/permissions/resource
+  ?resourceName:string ?resourceKey:string ?providerName:string ?providerKey:string
+permission-management/permissions/get GET api/permission-management/permissions
+  ?providerName:string ?providerKey:string ->GetPermissionListResultDto
+permission-management/permissions/get-by-group GET api/permission-management/permissions/by-group
+  ?groupName:string ?providerName:string ?providerKey:string ->GetPermissionListResultDto
+permission-management/permissions/get-resource GET api/permission-management/permissions/resource
+  ?resourceName:string ?resourceKey:string ->GetResourcePermissionListResultDto
+permission-management/permissions/get-resource-by-provider GET api/permission-management/permissions/resource/by-provider
+  ?resourceName:string ?resourceKey:string ?providerName:string ?providerKey:string
+  ->GetResourcePermissionWithProviderListResultDto
+permission-management/permissions/get-resource-definitions GET api/permission-management/permissions/resource-definitions
+  ?resourceName:string ->GetResourcePermissionDefinitionListResultDto
+permission-management/permissions/get-resource-provider-key-lookup-services GET api/permission-management/permissions/resource-provider-key-lookup-services
+  ?resourceName:string ->GetResourceProviderListResultDto
+permission-management/permissions/search-resource-provider-key GET api/permission-management/permissions/search-resource-provider-keys
+  ?resourceName:string ?serviceName:string ?filter:string ?page:int ->SearchProviderKeyListResultDto
+permission-management/permissions/update PUT api/permission-management/permissions
+  ?providerName:string ?providerKey:string body:UpdatePermissionsDto
+permission-management/permissions/update-resource PUT api/permission-management/permissions/resource
+  ?resourceName:string ?resourceKey:string body:UpdateResourcePermissionsDto
+pricing/offer/create POST api/app/offer
+  body:OfferCreateDto ->OfferDto
+pricing/offer/create-admin POST api/app/offer/admin
+  body:OfferCreateDto ->OfferDto
+pricing/offer/delete DELETE api/app/offer/{id}
+  ?id:guid
+pricing/offer/get GET api/app/offer/{id}
+  ?id:string ->OfferDto
+pricing/offer/get-admin-list GET api/app/offer/admin-list
+  ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?FacetBuilderOptions.* ->PagedResult+F<OfferDto>
+pricing/offer/get-list GET api/app/offer
+  ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?force:bool ?FacetBuilderOptions.*
+  ->PagedResult+F<OfferDto>
+pricing/offer/invalidate-offer-cache POST api/app/offer/invalidate-offer-cache
+pricing/offer/update PUT api/app/offer/{id}
+  ?id:guid body:OfferUpdateDto ->OfferDto
+pricing/offer/update-admin PUT api/app/offer/admin/{offerId}
+  ?offerId:guid body:OfferUpdateDto ->OfferDto
+pricing/quotation/create POST api/app/quotation
+  body:QuotationCreateDraftDto ->QuotationDto
+pricing/quotation/create-quote POST api/app/quotation/quote/{quotationId}
+  ?quotationId:guid ->QuotationDto
+pricing/quotation/delete DELETE api/app/quotation/{id}
+  ?id:guid
+pricing/quotation/get GET api/app/quotation/{id}
+  ?id:string ->QuotationDto
+pricing/quotation/get-admin-by-id GET api/app/quotation/admin-by-id/{quotationId}
+  ?quotationId:guid ->QuotationDto
+pricing/quotation/get-admin-list GET api/app/quotation/admin-list
+  ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?FacetBuilderOptions.* ->PagedResult+F<QuotationDto>
+pricing/quotation/get-list GET api/app/quotation
+  ?Sorting:string ?SkipCount:int ?MaxResultCount:int ?force:bool ?FacetBuilderOptions.*
+  ->PagedResult+F<QuotationDto>
+pricing/quotation/get-status GET api/app/quotation/status/{quotationId}
+  ?quotationId:guid ->QuoteStatusDto
+pricing/quotation/invalidate-quote-cache POST api/app/quotation/invalidate-quote-cache
+pricing/quotation/update PUT api/app/quotation/{id}
+  ?id:guid body:QuotationDraftDto ->QuotationDto
+saas/edition/create POST api/saas/editions
+  body:EditionCreateDto ->EditionDto
+saas/edition/delete DELETE api/saas/editions/{id}
+  ?id:guid
+saas/edition/get GET api/saas/editions/{id}
+  ?id:guid ->EditionDto
+saas/edition/get-all-list GET api/saas/editions/all
+  ->EditionDto[]
+saas/edition/get-list GET api/saas/editions
+  ?Filter:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<EditionDto>
+saas/edition/get-plan-lookup GET api/saas/editions/plan-lookup
+  ->PlanDto[]
+saas/edition/get-usage-statistics GET api/saas/editions/statistics/usage-statistic
+  ->GetEditionUsageStatisticsResultDto
+saas/edition/move-all-tenants PUT api/saas/editions/{id}/move-all-tenants
+  ?id:guid ?editionId:guid
+saas/edition/update PUT api/saas/editions/{id}
+  ?id:guid body:EditionUpdateDto ->EditionDto
+saas/settings/get GET api/saas/settings
+  ->SaasHostSettingDto
+saas/settings/update PUT api/saas/settings
+  body:SaasHostSettingDto
+saas/subscription/create-subscription POST api/saas/subscription
+  ?editionId:guid ?tenantId:guid ->PaymentRequestWithDetailsDto
+saas/tenant/apply-database-migrations POST api/saas/tenants/{id}/apply-database-migrations
+  ?id:guid
+saas/tenant/check-connection-string GET api/saas/tenants/check-connection-string
+  ?connectionString:string ->bool
+saas/tenant/create POST api/saas/tenants
+  body:SaasTenantCreateDto ->SaasTenantDto
+saas/tenant/delete DELETE api/saas/tenants/{id}
+  ?id:guid
+saas/tenant/get GET api/saas/tenants/{id}
+  ?id:guid ->SaasTenantDto
+saas/tenant/get-connection-strings GET api/saas/tenants/{id}/connection-strings
+  ?id:guid ->SaasTenantConnectionStringsDto
+saas/tenant/get-databases GET api/saas/tenants/databases
+  ->SaasTenantDatabasesDto
+saas/tenant/get-edition-lookup GET api/saas/tenants/lookup/editions
+  ->EditionLookupDto[]
+saas/tenant/get-list GET api/saas/tenants
+  ?Filter:string ?GetEditionNames:bool ?EditionId:guid ?ExpirationDateMin:dt ?ExpirationDateMax:dt
+  ?ActivationState:TenantActivationState ?ActivationEndDateMin:dt ?ActivationEndDateMax:dt ?Sorting:string
+  ?SkipCount:int ?MaxResultCount:int ->PagedResult<SaasTenantDto>
+saas/tenant/set-password PUT api/saas/tenants/{id}/set-password
+  ?id:guid body:SaasTenantSetPasswordDto
+saas/tenant/update PUT api/saas/tenants/{id}
+  ?id:guid body:SaasTenantUpdateDto ->SaasTenantDto
+saas/tenant/update-connection-strings PUT api/saas/tenants/{id}/connection-strings
+  ?id:guid body:SaasTenantConnectionStringsDto
+setting-management/email-settings/get GET api/setting-management/emailing
+  ->EmailSettingsDto
+setting-management/email-settings/send-test-email POST api/setting-management/emailing/send-test-email
+  body:SendTestEmailInput
+setting-management/email-settings/update POST api/setting-management/emailing
+  body:UpdateEmailSettingsDto
+setting-management/time-zone-settings/get GET api/setting-management/timezone
+  ->string
+setting-management/time-zone-settings/get-timezones GET api/setting-management/timezone/timezones
+  ->NameValue[]
+setting-management/time-zone-settings/update POST api/setting-management/timezone
+  ?timezone:string
+text-template-management/template-content/get GET api/text-template-management/template-contents
+  ?TemplateName:string ?CultureName:string ->TextTemplateContentDto
+text-template-management/template-content/restore-to-default PUT api/text-template-management/template-contents/restore-to-default
+  body:RestoreTemplateContentInput
+text-template-management/template-content/update PUT api/text-template-management/template-contents
+  body:UpdateTemplateContentInput ->TextTemplateContentDto
+text-template-management/template-definition/get GET api/text-template-management/template-definitions/{name}
+  ?name:string ->TemplateDefinitionDto
+text-template-management/template-definition/get-list GET api/text-template-management/template-definitions
+  ?FilterText:string ?Sorting:string ?SkipCount:int ?MaxResultCount:int ->PagedResult<TemplateDefinitionDto>
+theme/lepton-xtheme-settings/get GET api/lepton-x-theme-management/settings
+  ->LeptonXThemeSettingsDto
+theme/lepton-xtheme-settings/update PUT api/lepton-x-theme-management/settings
+  body:UpdateLeptonXThemeSettingsDto

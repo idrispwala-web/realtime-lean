@@ -1,0 +1,22 @@
+{
+  "name": "realtime-lean-local",
+  "owner": {
+    "name": "Idris Presswala"
+  },
+  "plugins": [
+    {
+      "name": "realtime-lean",
+      "source": "./",
+      "description": "Token-lean access to the Cargonerds realtime MCP.",
+      "version": "0.1.0",
+      "category": "mcp",
+      "keywords": [
+        "cargonerds",
+        "realtime",
+        "odata",
+        "token-efficiency"
+      ]
+    }
+  ],
+  "description": "Local marketplace for the realtime-lean plugin (Cargonerds realtime MCP, token-lean)."
+}

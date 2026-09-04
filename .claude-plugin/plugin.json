@@ -1,0 +1,11 @@
+{
+  "name": "realtime-lean",
+  "version": "0.1.0",
+  "description": "Token-lean access to the Cargonerds realtime MCP: 4 tools instead of 38, bundled offline API reference, skill that forbids discovery round-trips and unselected records.",
+  "author": {
+    "name": "Idris Presswala",
+    "email": "idris.presswala@cargonerds.com"
+  },
+  "license": "MIT",
+  "keywords": ["cargonerds", "realtime", "mcp", "odata", "token-efficiency", "logistics"]
+}

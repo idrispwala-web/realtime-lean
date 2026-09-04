@@ -1,0 +1,556 @@
+# OData entity sets for query_odata. Block per set: `Name key=..` then indented prop:type{enum|members} lines,
+# then `expand: nav:Target[]`. Types: dt=DateTimeOffset str guid bool dec int. Props lowerCamelCase, sets PascalCase.
+# '(nested; reach via expand)' types are not queryable directly: expand them from a parent, e.g. events($select=actualDate).
+# Grep anchored: `^Shipment ` for a block header, `^  .*containerNumber` for a property.
+
+Address key=id
+  addressLine1:str addressLine2:str addressLine3:str addressString:str cargonerdsCustomerId:guid cityName:str
+  concurrencyStamp:str coordinates:Coordinates coordinates/latitude:dec coordinates/longitude:dec
+  countryIsoAlpha2Code:str creationTime:dt creatorId:guid
+  dataSource:OrganizationDataSource{UniversalShipmentMapper|OrganizationMasterData|MagayaShipmentMapper}
+  id:guid lastModificationTime:dt lastModifierId:guid name:str postCode:str stateCode:str stateName:str
+  unLocode:str
+  expand:
+    blobStorageFileReferences:AddressBlobStorageFileReference[] country:Country
+    externalIdentifiers:ExternalAddressIdentifier[] organization:Organization
+AddressType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+CalculatedRevenue key=currencyCode,organizationId,shipmentId !NOT-QUERYABLE (server rejects query_odata; use a catalog.txt route)
+  cargonerdsCustomerId:guid costClearance:dec costDestination:dec costDutyTax:dec costFreight:dec
+  costOrigin:dec costOther:dec costWarehouse:dec currencyCode:str organizationId:guid shipmentId:guid
+  totalCost:dec totalCostExDutyTax:dec
+CalculatedShipment key=id
+  actualDeliveryDate:dt actualPickupDate:dt arrivalVessel:str arrivalVoyage:str ata:dt atd:dt
+  bookedByUserId:guid bookedInOrganizationUnitId:guid bookingReference:str cargonerdsCustomerId:guid
+  cargonerdsNumber:str carrierCode:str carrierName:str chargeable:dec co2EmissionsDelivery:dec
+  co2EmissionsP2P:dec co2EmissionsPickup:dec co2EmissionsTotal:dec concurrencyStamp:str consigneeCity:str
+  consigneeCode:str consigneeCountry:str consigneeName:str consigneeReference:str consignorCity:str
+  consignorCode:str consignorCountry:str consignorName:str consolNumber:str containerCount:int
+  containerMode:str containerNumber:str contractType:str creationTime:dt creatorId:guid
+  customsEntryNumber:str customsEntryType:str dangerousGoodsInfo:str deliveryLocationCity:str
+  deliveryLocationCountry:str deliveryLocationName:str deliveryReference:str departureVessel:str
+  departureVoyage:str destination:str destinationCountry:str destinationCountryName:str destinationName:str
+  detailedMarksAndNumbers:str dischargePort:str dischargePortCountryCode:str dischargePortIataCode:str
+  dischargePortName:str estimatedDeliveryDate:dt estimatedPickupDate:dt eta:dt etd:dt externalIdentifier:str
+  goodsDescription:str houseBill:str id:guid importerCity:str importerCode:str importerCountry:str
+  importerName:str incoterm:str inners:str invoiceNumber:str isActive:bool jobOrderReference:str jobType:str
+  lastEvent:str lastEventDate:dt lastLocation:Coordinates lastLocation/latitude:dec
+  lastLocation/longitude:dec lastLocationDateTime:dt lastModificationTime:dt lastModifierId:guid
+  loadingPort:str loadingPortCountryCode:str loadingPortIataCode:str loadingPortName:str
+  lowestOperationalDate:dt masterBill:str notifyPartyReference:str orderReferenceText:str origin:str
+  originCountry:str originCountryName:str originName:str outers:str packageMode:str pickupLocationCity:str
+  pickupLocationCountry:str pickupLocationName:str pickupReference:str pieces:int prepaidCollect:str
+  referenceNumberDisplay:str serviceLevel:str shipmentType:str shipmentTypeCode:str shipperReference:str
+  state:ShipmentState{Draft|Booked|InTransit|Delivered|Completed} supplierCity:str supplierCode:str
+  supplierCountry:str supplierName:str teus:int tradeLane:str transitTimeArrivalToDelivery:int
+  transitTimeDepartureToArrival:int transitTimePickup:int transitTimeTotal:int transportMode:str volume:dec
+  weight:dec
+ChargeCode key=id
+  cargonerdsCustomerId:guid chargeCodeGroupId:guid code:str concurrencyStamp:str creationTime:dt
+  creatorId:guid description:str id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+  serviceType:ServiceType{CW1|Magaya|HapagLloyd|Rohlig|Vizion|Pricing|UnitsNet|Google}
+  expand:
+    chargeCodeGroup:ChargeCodeGroup
+ChargeCodeGroup key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid insightsCode:InsightsChargeCodeGroups{Other|Clearance|Destination|DutyTax|Freight|Origin|Warehouse}
+  isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+  expand:
+    chargeCodes:ChargeCode[]
+Commodity key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+Consol key=id
+  actualArrival:dt actualChargeable:dec actualDelivery:dt actualDeparture:dt actualPickup:dt
+  cargonerdsCustomerId:guid cargonerdsNumber:str co2EmissionsDelivery:str co2EmissionsP2P:str
+  co2EmissionsPickup:str co2EmissionsTotal:str concurrencyStamp:str containerModeId:guid
+  containerShipmentBases:ContainerShipmentBase[] creationTime:dt creatorId:guid cutOffCargo:dt
+  cutOffDocument:dt detailedGoodsDescription:str detailedMarksAndNumbers:str estimatedArrival:dt
+  estimatedCargoReady:dt estimatedDelivery:dt estimatedDeparture:dt estimatedPickup:dt
+  exportingCompanyCode:str houseBill:str id:guid innerPackQuantity:int isActive:bool isExportedToMagaya:bool
+  isMagayaTrackingEnabled:bool isTransferredToReporting:bool lastModificationTime:dt lastModifierId:guid
+  outerPackQuantity:int parentCargonerdsNumber:str pickupReceived:dt quoteNumber:str
+  state:ShipmentState{Draft|Booked|InTransit|Delivered|Completed} totalVolume:Dimension_1OfVolumeUnit
+  totalVolume/value:dec totalWeight:Dimension_1OfWeightUnit totalWeight/value:dec transportModeId:guid
+  transportationVehicle:str travelNumber:str
+  expand:
+    additionalReferences:ShipmentReference[] addresses:ShipmentAddress[] containerMode:ContainerMode
+    containers:Container[] customsDataList:CustomsData[] dangerousGoodsInfo:DangerousGoodsInfo[]
+    destination:Port documents:ShipmentBaseDocument[] events:Event[]
+    externalIdentifiers:ExternalConsolIdentifier[] firstConsolLegDeparturePort:Port incoTerm:IncoTerm
+    innerPackType:PackType invoices:Invoice[] lastConsolLegArrivalPort:Port
+    magayaDocumentIdentifiers:ExternalMagayaDocumentIdentifier[] notes:ShipmentNote[] origin:Port
+    outerPackType:PackType packLines:PackLine[] paymentTerms:PaymentTerm portOfDischarge:Port
+    portOfFirstArrival:Port portOfLoading:Port revenues:Revenue[] serviceLevel:ServiceLevel
+    shipmentLegs:ShipmentLeg[] shipmentType:ShipmentType shipments:Shipment[] tags:Tag[]
+    transportMode:TransportMode
+Container key=id
+  actualFullDelivery:dt actualFullPickup:dt cargonerdsCustomerId:guid cfsAvailable:dt cfsStorageStart:dt
+  concurrencyStamp:str containerNumber:str containerShipmentBases:ContainerShipmentBase[] creationTime:dt
+  creatorId:guid ctoAvailable:dt ctoStorageStart:dt departureSlotDate:dt
+  emptyPickupFrom:OrganizationAddressContactRelation emptyPickupFrom/addressId:guid
+  emptyPickupFrom/organizationId:guid emptyPickupRequiredBy:dt emptyReady:dt emptyReleaseNumber:str
+  emptyReleasedFromContainerYard:dt emptyReturnReference:str emptyReturnRequiredBy:dt
+  emptyReturnTo:OrganizationAddressContactRelation emptyReturnTo/addressId:guid
+  emptyReturnTo/organizationId:guid emptyReturnedOn:dt estimatedFullDelivery:dt estimatedFullPickup:dt
+  exportDeliveryByRail:bool exportPortOrCustomsReference:str exportPortTransportReference:str
+  exportSlotBookingReference:str fclLoaded:dt fclUnload:dt fclWharfGateIn:dt
+  grossWeight:Dimension_1OfWeightUnit grossWeight/value:dec heldForFclTransitStaging:bool id:guid
+  importPickupByRail:bool importPortOrCustomsReference:str importPortTransportReference:str
+  importReleaseNumber:str importSlotBookingReference:str isOperatingReefer:bool lastModificationTime:dt
+  lastModifierId:guid portTransportAdvisedOrBooked:dt portTransportBooked:dt seal:str slotDate:dt
+  sourcedFromOtherCw1XmlElement:bool temperature:Dimension_1OfTemperatureUnit temperature/value:dec
+  volume:Dimension_1OfVolumeUnit volume/value:dec wharfGateOut:dt
+  expand:
+    dangerousGoodsInfo:DangerousGoodsInfo[] externalIdentifiers:ExternalContainerIdentifier[]
+    packLines:PackLine[] penalties:ContainerPenalty[] shipmentLegs:ShipmentLeg[] shipments:ShipmentBase[]
+    shippingType:ShippingType type:ContainerType
+ContainerMode key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+ContainerPenaltyTimeUnit key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+ContainerType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+ContainerTypeExternal key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid targetVolume:dec targetWeight:dec
+CreditorType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+Currency key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid symbol:str
+  expand:
+    exchangeRates:ExchangeRate[]
+CustomDataType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+CustomsDeclaration key=id
+  actualArrival:dt actualChargeable:dec actualDelivery:dt actualDeparture:dt actualPickup:dt
+  cargonerdsCustomerId:guid cargonerdsNumber:str co2EmissionsDelivery:str co2EmissionsP2P:str
+  co2EmissionsPickup:str co2EmissionsTotal:str concurrencyStamp:str containerModeId:guid
+  containerShipmentBases:ContainerShipmentBase[] creationTime:dt creatorId:guid cutOffCargo:dt
+  cutOffDocument:dt detailedGoodsDescription:str detailedMarksAndNumbers:str estimatedArrival:dt
+  estimatedCargoReady:dt estimatedDelivery:dt estimatedDeparture:dt estimatedPickup:dt
+  exportingCompanyCode:str houseBill:str id:guid innerPackQuantity:int isActive:bool isExportedToMagaya:bool
+  isMagayaTrackingEnabled:bool isTransferredToReporting:bool lastModificationTime:dt lastModifierId:guid
+  outerPackQuantity:int parentCargonerdsNumber:str parentShipmentId:guid pickupReceived:dt quoteNumber:str
+  state:ShipmentState{Draft|Booked|InTransit|Delivered|Completed} totalVolume:Dimension_1OfVolumeUnit
+  totalVolume/value:dec totalWeight:Dimension_1OfWeightUnit totalWeight/value:dec transportModeId:guid
+  transportationVehicle:str travelNumber:str
+  expand:
+    additionalReferences:ShipmentReference[] addresses:ShipmentAddress[] containerMode:ContainerMode
+    containers:Container[] customsDataList:CustomsData[] customsEntryList:CustomsEntry[]
+    dangerousGoodsInfo:DangerousGoodsInfo[] destination:Port documents:ShipmentBaseDocument[] events:Event[]
+    externalIdentifiers:ExternalCustomsDeclarationIdentifier[] firstConsolLegDeparturePort:Port
+    incoTerm:IncoTerm innerPackType:PackType invoices:Invoice[] lastConsolLegArrivalPort:Port
+    magayaDocumentIdentifiers:ExternalMagayaDocumentIdentifier[] notes:ShipmentNote[] origin:Port
+    outerPackType:PackType packLines:PackLine[] parentShipment:Shipment paymentTerms:PaymentTerm
+    portOfDischarge:Port portOfFirstArrival:Port portOfLoading:Port revenues:Revenue[]
+    serviceLevel:ServiceLevel shipmentLegs:ShipmentLeg[] shipmentType:ShipmentType tags:Tag[]
+    transportMode:TransportMode type:CustomsType
+CustomsEntryType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+CustomsType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+DateType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+EntryStatus key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+EquipmentEventCode key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+EventClassifierCode key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+EventCode key=id
+  actualLabel:str cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid
+  description:str expectedLabel:str icon:str id:guid isVisibleInSpark:bool lastModificationTime:dt
+  lastModifierId:guid priority:int
+EventSource key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+FileType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+IdentityUser key=id !NOT-QUERYABLE (server rejects query_odata; use a catalog.txt route)
+  concurrencyStamp:str creationTime:dt creatorId:guid deleterId:guid deletionTime:dt email:str id:guid
+  isDeleted:bool isExternal:bool lastModificationTime:dt lastModifierId:guid name:str
+  passkeys:IdentityUserPasskey[] passwordHistories:IdentityUserPasswordHistory[] surname:str userName:str
+IncoTerm key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+Invoice key=id
+  cargonerdsCustomerId:guid companyName:str concurrencyStamp:str creationTime:dt creatorId:guid
+  exportingCompanyCode:str id:guid invoiceNumber:str lastModificationTime:dt lastModifierId:guid ledger:str
+  organizationId:guid postDate:dt revenueType:RevenueType{Invoice|CreditNote} shipmentId:guid
+  shipmentInvoiceNumber:str versionNumber:int
+  expand:
+    branch:Branch documents:InvoiceDocument[] organization:Organization revenues:Revenue[]
+    shipment:ShipmentBase
+IotEventCode key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+LengthUnit key=id
+  baseUnitFactor:dec cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid
+  description:str id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+  nullPointShift:dec
+MarginRateCalculator key=id
+  calculator:CalculatorMargin{Undefined|Percent|Per100Lbs|Per20FeetContainer|Per40FeetContainer|Per40FeetHcContainer|PerHbl|PerContainer|PerCargoPiece|PerKg|PerKgChargeable|PerCbm|PerTeu|PerVolumeWeight}
+  cargonerdsCustomerId:guid concurrencyStamp:str creationTime:dt creatorId:guid id:guid
+  lastModificationTime:dt lastModifierId:guid transportType:TransportType{Undefined|AIR|LCL|FCL}
+MessageStatus key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+MyInsightsData key=shipmentNumber
+  actualArrivalDate:date actualDepartureDate:date actualTT:int allocationType:str arrivalVessel:str
+  arrivalVoyage:str bookingDate:date bookingMonth:int bookingQuarter:int bookingStatus:str bookingWeek:int
+  bookingYear:int bunker:dbl carrier:str chargeable:dbl consignee:str consignor:str costGoalPerFeu:dbl
+  crdMonth:int crdQuarter:int crdWeek:int crdYear:int customsBrokerage:dbl daysBookingReleasePending:int
+  daysToEstimatedArrival:int daysToEstimatedBookingReleaseDate:int daysToEstimatedDeparture:int delivery:dbl
+  deliveryDate:date departureVessel:str departureVoyage:str destination:str destinationCode:str
+  destinationRegion:str emergencySubcharge:dbl estimatedTT:int etaMonth:int etaQuarter:int etaWeek:int
+  etaYear:int etdMonth:int etdQuarter:int etdWeek:int etdYear:int feu:dbl fortyGP:int gateInDate:date
+  hblMode:str incoTerm:str invoiceDate:date kpI1:int kpI1Compliant:bool kpI2:int kpI2Compliant:bool kpI3:int
+  kpI3Compliant:bool kpI4:int kpI4Compliant:bool kpI5EstimatedVsActualTT:int mainFreight:dbl
+  orderReference:str origin:str originCode:str originRegion:str originalCargoReadyDate:date
+  originalEstimatedArrivalDate:date originalEstimatedDepartureDate:date peakSeasonSubcharge:dbl pickUp:dbl
+  pickUpDate:date pod:str pol:str shipmentMode:str shipmentNumber:str totalSpend:dbl twentyGP:int volume:dbl
+  weeklyForecastFEU:int weight:dbl
+NoteContext key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+NoteType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+Order key=id
+  buyer:OrganizationAddressContactRelation buyer/addressId:guid buyer/organizationId:guid
+  cargonerdsCustomerId:guid commercialInvoiceNumber:str concurrencyStamp:str creationTime:dt creatorId:guid
+  id:guid isActive:bool lastModificationTime:dt lastModifierId:guid latestDelivery:dt orderDate:dt
+  orderNumber:str shipTo:OrganizationAddressContactRelation shipTo/addressId:guid shipTo/organizationId:guid
+  shipmentId:guid splitNumber:int supplier:OrganizationAddressContactRelation supplier/addressId:guid
+  supplier/organizationId:guid versionNumber:int
+  expand:
+    containerMode:ContainerMode externalIdentifiers:ExternalOrderIdentifier[] freightRateCurrency:Currency
+    incoTerm:IncoTerm lines:OrderLine[] notes:OrderNote[] orderStatus:OrderStatus shipment:Shipment
+    transportMode:TransportMode
+OrderLineStatus key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+OrderStatus key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+Organization key=id
+  associationId:guid cargonerdsCustomerId:guid concurrencyStamp:str creationTime:dt creatorId:guid
+  dataSource:OrganizationDataSource{UniversalShipmentMapper|OrganizationMasterData|MagayaShipmentMapper}
+  id:guid isActive:bool isAirCto:bool isAirLine:bool isAirWholesaler:bool isBroker:bool isCompetitor:bool
+  isConsignee:bool isConsignor:bool isForwarder:bool isGlobalAccount:bool isLineHaulProvider:bool
+  isLocalTransport:bool isMiscFreightServices:bool isNationalAccount:bool isPackDepot:bool
+  isRailProvider:bool isSalesLead:bool isSeaCto:bool isSeaWholesaler:bool isShippingConsortium:bool
+  isShippingLine:bool isShippingProvider:bool isTempAccount:bool isUnpackDepot:bool lastModificationTime:dt
+  lastModifierId:guid name:str processDataState:ProcessDataState{None|Import|Export}
+  expand:
+    addresses:Address[] association:Association
+    blobStorageFileReferences:OrganizationBlobStorageFileReference[] contacts:Contact[]
+    externalIdentifiers:ExternalOrganizationIdentifier[] invoices:Invoice[]
+    organizationCustomCodes:OrganizationCustomCode[]
+OrganizationCustomCodeType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+OrganizationUnit key=id !NOT-QUERYABLE (server rejects query_odata; use a catalog.txt route)
+  code:str concurrencyStamp:str creationTime:dt creatorId:guid deleterId:guid deletionTime:dt displayName:str
+  entityVersion:int id:guid isDeleted:bool lastModificationTime:dt lastModifierId:guid
+PackType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+PaymentTerm key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+PenaltyType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+Port key=id
+  cargonerdsCustomerId:guid concurrencyStamp:str coordinates:Coordinates coordinates/latitude:dec
+  coordinates/longitude:dec countryIsoAlpha2Code:str creationTime:dt creatorId:guid iataCode:str id:guid
+  isAirport:bool isBorder:bool isMaritimePort:bool isPostalOffice:bool isRailTerminal:bool
+  isRoadTerminal:bool lastModificationTime:dt lastModifierId:guid name:str unLoCode:str
+  expand:
+    country:Country externalIdentifiers:ExternalPortIdentifier[]
+ProcessType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+ReferenceType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+ServiceLevel key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+Shipment key=id
+  actualArrival:dt actualChargeable:dec actualDelivery:dt actualDeparture:dt actualPickup:dt
+  bookedByUserId:guid bookedInOrganizationUnitId:guid cargonerdsCustomerId:guid cargonerdsNumber:str
+  co2EmissionsDelivery:str co2EmissionsP2P:str co2EmissionsPickup:str co2EmissionsTotal:str
+  concurrencyStamp:str containerModeId:guid containerShipmentBases:ContainerShipmentBase[] creationTime:dt
+  creatorId:guid cutOffCargo:dt cutOffDocument:dt detailedGoodsDescription:str detailedMarksAndNumbers:str
+  estimatedArrival:dt estimatedCargoReady:dt estimatedDelivery:dt estimatedDeparture:dt estimatedPickup:dt
+  exportingCompanyCode:str houseBill:str id:guid innerPackQuantity:int isActive:bool isExportedToMagaya:bool
+  isMagayaTrackingEnabled:bool isTransferredToReporting:bool jobType:JobType{Shipment|Booking}
+  lastModificationTime:dt lastModifierId:guid outerPackQuantity:int parentCargonerdsNumber:str
+  pickupReceived:dt quoteNumber:str state:ShipmentState{Draft|Booked|InTransit|Delivered|Completed}
+  totalVolume:Dimension_1OfVolumeUnit totalVolume/value:dec totalWeight:Dimension_1OfWeightUnit
+  totalWeight/value:dec transportModeId:guid transportationVehicle:str travelNumber:str
+  expand:
+    additionalReferences:ShipmentReference[] addresses:ShipmentAddress[] consols:Consol[]
+    containerMode:ContainerMode containers:Container[] customsDataList:CustomsData[]
+    customsDeclarations:CustomsDeclaration[] dangerousGoodsInfo:DangerousGoodsInfo[] destination:Port
+    documents:ShipmentBaseDocument[] events:Event[] externalIdentifiers:ExternalShipmentIdentifier[]
+    firstConsolLegDeparturePort:Port incoTerm:IncoTerm innerPackType:PackType invoices:Invoice[]
+    lastConsolLegArrivalPort:Port magayaDocumentIdentifiers:ExternalMagayaDocumentIdentifier[]
+    notes:ShipmentNote[] orders:Order[] origin:Port outerPackType:PackType packLines:PackLine[]
+    paymentTerms:PaymentTerm portOfDischarge:Port portOfFirstArrival:Port portOfLoading:Port
+    revenues:Revenue[] serviceLevel:ServiceLevel shipmentLegs:ShipmentLeg[] shipmentType:ShipmentType
+    tags:Tag[] trackingContainers:TrackingContainer[] transportMode:TransportMode
+ShipmentBaseDocument key=id
+  base64Content:str cargonerdsCustomerId:guid concurrencyStamp:str content:Binary creationTime:dt
+  creatorId:guid deletedAt:dt description:str fileDate:dt fileName:str fileSize:int id:guid isDeleted:bool
+  lastModificationTime:dt lastModifierId:guid mimeType:str sha256Sum:str shipmentBaseId:guid
+  versionNumber:int
+  expand:
+    externalIdentifiers:ExternalDocumentIdentifier[] fileType:FileType shipmentBase:ShipmentBase
+ShipmentLegType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+ShipmentType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+ShippingType key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+Tag key=id !NOT-QUERYABLE (server rejects query_odata; use a catalog.txt route)
+  color:str concurrencyStamp:str creationTime:dt creatorId:guid id:guid lastModificationTime:dt
+  lastModifierId:guid name:str organizationUnitId:guid userId:guid
+  expand:
+    externalIdentifiers:ExternalTagIdentifier[] shipmentBases:ShipmentBase[]
+TemperatureUnit key=id
+  baseUnitFactor:dec cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid
+  description:str id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+  nullPointShift:dec
+TrackingContainer key=id
+  bookingReference:str cargonerdsCustomerId:guid concurrencyStamp:str containerIso:str containerReference:str
+  creationTime:dt creatorId:guid hapagLloydSubscriptionId:guid id:guid isTransmitting:bool
+  lastEventDateTime:dt lastLocation:TrackingLocation lastLocation/latitude:dbl lastLocation/longitude:dbl
+  lastModificationTime:dt lastModifierId:guid vizionChildSubscriptionId:guid
+  expand:
+    destination:Port hapagLloydSubscription:HapagLloydSubscription inlandDestination:Port inlandOrigin:Port
+    origin:Port predictions:Prediction[] shipments:Shipment[] trackingLegs:TrackingLeg[]
+    vizionChildSubscription:VizionChildSubscription
+TransportMode key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+Vessel key=id
+  cargonerdsCustomerId:guid concurrencyStamp:str creationTime:dt creatorId:guid id:guid imo:int
+  lastModificationTime:dt lastModifierId:guid mmsi:int name:str
+  expand:
+    events:VizionEvent[] trackingLegs:TrackingLeg[]
+VizionEventCode key=id
+  cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid description:str
+  id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+VolumeUnit key=id
+  baseUnitFactor:dec cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid
+  description:str id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+  nullPointShift:dec
+WeightUnit key=id
+  baseUnitFactor:dec cargonerdsCustomerId:guid code:str concurrencyStamp:str creationTime:dt creatorId:guid
+  description:str id:guid isVisibleInSpark:bool lastModificationTime:dt lastModifierId:guid
+  nullPointShift:dec
+AddressBlobStorageFileReference (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt serviceType:ServiceType identifier:string
+  files:BlobStorageFile[] entityAttachedUtc:dt lastSuccessfulImportFileDate:dt address:object addressId:guid
+  relatedEntityId:guid relatedEntityType:Type
+Association (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt name:string parentAssociationId:guid
+  parentAssociation:object enabled:bool organizations:object[] childAssociations:object[]
+Branch (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt name:string externalIdentifiers:ExternalBranchIdentifier[]
+  invoices:object[]
+Contact (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt contactName:string phone:string mobile:string email:string
+  fax:string externalIdentifiers:ExternalContactIdentifier[]
+ContainerPenalty (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt creditor:OrganizationAddressContactRelation duration:string
+  freeTime:dt perUnitCost:num totalCost:num
+  expand:
+    creditorType:CreditorType currency:Currency location:Port type:PenaltyType processType:ProcessType
+    timeUnit:ContainerPenaltyTimeUnit
+Country (nested; reach via expand)
+  name:string isoAlpha2Code:string
+CustomsData (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt shipmentBase:object shipmentBaseId:guid name:string
+  value:string
+  expand:
+    type:CustomDataType
+CustomsEntry (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt customsDeclaration:object customsDeclarationId:guid
+  entryNumber:string referenceNumber:string releaseDate:dt submittedDate:dt totalAmountPaid:num
+  expand:
+    entryStatus:EntryStatus messageStatus:MessageStatus type:CustomsEntryType currency:Currency
+DangerousGoodsInfo (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt class:string packingGroup:string flashPoint:string
+  properShippingName:string subLabel1:string subLabel2:string unNumber:string variant:string
+Event (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt shipment:object shipmentId:guid locationUnlocode:string
+  versionNumber:int expectedDate:dt actualDate:dt isMilestone:bool codeId:guid customIcon:string
+  externalIdentifiers:ExternalEventIdentifier[]
+  expand:
+    code:EventCode note:ShipmentNote
+ExchangeRate (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt currency:object currencyCode:string
+  referenceCurrency:string rate:num targetDate:string
+ExternalAddressIdentifier (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt identifier:string serviceType:ServiceType isActive:bool
+  address:object addressId:guid
+ExternalConsolIdentifier (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt identifier:string serviceType:ServiceType isActive:bool
+  consol:object consolId:guid
+ExternalContainerIdentifier (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt identifier:string serviceType:ServiceType isActive:bool
+  container:object
+ExternalCustomsDeclarationIdentifier (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt identifier:string serviceType:ServiceType isActive:bool
+  customsDeclaration:object customsDeclarationId:guid typeId:guid
+  expand:
+    type:CustomsType
+ExternalDocumentIdentifier (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt identifier:string serviceType:ServiceType isActive:bool
+  document:Document documentId:guid
+ExternalMagayaDocumentIdentifier (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt identifier:string serviceType:ServiceType isActive:bool
+  document:Document documentId:guid shipmentBase:object shipmentBaseId:guid
+ExternalOrderIdentifier (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt identifier:string serviceType:ServiceType isActive:bool
+  order:object orderId:guid
+ExternalOrganizationIdentifier (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt identifier:string serviceType:ServiceType isActive:bool
+  organization:object organizationId:guid
+ExternalPortIdentifier (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt identifier:string serviceType:ServiceType isActive:bool
+  port:object
+ExternalShipmentIdentifier (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt identifier:string serviceType:ServiceType isActive:bool
+  shipment:object shipmentId:guid
+ExternalTagIdentifier (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt identifier:string serviceType:ServiceType isActive:bool
+  tag:object tagId:guid
+HapagLloydSubscription (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt callbackUrl:string trackingContainers:object[]
+InvoiceDocument (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt fileName:string description:string fileSize:int fileDate:dt
+  mimeType:string sha256Sum:string isDeleted:bool deletedAt:dt versionNumber:int base64Content:string
+  content:string invoiceId:guid invoice:object parent:IDocumentParent
+  expand:
+    fileType:FileType externalIdentifiers:ExternalDocumentIdentifier[]
+OrderLine (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt externalIdentifiers:ExternalOrderLineIdentifier[]
+  lineNumber:int subLineNumber:int order:object orderId:guid description:string quantityOrdered:num
+  quantityReceived:num weight:Dimension<WeightUnit> volume:Dimension<VolumeUnit>
+  outerPackLength:Dimension<LengthUnit> outerPackHeight:Dimension<LengthUnit>
+  outerPackWidth:Dimension<LengthUnit> productCode:string outerPackQuantity:num innerPackQuantity:num
+  commercialInvoiceNumber:string containerNumber:string additionalTerms:string additionalInformation:string
+  requiredExWorks:dt supplierConfirmedAcceptance:dt requiredInStore:dt link:int linePrice:num
+  expand:
+    quantityOrderedPackType:PackType quantityReceivedPackType:PackType outerPackType:PackType
+    innerPackType:PackType lineStatus:OrderLineStatus incoTerm:IncoTerm unitPriceCurrency:Currency
+OrderNote (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt content:string order:object
+  expand:
+    type:NoteType noteContext:NoteContext
+OrganizationBlobStorageFileReference (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt serviceType:ServiceType identifier:string
+  files:BlobStorageFile[] entityAttachedUtc:dt lastSuccessfulImportFileDate:dt organization:object
+  organizationId:guid relatedEntityId:guid relatedEntityType:Type
+OrganizationCustomCode (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt cw1Id:guid customsRegistrationNumber:string
+  organization:object
+  expand:
+    organizationCustomCodeType:OrganizationCustomCodeType
+PackLine (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt externalIdentifiers:ExternalPackLineIdentifier[]
+  shipment:object shipmentId:guid goodDescription:string lineNumber:int weight:Dimension<WeightUnit>
+  length:Dimension<LengthUnit> height:Dimension<LengthUnit> width:Dimension<LengthUnit>
+  volume:Dimension<VolumeUnit> marksAndNumbers:string quantity:int container:object
+  expand:
+    packType:PackType harmonizedCode:Commodity dangerousGoodsInfo:DangerousGoodsInfo[]
+Prediction (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt location:string estimatedTimeOfArrival:dt isEmpty:bool
+  trackingContainer:object
+  expand:
+    equipmentEventCode:EquipmentEventCode
+Revenue (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt invoice:object invoiceId:guid externalRevenueId:string
+  postDate:dt details:RevenueDetail[] shipment:object shipmentId:guid organization:object organizationId:guid
+  exchangeRateDateUsed:dt postedAmount:num vatAmount:num totalAmount:num currencyCode:string
+  localPostedAmount:num localVatAmount:num localTotalAmount:num localCurrencyCode:string
+  expand:
+    chargeCode:ChargeCode branch:Branch currency:Currency localCurrency:Currency
+ShipmentAddress (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt shipment:object address:object addressId:guid
+  shipmentId:guid organizationId:guid organization:object
+  expand:
+    type:AddressType contact:Contact
+ShipmentBase (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt cargonerdsNumber:string parentCargonerdsNumber:string
+  discriminator:string houseBill:string transportModeId:guid containerModeId:guid actualChargeable:num
+  state:ShipmentState estimatedCargoReady:dt estimatedPickup:dt estimatedDelivery:dt actualPickup:dt
+  actualDelivery:dt estimatedDeparture:dt actualDeparture:dt estimatedArrival:dt actualArrival:dt
+  cutOffDocument:dt cutOffCargo:dt pickupReceived:dt transportationVehicle:string travelNumber:string
+  detailedGoodsDescription:string detailedMarksAndNumbers:string co2EmissionsTotal:string
+  co2EmissionsPickup:string co2EmissionsP2P:string co2EmissionsDelivery:string quoteNumber:string
+  outerPackQuantity:int innerPackQuantity:int exportingCompanyCode:string shipmentLegs:object[]
+  containerShipmentBases:ContainerShipmentBase[] totalWeight:Dimension<WeightUnit>
+  totalVolume:Dimension<VolumeUnit> packLines:object[] invoices:object[] revenues:object[] isActive:bool
+  isTransferredToReporting:bool isExportedToMagaya:bool isMagayaTrackingEnabled:bool
+  referenceNumberDisplay:string
+  expand:
+    additionalReferences:ShipmentReference[] customsDataList:CustomsData[] serviceLevel:ServiceLevel
+    incoTerm:IncoTerm transportMode:TransportMode containerMode:ContainerMode paymentTerms:PaymentTerm
+    portOfLoading:Port portOfFirstArrival:Port portOfDischarge:Port origin:Port destination:Port
+    firstConsolLegDeparturePort:Port lastConsolLegArrivalPort:Port addresses:ShipmentAddress[]
+    outerPackType:PackType innerPackType:PackType shipmentType:ShipmentType events:Event[]
+    containers:Container[] dangerousGoodsInfo:DangerousGoodsInfo[] documents:ShipmentBaseDocument[]
+    notes:ShipmentNote[] tags:Tag[] magayaDocumentIdentifiers:ExternalMagayaDocumentIdentifier[]
+ShipmentLeg (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt legNumber:int carrier:OrganizationAddressContactRelation
+  shipmentBase:object shipmentBaseId:guid progress:int state:ShipmentLegState
+  startLocation:ShipmentLegLocation endLocation:ShipmentLegLocation discriminator:string
+  transportationVehicle:string travelNumber:string
+  expand:
+    type:ShipmentLegType containers:Container[]
+ShipmentNote (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt content:string shipment:object
+  expand:
+    type:NoteType noteContext:NoteContext
+ShipmentReference (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt source:ServiceType value:string shipment:object
+  expand:
+    type:ReferenceType
+TrackingLeg (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt location:Location reference:string eventDateTime:dt
+  trackingContainerId:guid trackingContainer:object vessel:object
+  expand:
+    eventClassifierCode:EventClassifierCode eventSource:EventSource iotEventCode:IotEventCode
+VizionChildSubscription (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt bookingReference:string callbackUrl:string
+  parentSubscriptionId:guid parentSubscription:VizionParentSubscription trackingContainer:object
+VizionEvent (nested; reach via expand)
+  id:guid creationTime:dt lastModificationTime:dt shipment:object shipmentId:guid locationUnlocode:string
+  versionNumber:int expectedDate:dt actualDate:dt rawDescription:string location:TrackingLocation
+  terminalCode:string voyage:string isPlanned:bool vessel:object vizionSubscription:VizionSubscription
+  expand:
+    source:EventSource vizionEventCode:VizionEventCode transportMode:TransportMode

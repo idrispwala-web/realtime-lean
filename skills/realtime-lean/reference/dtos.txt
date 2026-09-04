@@ -1,0 +1,1550 @@
+# Request-body and response DTOs for call_endpoint (body:X and ->X in catalog.txt). Block: `Dto:` then indented field:type lines.
+# Use response fields for `fields`. Grep anchored: `^CreateUpdateTagDto:`
+
+AccountExternalLoginDto:
+  loginProvider:string providerKey:string providerDisplayName:string
+ExternalProviderSettingsProperty:
+  name:string value:string
+ExternalProviderSettings:
+  name:string enabled:bool enabledForTenantUser:bool useCustomSettings:bool
+  properties:ExternalProviderSettingsProperty[] secretProperties:ExternalProviderSettingsProperty[]
+AccountExternalProviderSettingsDto:
+  verifyPasswordDuringExternalLogin:bool externalProviders:ExternalProviderSettings[]
+AccountIdleSettingsDto:
+  enabled:bool idleTimeoutMinutes:int countdownSeconds:int
+AccountPasskeySettingsDto:
+  enabled:bool maximumPasskeysPerUser:int
+AccountRecaptchaSettingsDto:
+  useCaptchaOnLogin:bool useCaptchaOnRegistration:bool verifyBaseUrl:string siteKey:string siteSecret:string
+  version:int score:num
+AccountSettingsDto:
+  isSelfRegistrationEnabled:bool enableLocalLogin:bool preventEmailEnumeration:bool
+IdentityProTwoFactorBehaviour:
+AccountTwoFactorSettingsDto:
+  twoFactorBehaviour:IdentityProTwoFactorBehaviour isRememberBrowserEnabled:bool usersCanChange:bool
+CountryDto:
+  name:string isoAlpha2Code:string
+OrganizationDataSourceDto:
+CoordinatesDto:
+  latitude:num longitude:num
+ServiceTypeDto:
+ExternalOrganizationIdentifierDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid identifier:string
+  serviceType:ServiceTypeDto isActive:bool organizationId:guid
+RevenueTypeDto:
+FileTypeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+ExternalDocumentIdentifierDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid identifier:string
+  serviceType:ServiceTypeDto isActive:bool documentId:guid
+InvoiceDocumentDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid fileName:string
+  fileType:FileTypeDto description:string fileSize:int fileDate:dt mimeType:string sha256Sum:string
+  isDeleted:bool deletedAt:dt versionNumber:int base64Content:string content:string
+  externalIdentifiers:ExternalDocumentIdentifierDto[] invoiceId:guid
+InvoiceDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid invoiceNumber:string postDate:dt
+  shipmentInvoiceNumber:string companyName:string shipmentId:guid organizationId:guid branch:object
+  revenueType:RevenueTypeDto ledger:string exportingCompanyCode:string versionNumber:int
+  documents:InvoiceDocumentDto[]
+ExternalContactIdentifierDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid identifier:string
+  serviceType:ServiceTypeDto isActive:bool
+ContactDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid contactName:string phone:string
+  mobile:string email:string fax:string externalIdentifiers:ExternalContactIdentifierDto[]
+ProcessDataStateDto:
+OrganizationCustomCodeTypeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+OrganizationCustomCodeDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid cw1Id:guid
+  customsRegistrationNumber:string organization:object
+  organizationCustomCodeType:OrganizationCustomCodeTypeDto
+OrganizationDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid name:string associationId:guid
+  isForwarder:bool isShippingProvider:bool isAirWholesaler:bool isSeaWholesaler:bool isRailProvider:bool
+  isLineHaulProvider:bool isMiscFreightServices:bool isAirCto:bool isAirLine:bool isBroker:bool
+  isLocalTransport:bool isPackDepot:bool isSeaCto:bool isShippingLine:bool isUnpackDepot:bool
+  isShippingConsortium:bool isGlobalAccount:bool isNationalAccount:bool isSalesLead:bool isCompetitor:bool
+  isTempAccount:bool isConsignee:bool isConsignor:bool isActive:bool
+  externalIdentifiers:ExternalOrganizationIdentifierDto[] invoices:InvoiceDto[] contacts:ContactDto[]
+  association:object processDataState:ProcessDataStateDto dataSource:OrganizationDataSourceDto
+  organizationCustomCodes:OrganizationCustomCodeDto[]
+AddressDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid name:string addressLine1:string
+  addressLine2:string addressLine3:string addressString:string postCode:string unLocode:string
+  cityName:string countryIsoAlpha2Code:string country:CountryDto stateCode:string stateName:string
+  dataSource:OrganizationDataSourceDto coordinates:CoordinatesDto organization:OrganizationDto
+PortDto:
+  lastModificationTime:dt creationTime:dt id:guid externalIdentifiers:object[] name:string iataCode:string
+  unLoCode:string country:CountryDto countryIsoAlpha2Code:string coordinates:CoordinatesDto
+  isMaritimePort:bool isRailTerminal:bool isRoadTerminal:bool isAirport:bool isPostalOffice:bool
+  isBorder:bool cargonerdsCustomerId:guid
+GooglePlacePredictionDto:
+  description:string place_id:string types:string[]
+AddressSearchResultDto:
+  systemPorts:PortDto[] systemAddresses:AddressDto[] googlePlaces:GooglePlacePredictionDto[]
+ApiKeyCreateResultDto:
+  id:guid name:string description:string isActive:bool prefix:string expirationTime:dt creationTime:dt
+  userId:guid userName:string key:string
+ApiKeyDto:
+  id:guid name:string description:string isActive:bool prefix:string expirationTime:dt creationTime:dt
+  userId:guid userName:string
+ApplicationApiDescriptionModel:
+  modules:object types:object
+LanguageInfo:
+  cultureName:string uiCultureName:string displayName:string twoLetterISOLanguageName:string
+DateTimeFormatDto:
+  calendarAlgorithmType:string dateTimeFormatLong:string shortDatePattern:string fullDateTimePattern:string
+  dateSeparator:string shortTimePattern:string longTimePattern:string
+CurrentCultureDto:
+  displayName:string englishName:string threeLetterIsoLanguageName:string twoLetterIsoLanguageName:string
+  isRightToLeft:bool cultureName:string name:string nativeName:string dateTimeFormat:DateTimeFormatDto
+ApplicationLocalizationConfigurationDto:
+  values:object resources:object languages:LanguageInfo[] currentCulture:CurrentCultureDto
+  defaultResourceName:string languagesMap:object languageFilesMap:object
+ApplicationAuthConfigurationDto:
+  grantedPolicies:object
+ApplicationSettingConfigurationDto:
+  values:object
+CurrentUserDto:
+  isAuthenticated:bool id:guid tenantId:guid impersonatorUserId:guid impersonatorTenantId:guid
+  impersonatorUserName:string impersonatorTenantName:string userName:string name:string surName:string
+  email:string emailVerified:bool phoneNumber:string phoneNumberVerified:bool roles:string[] sessionId:string
+ApplicationFeatureConfigurationDto:
+  values:object
+ApplicationGlobalFeatureConfigurationDto:
+  enabledFeatures:string[]
+MultiTenancyInfoDto:
+  isEnabled:bool
+CurrentTenantDto:
+  id:guid name:string isAvailable:bool
+IanaTimeZone:
+  timeZoneName:string
+WindowsTimeZone:
+  timeZoneId:string
+TimeZone:
+  iana:IanaTimeZone windows:WindowsTimeZone
+TimingDto:
+  timeZone:TimeZone
+ClockDto:
+  kind:string
+ObjectExtensionsDto:
+  modules:object enums:object
+ApplicationConfigurationDto:
+  localization:ApplicationLocalizationConfigurationDto auth:ApplicationAuthConfigurationDto
+  setting:ApplicationSettingConfigurationDto currentUser:CurrentUserDto
+  features:ApplicationFeatureConfigurationDto globalFeatures:ApplicationGlobalFeatureConfigurationDto
+  multiTenancy:MultiTenancyInfoDto currentTenant:CurrentTenantDto timing:TimingDto clock:ClockDto
+  objectExtensions:ObjectExtensionsDto extraProperties:object
+ApplicationDto:
+  extraProperties:object id:guid applicationType:string clientId:string displayName:string clientType:string
+  clientSecret:string consentType:string extensionGrantTypes:string[] postLogoutRedirectUris:string[]
+  redirectUris:string[] frontChannelLogoutUri:string allowPasswordFlow:bool allowClientCredentialsFlow:bool
+  allowAuthorizationCodeFlow:bool allowRefreshTokenFlow:bool allowHybridFlow:bool allowImplicitFlow:bool
+  allowTokenExchangeFlow:bool allowEndSessionEndpoint:bool allowDeviceAuthorizationEndpoint:bool
+  forcePkce:bool allowPushedAuthorizationEndpoint:bool forcePushedAuthorization:bool scopes:string[]
+  clientUri:string logoUri:string
+ApplicationLocalizationDto:
+  resources:object currentCulture:CurrentCultureDto
+ApplicationTokenLifetimeDto:
+  accessTokenLifetime:num authorizationCodeLifetime:num deviceCodeLifetime:num identityTokenLifetime:num
+  refreshTokenLifetime:num userCodeLifetime:num requestTokenLifetime:num issuedTokenLifetime:num
+EntityChangeType:
+EntityPropertyChangeDto:
+  id:guid tenantId:guid entityChangeId:guid newValue:string originalValue:string propertyName:string
+  propertyTypeFullName:string
+EntityChangeDto:
+  extraProperties:object id:guid auditLogId:guid tenantId:guid changeTime:dt changeType:EntityChangeType
+  entityId:string entityTypeFullName:string propertyChanges:EntityPropertyChangeDto[]
+AuditLogActionDto:
+  extraProperties:object id:guid tenantId:guid auditLogId:guid serviceName:string methodName:string
+  parameters:string executionTime:dt executionDuration:int
+AuditLogDto:
+  extraProperties:object id:guid userId:guid userName:string tenantId:guid tenantName:string
+  impersonatorUserId:guid impersonatorUserName:string impersonatorTenantId:guid impersonatorTenantName:string
+  executionTime:dt executionDuration:int clientIpAddress:string clientId:string clientName:string
+  browserInfo:string httpMethod:string url:string exceptions:string comments:string httpStatusCode:int
+  applicationName:string correlationId:string entityChanges:EntityChangeDto[] actions:AuditLogActionDto[]
+AuditLogGlobalSettingsDto:
+  isExpiredDeleterEnabled:bool expiredDeleterPeriod:int isPeriodicDeleterEnabled:bool
+AuditLogSettingsDto:
+  isExpiredDeleterEnabled:bool expiredDeleterPeriod:int
+AuthenticatorInfoDto:
+  key:string uri:string
+BackgroundJobPriority:
+BackgroundJobInfo:
+  id:guid applicationName:string jobName:string jobArgs:string tryCount:int creationTime:dt nextTryTime:dt
+  lastTryTime:dt isAbandoned:bool priority:BackgroundJobPriority
+BlogDto:
+  extraProperties:object id:guid name:string slug:string concurrencyStamp:string blogPostCount:int
+BlogFeatureDto:
+  extraProperties:object id:guid featureName:string isEnabled:bool
+BlogFeatureInputDto:
+  featureName:string isEnabled:bool
+CmsUserDto:
+  extraProperties:object id:guid userName:string name:string surname:string
+BlogPostCommonDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  blogId:guid title:string slug:string shortDescription:string content:string coverImageMediaId:guid
+  author:CmsUserDto
+BlogPostStatus:
+BlogPostDto:
+  extraProperties:object id:guid blogId:guid title:string slug:string shortDescription:string content:string
+  coverImageMediaId:guid creationTime:dt lastModificationTime:dt concurrencyStamp:string
+  status:BlogPostStatus
+BlogPostListDto:
+  extraProperties:object id:guid blogId:guid blogName:string title:string slug:string shortDescription:string
+  content:string coverImageMediaId:guid creationTime:dt lastModificationTime:dt status:BlogPostStatus
+ExternalTagIdentifierDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid identifier:string
+  serviceType:ServiceTypeDto isActive:bool tagId:guid
+TagDto:
+  lastModificationTime:dt creationTime:dt id:guid name:string color:string organizationUnitId:guid
+  userId:guid externalIdentifiers:ExternalTagIdentifierDto[]
+ShipmentStateDto:
+CalculatedShipmentDto:
+  lastModificationTime:dt creationTime:dt id:guid tags:TagDto[] isSubscribed:bool cargonerdsNumber:string
+  state:ShipmentStateDto isActive:bool masterBill:string houseBill:string transportMode:string
+  packageMode:string tradeLane:string origin:string originName:string originCountry:string
+  originCountryName:string pickupLocationName:string pickupLocationCity:string pickupLocationCountry:string
+  destination:string destinationName:string destinationCountry:string destinationCountryName:string
+  deliveryLocationName:string deliveryLocationCity:string deliveryLocationCountry:string consignorCode:string
+  consignorName:string consignorCity:string consignorCountry:string consigneeCode:string consigneeName:string
+  consigneeCity:string consigneeCountry:string importerCode:string importerName:string importerCity:string
+  importerCountry:string supplierCode:string supplierName:string supplierCity:string supplierCountry:string
+  estimatedPickupDate:dt actualPickupDate:dt etd:dt atd:dt eta:dt ata:dt estimatedDeliveryDate:dt
+  actualDeliveryDate:dt lowestOperationalDate:dt loadingPort:string loadingPortName:string
+  loadingPortIataCode:string loadingPortCountryCode:string departureVessel:string departureVoyage:string
+  dischargePort:string dischargePortName:string dischargePortIataCode:string dischargePortCountryCode:string
+  arrivalVessel:string arrivalVoyage:string bookingReference:string carrierCode:string carrierName:string
+  consolNumber:string containerNumber:string customsEntryNumber:string customsEntryType:string
+  goodsDescription:string incoterm:string jobOrderReference:string jobType:string orderReferenceText:string
+  detailedMarksAndNumbers:string prepaidCollect:string serviceLevel:string shipmentType:string weight:num
+  volume:num chargeable:num outers:string inners:string containerMode:string teus:int containerCount:int
+  transitTimePickup:int transitTimeDepartureToArrival:int transitTimeArrivalToDelivery:int
+  transitTimeTotal:int co2EmissionsPickup:num co2EmissionsP2P:num co2EmissionsDelivery:num
+  co2EmissionsTotal:num dangerousGoodsInfo:string lastEvent:string lastEventDate:dt cargonerdsCustomerId:guid
+  externalIdentifier:string contractType:string lastLocation:CoordinatesDto lastLocationDateTime:dt
+  bookedInOrganizationUnitId:guid bookedByUserId:guid referenceNumberDisplay:string shipmentTypeCode:string
+  shipperReference:string consigneeReference:string pickupReference:string deliveryReference:string
+  notifyPartyReference:string invoiceNumber:string pieces:int
+ChangeEmailInput:
+  userId:guid newEmailAddress:string token:string
+ChangeIsUsefulInput:
+  id:guid isUseful:bool
+ChangePasswordInput:
+  currentPassword:string newPassword:string
+ChatMessageSide:
+ChatContactDto:
+  userId:guid name:string surname:string username:string hasChatPermission:bool
+  lastMessageSide:ChatMessageSide lastMessage:string lastMessageDate:dt unreadMessageCount:int
+ChatMessageDto:
+  id:guid message:string messageDate:dt isRead:bool readDate:dt side:ChatMessageSide
+ChatTargetUserInfo:
+  userId:guid name:string surname:string username:string
+ChatConversationDto:
+  messages:ChatMessageDto[] targetUserInfo:ChatTargetUserInfo
+ChatDeletingMessages:
+ChatDeletingConversations:
+ChatSettingsDto:
+  deletingMessages:ChatDeletingMessages messageDeletionPeriod:int
+  deletingConversations:ChatDeletingConversations
+CheckEmailConfirmationCodeDto:
+  emailAddress:string code:string
+CheckEntityAccessInput:
+  entityTypeName:string entityId:guid userId:guid
+OrgConnectionResultDto:
+  label:string organizationName:string organizationCode:string organizationIsActive:bool
+  organizationUnitName:string isMatch:bool
+CheckEntityAccessResultDto:
+  connections:OrgConnectionResultDto[] hasAccess:bool entityIsActive:bool
+IdentityClaimValueType:
+ClaimTypeDto:
+  extraProperties:object id:guid name:string required:bool isStatic:bool regex:string regexDescription:string
+  description:string valueType:IdentityClaimValueType valueTypeAsString:string concurrencyStamp:string
+  creationTime:dt
+ClientSettingDto:
+  key:string value:string isUserValue:bool
+CmsKitContactSettingDto:
+  receiverEmailAddress:string
+CmsKitPageFeedbackSettingDto:
+  isAutoHandled:bool requireCommentsForNegativeFeedback:bool
+CodeEntitySettingDto:
+  isFiltered:bool isReadonly:bool
+ReferenceTypeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+ShipmentReferenceDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid type:ReferenceTypeDto
+  source:ServiceTypeDto value:string
+ServiceLevelDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+IncoTermDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+TransportModeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+ContainerModeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+PaymentTermDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+PackTypeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+ShipmentTypeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+EventCodeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool actualLabel:string expectedLabel:string icon:string
+  priority:int
+NoteTypeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+NoteContextDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+ShipmentNoteDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid content:string type:NoteTypeDto
+  noteContext:NoteContextDto
+EventDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid shipmentId:guid
+  locationUnlocode:string versionNumber:int expectedDate:dt actualDate:dt isMilestone:bool code:EventCodeDto
+  codeId:guid customIcon:string note:ShipmentNoteDto
+WeightUnitDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool baseUnitFactor:num nullPointShift:num lastModifierId:guid
+  creatorId:guid extraProperties:object concurrencyStamp:string
+Dimension<WeightUnitDto>:
+  value:num unit:WeightUnitDto
+VolumeUnitDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool baseUnitFactor:num nullPointShift:num lastModifierId:guid
+  creatorId:guid extraProperties:object concurrencyStamp:string
+Dimension<VolumeUnitDto>:
+  value:num unit:VolumeUnitDto
+DangerousGoodsInfoDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid class:string packingGroup:string
+  flashPoint:string properShippingName:string subLabel1:string subLabel2:string unNumber:string
+  variant:string
+ShipmentBaseDocumentDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid fileName:string
+  fileType:FileTypeDto description:string fileSize:int fileDate:dt mimeType:string sha256Sum:string
+  isDeleted:bool deletedAt:dt versionNumber:int base64Content:string content:string
+  externalIdentifiers:ExternalDocumentIdentifierDto[] shipmentBaseId:guid
+ExternalMagayaDocumentIdentifierDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid identifier:string
+  serviceType:ServiceTypeDto isActive:bool documentId:guid shipmentBase:object shipmentBaseId:guid
+JobTypeDto:
+EntryStatusDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+MessageStatusDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+CustomsEntryTypeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+ExchangeRateDto:
+  lastModificationTime:dt creationTime:dt id:guid currency:object currencyCode:string
+  referenceCurrency:string rate:num targetDate:string
+CurrencyDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool symbol:string exchangeRates:ExchangeRateDto[]
+CustomsEntryDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid customsDeclaration:object
+  customsDeclarationId:guid entryNumber:string entryStatus:EntryStatusDto referenceNumber:string
+  releaseDate:dt submittedDate:dt messageStatus:MessageStatusDto type:CustomsEntryTypeDto totalAmountPaid:num
+  currency:CurrencyDto
+CustomsTypeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+ExternalIdentifierDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid identifier:string
+  serviceType:ServiceTypeDto isActive:bool
+ExternalShipmentIdentifierDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid identifier:string
+  serviceType:ServiceTypeDto isActive:bool shipmentId:guid
+ExternalCustomsDeclarationIdentifierDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid identifier:string
+  serviceType:ServiceTypeDto isActive:bool customsDeclarationId:guid type:CustomsTypeDto typeId:guid
+ExternalConsolIdentifierDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid identifier:string
+  serviceType:ServiceTypeDto isActive:bool consolId:guid
+CombinedShipmentDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid cargonerdsNumber:string
+  additionalReferences:ShipmentReferenceDto[] customsDataList:object[] parentCargonerdsNumber:string
+  discriminator:string houseBill:string serviceLevel:ServiceLevelDto incoTerm:IncoTermDto
+  transportMode:TransportModeDto transportModeId:guid containerMode:ContainerModeDto containerModeId:guid
+  paymentTerms:PaymentTermDto portOfLoading:PortDto portOfFirstArrival:PortDto portOfDischarge:PortDto
+  origin:PortDto destination:PortDto firstConsolLegDeparturePort:PortDto lastConsolLegArrivalPort:PortDto
+  actualChargeable:num addresses:object[] state:ShipmentStateDto estimatedCargoReady:dt estimatedPickup:dt
+  estimatedDelivery:dt actualPickup:dt actualDelivery:dt estimatedDeparture:dt actualDeparture:dt
+  estimatedArrival:dt actualArrival:dt cutOffDocument:dt cutOffCargo:dt pickupReceived:dt
+  transportationVehicle:string travelNumber:string detailedGoodsDescription:string
+  detailedMarksAndNumbers:string co2EmissionsTotal:string co2EmissionsPickup:string co2EmissionsP2P:string
+  co2EmissionsDelivery:string quoteNumber:string outerPackQuantity:int outerPackType:PackTypeDto
+  innerPackQuantity:int innerPackType:PackTypeDto shipmentType:ShipmentTypeDto exportingCompanyCode:string
+  shipmentLegs:object[] events:EventDto[] containers:object[] containerShipmentBases:object[]
+  totalWeight:Dimension<WeightUnitDto> totalVolume:Dimension<VolumeUnitDto> packLines:object[]
+  dangerousGoodsInfo:DangerousGoodsInfoDto[] documents:ShipmentBaseDocumentDto[] notes:ShipmentNoteDto[]
+  invoices:InvoiceDto[] revenues:object[] tags:TagDto[]
+  magayaDocumentIdentifiers:ExternalMagayaDocumentIdentifierDto[] isActive:bool isTransferredToReporting:bool
+  isExportedToMagaya:bool isMagayaTrackingEnabled:bool referenceNumberDisplay:string jobType:JobTypeDto
+  customsDeclarations:object[] parentShipment:object parentShipmentId:guid customsEntryList:CustomsEntryDto[]
+  type:CustomsTypeDto shipments:object[] hasCw1Number:bool externalIdentifiers:ExternalIdentifierDto[]
+  externalShipmentIdentifierDtos:ExternalShipmentIdentifierDto[]
+  externalCustomsDeclarationIdentifierDtos:ExternalCustomsDeclarationIdentifierDto[]
+  externalConsolIdentifierDtos:ExternalConsolIdentifierDto[] consols:object[] orders:object[]
+  trackingContainers:object[] bookedInOrganizationUnitId:guid bookedByUserId:guid
+CommentApprovalDto:
+  isApproved:bool
+CommentDto:
+  extraProperties:object id:guid entityType:string entityId:string text:string repliedCommentId:guid
+  creatorId:guid creationTime:dt author:CmsUserDto concurrencyStamp:string url:string
+CommentSettingsDto:
+  commentRequireApprovement:bool
+CommentStatus:
+CommentStatusUpdateInputDto:
+  commentStatus:CommentStatus
+CommentWithAuthorDto:
+  extraProperties:object id:guid entityType:string entityId:string text:string repliedCommentId:guid
+  creatorId:guid creationTime:dt author:CmsUserDto url:string isApproved:bool
+CommentWithDetailsDto:
+  extraProperties:object id:guid entityType:string entityId:string text:string creatorId:guid creationTime:dt
+  replies:CommentDto[] author:CmsUserDto concurrencyStamp:string
+CommodityDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+ConfirmEmailInput:
+  userId:guid token:string
+ConfirmNewsletterEmailInput:
+  emailAddress:string token:string
+ConfirmPhoneNumberInput:
+  userId:guid token:string
+ContactCreateInput:
+  contactName:string name:string subject:string email:string message:string recaptchaToken:string
+CreateApiKeyDto:
+  name:string description:string isActive:bool expirationTime:dt userId:guid
+CreateApplicationInput:
+  extraProperties:object applicationType:string clientId:string displayName:string clientType:string
+  clientSecret:string consentType:string extensionGrantTypes:string[] postLogoutRedirectUris:string[]
+  redirectUris:string[] frontChannelLogoutUri:string allowPasswordFlow:bool allowClientCredentialsFlow:bool
+  allowAuthorizationCodeFlow:bool allowRefreshTokenFlow:bool allowHybridFlow:bool allowImplicitFlow:bool
+  allowTokenExchangeFlow:bool allowEndSessionEndpoint:bool allowDeviceAuthorizationEndpoint:bool
+  forcePkce:bool allowPushedAuthorizationEndpoint:bool forcePushedAuthorization:bool scopes:string[]
+  clientUri:string logoUri:string
+CreateBlogDto:
+  extraProperties:object name:string slug:string
+CreateBlogPostDto:
+  extraProperties:object blogId:guid title:string slug:string shortDescription:string content:string
+  coverImageMediaId:guid
+CreateClaimTypeDto:
+  extraProperties:object name:string required:bool regex:string regexDescription:string description:string
+  valueType:IdentityClaimValueType
+CreateCommentInput:
+  extraProperties:object text:string repliedCommentId:guid captchaToken:guid captchaAnswer:int url:string
+  idempotencyToken:string
+CreateDirectoryInput:
+  extraProperties:object parentId:guid name:string
+CreateDocumentDto:
+  fileName:string fileType:FileTypeDto mimeType:string description:string fileSize:int content:string
+ReportVisibility:
+CreateDynamicReportDto:
+  name:string description:string visibility:ReportVisibility allowedOrgUnitIds:guid[]
+CreateFaqGroupDto:
+  extraProperties:object name:string
+CreateFaqQuestionDto:
+  extraProperties:object sectionId:guid title:string text:string order:int
+CreateFaqSectionDto:
+  extraProperties:object groupId:guid name:string order:int
+CreateLanguageDto:
+  extraProperties:object displayName:string cultureName:string uiCultureName:string isEnabled:bool
+CreateNewsletterRecordInput:
+  emailAddress:string preference:string source:string sourceUrl:string privacyPolicyUrl:string
+  additionalPreferences:string[]
+CreateNewsletterRecordResultDto:
+  isEmailAlreadyConfirmed:bool
+CreatePageFeedbackInput:
+  url:string isUseful:bool userNote:string entityType:string entityId:string feedbackUserId:guid
+PageStatus:
+CreatePageInputDto:
+  extraProperties:object title:string slug:string layoutName:string content:string script:string style:string
+  status:PageStatus
+PollOptionDto:
+  id:guid text:string order:int voteCount:int
+CreatePollDto:
+  extraProperties:object question:string code:string widget:string name:string allowMultipleVote:bool
+  showVoteCount:bool showResultWithoutGivingVote:bool showHoursLeft:bool startDate:dt endDate:dt
+  resultShowingEndDate:dt pollOptions:PollOptionDto[]
+CreateScopeInput:
+  extraProperties:object name:string displayName:string description:string resources:string[]
+CreateShortenedUrlDto:
+  source:string target:string isRegex:bool
+ContainerMode:
+  id:guid extraProperties:object concurrencyStamp:string creationTime:dt creatorId:guid
+  lastModificationTime:dt lastModifierId:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+ContainerTypeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+BookingContainerLineDto:
+  quantity:int type:ContainerTypeDto volume:Dimension<VolumeUnitDto> grossWeight:Dimension<WeightUnitDto>
+CreateUpdateBookingDto:
+  bookedInOrganizationUnitId:guid quoteNumber:string containerMode:ContainerMode
+  transportMode:TransportModeDto incoTerm:IncoTermDto consigneeAddress:object shipperAddress:object
+  deliveryAddress:object portOfArrival:PortDto pickupAddress:object portOfLoading:PortDto cargoReadyOn:string
+  requestedAt:string goodsDescription:string marksAndNumbers:string packLines:object[]
+  containers:BookingContainerLineDto[] documents:CreateDocumentDto[] note:string
+  references:ShipmentReferenceDto[]
+SubscriptionFrequency:
+CreateUpdateDynamicReportSubscriptionDto:
+  frequency:SubscriptionFrequency isActive:bool
+WidgetType:
+AggregationType:
+DateBucket:
+ThresholdStop:
+  value:num color:string
+MetricChoice:
+  label:string aggregation:AggregationType valueField:string filter:string format:string
+BucketChoice:
+  label:string dateField:string dateBucket:DateBucket groupBy:string
+WidgetConfig:
+  entitySet:string label:string valueField:string aggregation:AggregationType groupBy:string dateField:string
+  splitBy:string dateBucket:DateBucket filter:string orderBy:string columns:string[] rowLink:string
+  rowLinkColumn:string limit:int format:string showLegend:bool legendPosition:string stacked:bool
+  thresholds:ThresholdStop[] minValue:num maxValue:num sparklineDateField:string sparklineBucket:DateBucket
+  markdown:string heatmapXField:string availableMetrics:MetricChoice[] availableBuckets:BucketChoice[]
+  template:string colors:string[]
+WidgetPosition:
+  x:int y:int w:int h:int
+CreateUpdateDynamicReportWidgetDto:
+  id:guid type:WidgetType title:string config:WidgetConfig position:WidgetPosition sortOrder:int
+CreateUpdateRatingInput:
+  starCount:int
+CreateUpdateTagDto:
+  name:string color:string organizationUnitId:guid
+CultureInfoDto:
+  displayName:string name:string
+CustomScriptSettingsDto:
+  enabled:bool value:string
+DashboardActiveShipmentCounterDto:
+  total:int booked:int inTransit:int delivered:int
+DashboardUpcomingEventCounterDto:
+  total:int upcomingPickup:int upcomingDeparture:int upcomingArrival:int upcomingDelivery:int
+DashboardOverdueMilestoneCounterDto:
+  total:int overduePickup:int overdueDeparture:int overdueArrival:int overdueDelivery:int
+DashboardNotificationsDateUpdatesDto:
+  dateUpdatesCount:int alertsCount:int newActivitiesCount:int etdUpdatesCount:int etaUpdateCount:int
+  statusUpdateCount:int milestoneChangeCount:int commentsCount:int documentsCount:int
+DashboardAllDto:
+  activeShipmentCounter:DashboardActiveShipmentCounterDto upcomingEvent:DashboardUpcomingEventCounterDto
+  overdueMilestones:DashboardOverdueMilestoneCounterDto notifications:DashboardNotificationsDateUpdatesDto
+DateUpdateItemRow:
+  entityId:guid propertyName:string previousValue:string newValue:string updateTime:dt
+  referenceNumberDisplay:string transportMode:string originDisplay:string destinationDisplay:string
+DashboardDateUpdatesDto:
+  etd:DateUpdateItemRow[] eta:DateUpdateItemRow[]
+DashboardMilestoneChangesDto:
+  estimatedDate:dt actualDate:dt id:guid shipmentType:string transportMode:string
+  referenceNumberDisplay:string lastEvent:string
+DashboardMilestoneChangesResultDto:
+  items:DashboardMilestoneChangesDto[]
+DashboardMilestoneDto:
+  id:guid referenceNumberDisplay:string state:string transportMode:string originDisplay:string
+  destinationDisplay:string atd:dt estimatedPickupDate:dt etd:dt eta:dt estimatedDeliveryDate:dt
+DateUpdatesFilterDto:
+  top:int skip:int
+DelegateNewUserInput:
+  targetUserId:guid startTime:dt endTime:dt
+FileIconType:
+FileIconInfo:
+  icon:string type:FileIconType
+DirectoryContentDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  name:string isDirectory:bool size:int iconInfo:FileIconInfo concurrencyStamp:string shared:bool
+  shareToken:string
+DirectoryDescriptorDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  name:string parentId:guid concurrencyStamp:string
+DirectoryDescriptorInfoDto:
+  id:guid name:string parentId:guid hasChildren:bool
+DocumentDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid fileName:string
+  fileType:FileTypeDto description:string fileSize:int fileDate:dt mimeType:string sha256Sum:string
+  isDeleted:bool deletedAt:dt versionNumber:int base64Content:string content:string
+  externalIdentifiers:ExternalDocumentIdentifierDto[]
+DocumentViewTokenResultDto:
+  token:string
+DownloadTokenResultDto:
+  token:string
+DynamicReportDto:
+  id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid name:string
+  description:string visibility:ReportVisibility allowedOrgUnitIds:guid[] widgetCount:int
+DynamicReportOrgUnitNodeDto:
+  id:guid parentId:guid displayName:string code:string
+DynamicReportSubscriptionDto:
+  id:guid creationTime:dt creatorId:guid reportId:guid userId:guid frequency:SubscriptionFrequency
+  isActive:bool lastSentAt:dt
+DynamicReportWidgetDto:
+  id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid reportId:guid
+  type:WidgetType title:string config:WidgetConfig position:WidgetPosition sortOrder:int
+DynamicReportWithWidgetsDto:
+  id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid name:string
+  description:string visibility:ReportVisibility allowedOrgUnitIds:guid[] widgetCount:int
+  widgets:DynamicReportWidgetDto[] mySubscription:DynamicReportSubscriptionDto
+EditionCreateDto:
+  extraProperties:object displayName:string planId:guid
+EditionDto:
+  extraProperties:object id:guid displayName:string planId:guid planName:string concurrencyStamp:string
+  tenantCount:int
+EditionLookupDto:
+  extraProperties:object id:guid displayName:string
+EditionUpdateDto:
+  extraProperties:object displayName:string planId:guid concurrencyStamp:string
+EmailConfirmationCodeLimitDto:
+  nextSendTime:dt nextTryTime:dt
+EmailSettingsDto:
+  smtpHost:string smtpPort:int smtpUserName:string smtpPassword:string smtpDomain:string smtpEnableSsl:bool
+  smtpUseDefaultCredentials:bool defaultFromAddress:string defaultFromDisplayName:string
+EntityChangeInfoDto:
+  entityId:guid propertyName:string updateTime:dt previousValue:string newValue:string
+EntityChangeWithUsernameDto:
+  entityChange:EntityChangeDto userName:string
+NotificationCategory:
+EntitySubscriptionDto:
+  category:NotificationCategory entityId:guid
+EntitySubscriptionResultDto:
+  id:guid category:NotificationCategory entityId:guid displayReference:string
+EntityTagCreateDto:
+  tagName:string entityType:string entityId:string
+EntityTagSetDto:
+  entityId:string entityType:string tags:string[]
+EntityTypeDto:
+  entityTypeName:string displayName:string hasPicker:bool
+ExcelExportResponseDto:
+  jobId:string metadataId:guid
+ExportAuditLogsOutput:
+  message:string fileData:string fileName:string isBackgroundJob:bool
+ExportColumnConfigDto:
+  fieldName:string displayName:string order:int
+ExportEntityChangesOutput:
+  message:string fileData:string fileName:string isBackgroundJob:bool
+ExportType:
+Occurrence:
+MonthlyOrdinal:
+DayOfWeek:
+MonthlyMode:
+ExportScheduleDto:
+  isRecurring:bool frequency:Occurrence timeOfDay:string monthlyOrdinal:MonthlyOrdinal dayOfMonth:int
+  dayOfWeek:DayOfWeek monthlyMode:MonthlyMode timeZoneId:string every:int
+ExportFilterDto:
+  oData:string currencyCode:string exportType:ExportType columns:ExportColumnConfigDto[]
+  schedule:ExportScheduleDto fileName:string recipients:string[] organizationUnitIds:guid[]
+  organizationIds:guid[] userId:guid defaultOrganizationUnitId:guid
+ExternalLoginProviderDto:
+  name:string canObtainUserInfoWithoutPassword:bool
+ExternalProviderItemDto:
+  name:string enabled:bool properties:ExternalProviderSettingsProperty[]
+ExternalProviderDto:
+  providers:ExternalProviderItemDto[]
+ExternalProviderItemWithSecretDto:
+  success:bool name:string enabled:bool enabledForTenantUser:bool
+  properties:ExternalProviderSettingsProperty[] secretProperties:ExternalProviderSettingsProperty[]
+FaqGroupDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  name:string
+FaqGroupWithSectionCountDto:
+  id:guid name:string sectionCount:int creationTime:dt
+FaqQuestionDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  isDeleted:bool deleterId:guid deletionTime:dt sectionId:guid title:string text:string order:int
+FaqSectionDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  isDeleted:bool deleterId:guid deletionTime:dt groupId:guid name:string order:int
+FaqSectionWithQuestionCountDto:
+  id:guid groupId:guid name:string groupName:string order:int questionCount:int creationTime:dt
+FaqSectionWithQuestionsDto:
+  section:FaqSectionDto questions:FaqQuestionDto[]
+FileDescriptorDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  directoryId:guid name:string mimeType:string size:int concurrencyStamp:string shared:bool shareToken:string
+FileUploadPreInfoDto:
+  fileName:string doesExist:bool hasValidName:bool
+FileUploadPreInfoRequest:
+  directoryId:guid fileName:string size:int
+FindTenantResultDto:
+  success:bool tenantId:guid name:string normalizedName:string isActive:bool
+GdprRequestDto:
+  id:guid creationTime:dt readyTime:dt
+GenerateDashboardFromAiInput:
+  prompt:string availableEntitySets:string[] entitySetSchemas:object
+GetAverageExecutionDurationPerDayOutput:
+  data:object
+GetEditionUsageStatisticsResultDto:
+  data:object
+GetErrorRateOutput:
+  data:object
+FeatureProviderDto:
+  name:string key:string
+IValueValidator:
+  name:string properties:object
+IStringValueType:
+  name:string properties:object validator:IValueValidator
+FeatureDto:
+  name:string displayName:string value:string provider:FeatureProviderDto description:string
+  valueType:IStringValueType depth:int parentName:string
+FeatureGroupDto:
+  name:string displayName:string features:FeatureDto[]
+GetFeatureListResultDto:
+  groups:FeatureGroupDto[]
+GetIdentitySecurityLogListInput:
+  extraProperties:object maxResultCount:int skipCount:int sorting:string startTime:dt endTime:dt
+  applicationName:string identity:string action:string userName:string clientId:string correlationId:string
+  clientIpAddress:string
+ProviderInfoDto:
+  providerName:string providerKey:string
+PermissionGrantInfoDto:
+  name:string displayName:string parentName:string isGranted:bool allowedProviders:string[]
+  grantedProviders:ProviderInfoDto[]
+PermissionGroupDto:
+  name:string displayName:string displayNameKey:string displayNameResource:string
+  permissions:PermissionGrantInfoDto[]
+GetPermissionListResultDto:
+  entityDisplayName:string groups:PermissionGroupDto[]
+ResourcePermissionDefinitionDto:
+  name:string displayName:string
+GetResourcePermissionDefinitionListResultDto:
+  permissions:ResourcePermissionDefinitionDto[]
+GrantedResourcePermissionDto:
+  name:string displayName:string
+ResourcePermissionGrantInfoDto:
+  providerName:string providerKey:string providerDisplayName:string providerNameDisplayName:string
+  permissions:GrantedResourcePermissionDto[]
+GetResourcePermissionListResultDto:
+  permissions:ResourcePermissionGrantInfoDto[]
+ResourcePermissionWithProdiverGrantInfoDto:
+  name:string displayName:string providers:string[] isGranted:bool
+GetResourcePermissionWithProviderListResultDto:
+  permissions:ResourcePermissionWithProdiverGrantInfoDto[]
+ResourceProviderDto:
+  name:string displayName:string
+GetResourceProviderListResultDto:
+  providers:ResourceProviderDto[]
+PollResultDto:
+  text:string voteCount:int
+GetResultDto:
+  question:string pollVoteCount:int pollResultDetails:PollResultDto[]
+GlobalResourceDto:
+  extraProperties:object creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  name:string value:string
+GlobalResourcesDto:
+  extraProperties:object styleContent:string scriptContent:string
+GlobalResourcesUpdateDto:
+  extraProperties:object style:string script:string
+GlobalSearchRequestDto:
+  searchTerm:string maxResultCount:int skipCount:int entityType:string
+SearchResultGroupDto:
+  entityType:string displayName:string totalCount:int items:?[] searchedProperties:string[] hasMore:bool
+  order:int
+GlobalSearchResultDto:
+  searchTerm:string groups:SearchResultGroupDto[]
+IdentityLdapSettingsDto:
+  enableLdapLogin:bool ldaps:bool ldapServerHost:string ldapServerPort:string ldapBaseDc:string
+  ldapDomain:string ldapUserName:string ldapPassword:string
+IdentityOAuthSettingsDto:
+  enableOAuthLogin:bool clientId:string clientSecret:string authority:string scope:string
+  requireHttpsMetadata:bool validateEndpoints:bool validateIssuerName:bool
+IdentityRoleClaimDto:
+  roleId:guid claimType:string claimValue:string
+IdentityRoleCreateDto:
+  extraProperties:object name:string isDefault:bool isPublic:bool
+IdentityRoleDto:
+  extraProperties:object id:guid name:string isDefault:bool isStatic:bool isPublic:bool userCount:int
+  concurrencyStamp:string creationTime:dt
+IdentityRoleLookupDto:
+  id:guid name:string
+IdentityRoleUpdateDto:
+  extraProperties:object name:string isDefault:bool isPublic:bool concurrencyStamp:string
+IdentitySecurityLogDto:
+  id:guid tenantId:guid applicationName:string identity:string action:string userId:guid userName:string
+  tenantName:string clientId:string correlationId:string clientIpAddress:string browserInfo:string
+  creationTime:dt extraProperties:object
+IdentitySessionDto:
+  extraProperties:object id:guid sessionId:string isCurrent:bool device:string deviceInfo:string
+  tenantId:guid tenantName:string userId:guid userName:string clientId:string ipAddresses:string[]
+  signedIn:dt lastAccessed:dt
+IdentityProPreventConcurrentLoginBehaviour:
+IdentitySessionSettingsDto:
+  preventConcurrentLogin:IdentityProPreventConcurrentLoginBehaviour
+IdentityPasswordSettingsDto:
+  requiredLength:int requiredUniqueChars:int requireNonAlphanumeric:bool requireLowercase:bool
+  requireUppercase:bool requireDigit:bool forceUsersToPeriodicallyChangePassword:bool
+  passwordChangePeriodDays:int enablePreventPasswordReuse:bool preventPasswordReuseCount:int
+IdentityLockoutSettingsDto:
+  allowedForNewUsers:bool lockoutDuration:int maxFailedAccessAttempts:int
+IdentitySignInSettingsDto:
+  requireConfirmedEmail:bool requireEmailVerificationToRegister:bool enablePhoneNumberConfirmation:bool
+  requireConfirmedPhoneNumber:bool
+IdentityUserSettingsDto:
+  isUserNameUpdateEnabled:bool isEmailUpdateEnabled:bool
+IdentitySettingsDto:
+  password:IdentityPasswordSettingsDto lockout:IdentityLockoutSettingsDto signIn:IdentitySignInSettingsDto
+  user:IdentityUserSettingsDto
+IdentityUserClaimDto:
+  userId:guid claimType:string claimValue:string
+IdentityUserConfirmationStateDto:
+  emailConfirmed:bool phoneNumberConfirmed:bool
+IdentityUserCreateDto:
+  extraProperties:object userName:string name:string surname:string email:string phoneNumber:string
+  isActive:bool shouldChangePasswordOnNextLogin:bool lockoutEnabled:bool roleNames:string[]
+  organizationUnitIds:guid[] password:string sendConfirmationEmail:bool emailConfirmed:bool
+  phoneNumberConfirmed:bool
+IdentityUserDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  isDeleted:bool deleterId:guid deletionTime:dt tenantId:guid userName:string email:string name:string
+  surname:string emailConfirmed:bool phoneNumber:string phoneNumberConfirmed:bool supportTwoFactor:bool
+  twoFactorEnabled:bool isActive:bool lockoutEnabled:bool isLockedOut:bool lockoutEnd:dt
+  shouldChangePasswordOnNextLogin:bool concurrencyStamp:string roleNames:string[] accessFailedCount:int
+  lastPasswordChangeTime:dt isExternal:bool
+IdentityUserUpdateDto:
+  extraProperties:object userName:string name:string surname:string email:string phoneNumber:string
+  isActive:bool shouldChangePasswordOnNextLogin:bool lockoutEnabled:bool roleNames:string[]
+  organizationUnitIds:guid[] emailConfirmed:bool phoneNumberConfirmed:bool concurrencyStamp:string
+IdentityUserUpdatePasswordInput:
+  newPassword:string
+IdentityUserUpdateRolesDto:
+  roleNames:string[]
+ImportExternalUserInput:
+  provider:string userNameOrEmailAddress:string password:string
+ImportNewslettersFromFileOutput:
+  allCount:int succeededCount:int failedCount:int invalidNewslettersDownloadToken:string isAllSucceeded:bool
+ImportUsersFromFileOutput:
+  allCount:int succeededCount:int failedCount:int invalidUsersDownloadToken:string isAllSucceeded:bool
+NotificationEventType:
+NotificationListItemDto:
+  id:guid recipientId:guid category:NotificationCategory eventType:NotificationEventType relatedEntityId:guid
+  relatedEntityReference:string message:string triggeredByUserName:string isRead:bool isDone:bool
+  creationTime:dt
+InboxDto:
+  counts:object items:NotificationListItemDto[] totalCount:int totalOpen:int
+InitializeUserNoteInput:
+  id:guid userNote:string isUseful:bool
+InsightsChartDataPointDto:
+  year:int month:int transportMode:string count:int totalCost:num totalCostExDutyTax:num costOrigin:num
+  costFreight:num costDestination:num costClearance:num costDutyTax:num costWarehouse:num costOther:num
+  avgTransitTimePickup:num avgTransitTimeDepartureToArrival:num avgTransitTimeArrivalToDelivery:num
+  avgTransitTimeTotal:num
+InsightsFacetOptionDto:
+  value:string label:string count:int
+InsightsFacetGroupDto:
+  key:string options:InsightsFacetOptionDto[]
+AggregatedShipmentDto:
+  lastModificationTime:dt creationTime:dt id:guid tags:TagDto[] isSubscribed:bool cargonerdsNumber:string
+  state:ShipmentStateDto isActive:bool masterBill:string houseBill:string transportMode:string
+  packageMode:string tradeLane:string origin:string originName:string originCountry:string
+  originCountryName:string pickupLocationName:string pickupLocationCity:string pickupLocationCountry:string
+  destination:string destinationName:string destinationCountry:string destinationCountryName:string
+  deliveryLocationName:string deliveryLocationCity:string deliveryLocationCountry:string consignorCode:string
+  consignorName:string consignorCity:string consignorCountry:string consigneeCode:string consigneeName:string
+  consigneeCity:string consigneeCountry:string importerCode:string importerName:string importerCity:string
+  importerCountry:string supplierCode:string supplierName:string supplierCity:string supplierCountry:string
+  estimatedPickupDate:dt actualPickupDate:dt etd:dt atd:dt eta:dt ata:dt estimatedDeliveryDate:dt
+  actualDeliveryDate:dt lowestOperationalDate:dt loadingPort:string loadingPortName:string
+  loadingPortIataCode:string loadingPortCountryCode:string departureVessel:string departureVoyage:string
+  dischargePort:string dischargePortName:string dischargePortIataCode:string dischargePortCountryCode:string
+  arrivalVessel:string arrivalVoyage:string bookingReference:string carrierCode:string carrierName:string
+  consolNumber:string containerNumber:string customsEntryNumber:string customsEntryType:string
+  goodsDescription:string incoterm:string jobOrderReference:string jobType:string orderReferenceText:string
+  detailedMarksAndNumbers:string prepaidCollect:string serviceLevel:string shipmentType:string weight:num
+  volume:num chargeable:num outers:string inners:string containerMode:string teus:int containerCount:int
+  transitTimePickup:int transitTimeDepartureToArrival:int transitTimeArrivalToDelivery:int
+  transitTimeTotal:int co2EmissionsPickup:num co2EmissionsP2P:num co2EmissionsDelivery:num
+  co2EmissionsTotal:num dangerousGoodsInfo:string lastEvent:string lastEventDate:dt cargonerdsCustomerId:guid
+  externalIdentifier:string contractType:string lastLocation:CoordinatesDto lastLocationDateTime:dt
+  bookedInOrganizationUnitId:guid bookedByUserId:guid referenceNumberDisplay:string shipmentTypeCode:string
+  shipperReference:string consigneeReference:string pickupReference:string deliveryReference:string
+  notifyPartyReference:string invoiceNumber:string pieces:int currencyCode:string totalCost:num
+  totalCostExDutyTax:num costOrigin:num costFreight:num costDestination:num costClearance:num costDutyTax:num
+  costWarehouse:num costOther:num
+FilterType:
+GroupOperator:
+FilterOptionDto:
+  value:string label:string selected:bool enabled:bool count:int oData:string hint:string meta:object
+RangeDataType:
+RangeValueDto:
+  from:string to:string oData:string
+RangeBucketDto:
+  key:string label:string value:RangeValueDto count:int
+RangeDefinitionDto:
+  dataType:RangeDataType selected:RangeValueDto presets:RangeBucketDto[]
+FilterDependencyDto:
+  parentKey:string requiredValues:string[]
+FilterGroupDto:
+  buildDuration:string key:string label:string field:string valuePath:string labelPath:string
+  valueClrType:string type:FilterType groupOperator:GroupOperator options:FilterOptionDto[]
+  range:RangeDefinitionDto multiSelect:bool enabled:bool dependsOn:FilterDependencyDto[] order:int
+AppliedFilterDto:
+  groupKey:string label:string values:string[] oData:string
+QueryMetaDto:
+  orderBy:string skip:int top:int rawODataQuery:string
+InsightsResultDto:
+  cost:num currencyCode:string chargeable:num containers:int airfreightWeight:num totalCo2Emissions:num
+  totalCount:int items:AggregatedShipmentDto[] filters:FilterGroupDto[] applied:AppliedFilterDto[]
+  oDataFilter:string query:QueryMetaDto
+InsightsTotalsDto:
+  totalCount:int totalCost:num currencyCode:string airfreightWeight:num containers:int
+InsightsTradeLaneRowDto:
+  loadingPortCountryCode:string dischargePortCountryCode:string containerMode:string consignorName:string
+  consigneeName:string importerName:string supplierName:string containerCount:int totalCost:num weight:num
+  volume:num avgTransitTimePickup:num avgTransitTimeDepartureToArrival:num
+  avgTransitTimeArrivalToDelivery:num avgTransitTimeTotal:num
+InsightsTransportModesDto:
+  total:int air:int sea:int road:int rail:int other:int
+InvoiceLookupResultDto:
+  id:guid invoiceNumber:string
+IsLinkedInput:
+  userId:guid tenantId:guid
+LanguageDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid cultureName:string uiCultureName:string
+  displayName:string isEnabled:bool isDefaultLanguage:bool concurrencyStamp:string
+LanguageResourceDto:
+  name:string
+LanguageTextDto:
+  resourceName:string cultureName:string baseCultureName:string baseValue:string name:string value:string
+LeptonXApplicationLayout:
+LeptonXThemeSettingsDto:
+  applicationLayout:LeptonXApplicationLayout
+LinkUserDto:
+  targetUserId:guid targetUserName:string targetTenantId:guid targetTenantName:string directlyLinked:bool
+LinkUserInput:
+  userId:guid tenantId:guid token:string
+TransportType:
+MarginApplication:
+InsightsChargeCodeGroupsDto:
+ChargeCodeGroupDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool insightsCode:InsightsChargeCodeGroupsDto
+  chargeCodes:object[]
+ChargeCodeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool chargeCodeGroup:ChargeCodeGroupDto chargeCodeGroupId:guid
+  serviceType:ServiceTypeDto
+CalculatorMargin:
+MarginRateCalculatorDto:
+  lastModificationTime:dt creationTime:dt id:guid transportType:TransportType calculator:CalculatorMargin
+  cargonerdsCustomerId:guid isFrozen:bool
+PlaceDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid
+MarginDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid organizationUnitId:guid
+  transportType:TransportType application:MarginApplication chargeCode:ChargeCodeDto
+  chargeType:InsightsChargeCodeGroupsDto currency:CurrencyDto rate:num rateCalculator:MarginRateCalculatorDto
+  minimumCharge:num origin:PlaceDto destination:PlaceDto originalMarginId:guid editedBy:string validTo:dt
+  isDeleted:bool isDefault:bool appliedOn:object[]
+MarkConversationAsReadInput:
+  targetUserId:guid
+MarkDoneDto:
+  recipientId:guid done:bool
+MarkedItemDto:
+  iconName:string
+MarkedItemWithToggleDto:
+  markedItem:MarkedItemDto isMarkedByCurrentUser:bool
+McpToolInfoDto:
+  name:string description:string readOnly:bool
+McpClientConfigurationDto:
+  clientName:string format:string content:string
+McpEndpointInfoDto:
+  id:string httpMethod:string route:string summary:string isWrite:bool isCallable:bool
+  notCallableReason:string
+McpIntegrationInfoDto:
+  isEnabled:bool serverUrl:string serverName:string tools:McpToolInfoDto[]
+  clients:McpClientConfigurationDto[] endpoints:McpEndpointInfoDto[] reachableEndpointCount:int
+  totalEndpointCount:int
+MediaDescriptorDto:
+  extraProperties:object id:guid name:string mimeType:string size:int
+MenuItemCreateInput:
+  extraProperties:object parentId:guid displayName:string isActive:bool url:string icon:string order:int
+  target:string elementId:string cssClass:string pageId:guid requiredPermissionName:string
+MenuItemDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  parentId:guid displayName:string isActive:bool url:string icon:string order:int target:string
+  elementId:string cssClass:string pageId:guid requiredPermissionName:string concurrencyStamp:string
+MenuItemMoveInput:
+  newParentId:guid position:int
+MenuItemUpdateInput:
+  extraProperties:object displayName:string isActive:bool url:string icon:string target:string
+  elementId:string cssClass:string pageId:guid requiredPermissionName:string concurrencyStamp:string
+MenuItemWithDetailsDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  parentId:guid displayName:string isActive:bool url:string icon:string order:int target:string
+  elementId:string cssClass:string pageId:guid requiredPermissionName:string concurrencyStamp:string
+  pageTitle:string
+MilestoneFilterType:
+MilestoneFilterDto:
+  type:MilestoneFilterType query:string top:int from:dt to:dt
+MoveDirectoryInput:
+  id:guid newParentId:guid concurrencyStamp:string
+MoveFileInput:
+  id:guid newDirectoryId:guid concurrencyStamp:string
+MyInsightsData:
+  shipmentNumber:string hblMode:string shipmentMode:string bookingStatus:string daysBookingReleasePending:int
+  daysToEstimatedBookingReleaseDate:int daysToEstimatedDeparture:int daysToEstimatedArrival:int
+  orderReference:string incoTerm:string bookingDate:string originalCargoReadyDate:string pickUpDate:string
+  originalEstimatedDepartureDate:string originalEstimatedArrivalDate:string gateInDate:string
+  actualDepartureDate:string actualArrivalDate:string deliveryDate:string invoiceDate:string consignor:string
+  consignee:string originRegion:string origin:string originCode:string pol:string destinationRegion:string
+  pod:string destinationCode:string destination:string carrier:string departureVessel:string
+  arrivalVessel:string departureVoyage:string arrivalVoyage:string allocationType:string weight:num
+  volume:num chargeable:num twentyGP:int fortyGP:int feu:num mainFreight:num bunker:num pickUp:num
+  delivery:num emergencySubcharge:num peakSeasonSubcharge:num customsBrokerage:num totalSpend:num
+  costGoalPerFeu:num bookingYear:int bookingQuarter:int bookingMonth:int bookingWeek:int crdYear:int
+  crdQuarter:int crdMonth:int crdWeek:int etdYear:int etdQuarter:int etdMonth:int etdWeek:int etaYear:int
+  etaQuarter:int etaMonth:int etaWeek:int kpi1:int kpi1Compliant:bool kpi2:int kpi2Compliant:bool kpi3:int
+  kpi3Compliant:bool kpi4:int kpi4Compliant:bool estimatedTT:int actualTT:int kpI5EstimatedVsActualTT:int
+  weeklyForecastFEU:int
+NameValue:
+  name:string value:string
+NewDocumentDto:
+  shipment:object document:DocumentDto
+NewsletterEmailOptionsDto:
+  privacyPolicyConfirmation:string widgetViewPath:string additionalPreferences:string[]
+  displayAdditionalPreferences:string[]
+NewsletterPreferenceDetailsDto:
+  preference:string displayPreference:string definition:string isSelectedByEmailAddress:bool
+NewsletterRecordCsvDto:
+  emailAddress:string securityCode:string preference:string
+NewsletterRecordDto:
+  extraProperties:object id:guid emailAddress:string creationTime:dt preferences:string[]
+NewsletterPreferenceDto:
+  preference:string source:string sourceUrl:string
+NewsletterRecordWithDetailsDto:
+  extraProperties:object id:guid emailAddress:string preferences:NewsletterPreferenceDto[] creationTime:dt
+SubscriptionScope:
+NotificationChannel:
+NotificationSettingDto:
+  eventType:NotificationEventType scope:SubscriptionScope channels:NotificationChannel
+ODataTypeAnnotation:
+  typeName:string
+ODataEntitySetInfo:
+  typeAnnotation:ODataTypeAnnotation url:string name:string title:string
+ODataSingletonInfo:
+  typeAnnotation:ODataTypeAnnotation url:string name:string title:string
+ODataFunctionImportInfo:
+  typeAnnotation:ODataTypeAnnotation url:string name:string title:string
+ODataServiceDocument:
+  typeAnnotation:ODataTypeAnnotation entitySets:ODataEntitySetInfo[] singletons:ODataSingletonInfo[]
+  functionImports:ODataFunctionImportInfo[]
+ChargeGroup:
+ChargeLineDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid offerId:guid
+  chargeCode:ChargeCodeDto chargeBase:num chargeNet:num chargeGross:num currencyBase:CurrencyDto
+  currency:CurrencyDto chargeGroup:ChargeGroup isIncluded:bool isCustoms:bool isMarginOnly:bool
+  appliedMargins:MarginDto[] isDeleted:bool
+OfferCreateDto:
+  offerNumber:string carrierName:string scacCode:string portOrigin:PortDto portDestination:PortDto
+  charges:ChargeLineDto[] currency:CurrencyDto transitTime:int validFrom:dt validTo:dt remarks:string
+  createdQuoteDate:dt isDeleted:bool quotationId:guid
+SourceMainLeg:
+MainFreightRateType:
+PortSelectionSource:
+OfferDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid quotationId:guid
+  offerNumber:string sourceSystemReference:string quotingSource:SourceMainLeg carrierName:string
+  scacCode:string rateType:MainFreightRateType portOrigin:PortDto portOriginSource:PortSelectionSource
+  portDestination:PortDto portDestinationSource:PortSelectionSource charges:ChargeLineDto[] totalCosts:num
+  currency:CurrencyDto transitTime:int validFrom:dt validTo:dt remarks:string createdQuoteDate:dt
+  isDeleted:bool
+OfferUpdateDto:
+  offerNumber:string carrierName:string scacCode:string portOrigin:PortDto portDestination:PortDto
+  charges:ChargeLineDto[] currency:CurrencyDto transitTime:int validFrom:dt validTo:dt remarks:string
+  createdQuoteDate:dt isDeleted:bool
+ExternalOrderIdentifierDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid identifier:string
+  serviceType:ServiceTypeDto isActive:bool orderId:guid
+OrderStatusDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+OrderNoteDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid content:string type:NoteTypeDto
+  noteContext:NoteContextDto
+OrderDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid orders:object[]
+  shipments:object[] externalIdentifiers:ExternalOrderIdentifierDto[] orderNumber:string splitNumber:int
+  buyer:object supplier:object shipTo:object orderStatus:OrderStatusDto orderDate:dt incoTerm:IncoTermDto
+  commercialInvoiceNumber:string transportMode:TransportModeDto notes:OrderNoteDto[] lines:object[]
+  shipment:object shipmentId:guid containerMode:ContainerModeDto freightRateCurrency:CurrencyDto
+  latestDelivery:dt isActive:bool versionNumber:int requiredExWorks:dt requiredInStore:dt
+OrganizationImporterDescriptor:
+  name:string displayName:string icon:string requiresFile:bool fileAccept:string description:string
+OrganizationUnitBulkMoveInput:
+  childrenId:guid[]
+OrganizationUnitCreateDto:
+  extraProperties:object displayName:string parentId:guid
+OrganizationUnitRoleDto:
+  creationTime:dt creatorId:guid organizationUnitId:guid roleId:guid
+OrganizationUnitDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  isDeleted:bool deleterId:guid deletionTime:dt parentId:guid code:string displayName:string
+  roles:OrganizationUnitRoleDto[]
+OrganizationUnitLookupDto:
+  id:guid displayName:string
+OrganizationUnitMoveInput:
+  newParentId:guid
+OrganizationUnitRoleInput:
+  roleIds:guid[]
+OrganizationUnitUpdateDto:
+  extraProperties:object displayName:string concurrencyStamp:string
+OrganizationUnitUserInput:
+  userIds:guid[]
+OrganizationUnitWithDetailsDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  isDeleted:bool deleterId:guid deletionTime:dt parentId:guid code:string displayName:string
+  roles:IdentityRoleDto[] userCount:int concurrencyStamp:string
+OuTreeNodeDto:
+  id:guid parentId:guid displayName:string code:string userCount:int childrenCount:int orgCodeIds:guid[]
+  parentPath:string[]
+OuTreeSearchResultDto:
+  totalCount:int roots:OuTreeNodeDto[] childrenByParent:object matchedIds:guid[] expandIds:guid[]
+PageDto:
+  extraProperties:object id:guid creationTime:dt creatorId:guid lastModificationTime:dt lastModifierId:guid
+  title:string slug:string layoutName:string content:string script:string style:string isHomePage:bool
+  status:PageStatus concurrencyStamp:string
+PageFeedbackDto:
+  id:guid entityType:string entityId:string url:string isUseful:bool userNote:string isHandled:bool
+  adminNote:string tenantId:guid creationTime:dt
+PageFeedbackSettingDto:
+  id:guid entityType:string emailAddresses:string tenantId:guid
+PageLookupDto:
+  id:guid title:string slug:string
+PasskeyDto:
+  credentialId:string name:string createdAt:dt
+PaymentType:
+PaymentRequestProductDto:
+  paymentRequestId:guid code:string name:string unitPrice:num count:int totalPrice:num
+  paymentType:PaymentType planId:guid extraProperties:object
+PaymentRequestState:
+PaymentRequestWithDetailsDto:
+  extraProperties:object id:guid products:PaymentRequestProductDto[] currency:string
+  state:PaymentRequestState failReason:string emailSendDate:dt gateway:string externalSubscriptionId:string
+  totalPrice:num creationTime:dt
+PermissionLookupDto:
+  name:string displayName:string
+PlanDto:
+  extraProperties:object id:guid name:string concurrencyStamp:string
+PollDto:
+  extraProperties:object id:guid question:string code:string widget:string name:string allowMultipleVote:bool
+  voteCount:int startDate:dt endDate:dt creationTime:dt
+PollWidgetDto:
+  name:string
+PollWithDetailsDto:
+  extraProperties:object id:guid question:string code:string widget:string name:string startDate:dt
+  allowMultipleVote:bool voteCount:int showVoteCount:bool showResultWithoutGivingVote:bool showHoursLeft:bool
+  endDate:dt resultShowingEndDate:dt tenantId:guid creationTime:dt pollOptions:PollOptionDto[]
+PopularTagDto:
+  id:guid name:string count:int
+MeasurementSystem:
+NameValue<MeasurementSystem>:
+  name:string value:MeasurementSystem
+PreferenceOptionsDto:
+  timezones:NameValue[] dateFormats:NameValue[] languages:NameValue[]
+  measurementSystems:NameValue<MeasurementSystem>[]
+PrefillCandidateDto:
+  label:string values:object
+ProfileDto:
+  extraProperties:object userName:string email:string emailConfirmed:bool name:string surname:string
+  phoneNumber:string phoneNumberConfirmed:bool isExternal:bool hasPassword:bool supportsMultipleTimezone:bool
+  timezone:string concurrencyStamp:string
+ProfilePictureType:
+ProfilePictureSourceDto:
+  type:ProfilePictureType source:string fileContent:string
+PurchaseOrderFilterOptionDto:
+  value:string label:string count:int
+PurchaseOrderFilterGroupDto:
+  key:string options:PurchaseOrderFilterOptionDto[]
+PurchaseOrderFilterValuesDto:
+  groups:PurchaseOrderFilterGroupDto[]
+PurchaseOrderDto:
+  id:guid orderNumber:string orderDate:dt orderStatusDescription:string transportModeCode:string
+  containerModeCode:string buyerName:string supplierName:string dateUpdatedUtc:dt
+PurchaseOrderListResultDto:
+  items:PurchaseOrderDto[] oDataFilter:string
+PurchaseOrderStatusCounterDto:
+  statusId:guid status:string count:int
+PurchaseOrderStatusCountersDto:
+  counters:PurchaseOrderStatusCounterDto[]
+LengthUnitDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool baseUnitFactor:num nullPointShift:num lastModifierId:guid
+  creatorId:guid extraProperties:object concurrencyStamp:string
+Dimension<LengthUnitDto>:
+  value:num unit:LengthUnitDto
+PackLineRequestDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid type:PackTypeDto quantity:int
+  weight:Dimension<WeightUnitDto> chargeableWeight:Dimension<WeightUnitDto> length:Dimension<LengthUnitDto>
+  height:Dimension<LengthUnitDto> width:Dimension<LengthUnitDto> volume:Dimension<VolumeUnitDto>
+ContainerRequestDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid type:ContainerTypeDto
+  weight:Dimension<WeightUnitDto> volume:Dimension<VolumeUnitDto> quantity:int
+QuotationCreateDraftDto:
+  transportType:TransportType portOriginRequested:PortDto portDestinationRequested:PortDto
+  addressOrigin:AddressDto addressDestination:AddressDto packages:PackLineRequestDto[]
+  containers:ContainerRequestDto[] commodity:CommodityDto incoTerm:IncoTermDto currency:CurrencyDto
+  requestedQuoteDate:dt appointmentRequiredPickup:bool appointmentRequiredDelivery:bool
+  callBeforeDelivery:bool dangerousGoods:bool flatbedRequired:bool insurance:bool liftgatePickup:bool
+  liftgateDelivery:bool limitedAccessPickup:bool limitedAccessDelivery:bool overweight:bool refrigerated:bool
+  residentialPickup:bool residentialDelivery:bool stackable:bool whiteGloves:bool
+  includeLocalChargesOrigin:bool includeLocalChargesOriginCustoms:bool includeLocalChargesDestination:bool
+  includeLocalChargesDestinationCustoms:bool organizationUnitId:guid
+QuotationDraftDto:
+  transportType:TransportType portOriginRequested:PortDto portDestinationRequested:PortDto
+  addressOrigin:AddressDto addressDestination:AddressDto packages:PackLineRequestDto[]
+  containers:ContainerRequestDto[] commodity:CommodityDto incoTerm:IncoTermDto currency:CurrencyDto
+  requestedQuoteDate:dt appointmentRequiredPickup:bool appointmentRequiredDelivery:bool
+  callBeforeDelivery:bool dangerousGoods:bool flatbedRequired:bool insurance:bool liftgatePickup:bool
+  liftgateDelivery:bool limitedAccessPickup:bool limitedAccessDelivery:bool overweight:bool refrigerated:bool
+  residentialPickup:bool residentialDelivery:bool stackable:bool whiteGloves:bool
+  includeLocalChargesOrigin:bool includeLocalChargesOriginCustoms:bool includeLocalChargesDestination:bool
+  includeLocalChargesDestinationCustoms:bool
+QuoteStatus:
+SourceCarriageLeg:
+LocalChargeComposition:
+MovementType:
+ValidityTimeframe:
+EndpointType:
+QuotationDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid legacyQuoteNumber:string
+  quoteNumber:string organizationUnitId:guid userId:guid status:QuoteStatus
+  determineOriginPortsByPricingManagerTruckingTariffs:bool
+  determineDestinationPortsByPricingManagerTruckingTariffs:bool portSelectionSourceOrigin:PortSelectionSource
+  portSelectionSourceDestination:PortSelectionSource offerCount:int isDeleted:bool
+  transportType:TransportType totalWeight:Dimension<WeightUnitDto>
+  totalChargeableWeight:Dimension<WeightUnitDto> totalVolume:Dimension<VolumeUnitDto>
+  portOriginRequested:PortDto portDestinationRequested:PortDto addressOrigin:object addressDestination:object
+  packages:object[] containers:ContainerRequestDto[] commodity:CommodityDto incoTerm:IncoTermDto
+  currency:CurrencyDto requestedQuoteDate:dt appointmentRequiredPickup:bool appointmentRequiredDelivery:bool
+  callBeforeDelivery:bool dangerousGoods:bool flatbedRequired:bool insurance:bool liftgatePickup:bool
+  liftgateDelivery:bool limitedAccessPickup:bool limitedAccessDelivery:bool overweight:bool refrigerated:bool
+  residentialPickup:bool residentialDelivery:bool stackable:bool whiteGloves:bool
+  mainFreightQuotingSource:SourceMainLeg carriageQuotingSource:SourceCarriageLeg
+  localChargeComposition:LocalChargeComposition includeLocalChargesOrigin:bool
+  includeLocalChargesOriginCustoms:bool includeLocalChargesDestination:bool
+  includeLocalChargesDestinationCustoms:bool movementType:MovementType offers:object[]
+  validityTimeframe:ValidityTimeframe endpoint:EndpointType apiKeyId:guid
+QuoteStatusDto:
+  status:QuoteStatus
+RatingDto:
+  id:guid entityType:string entityId:string starCount:int creatorId:guid creationTime:dt
+RatingWithStarCountDto:
+  starCount:int count:int isSelectedByCurrentUser:bool
+ReactionDto:
+  name:string displayName:string
+ReactionWithSelectionDto:
+  reaction:ReactionDto count:int isSelectedByCurrentUser:bool
+RegisterDto:
+  extraProperties:object userName:string emailAddress:string password:string appName:string returnUrl:string
+  returnUrlHash:string code:string captchaResponse:string
+RenameDirectoryInput:
+  name:string concurrencyStamp:string
+RenameFileInput:
+  name:string concurrencyStamp:string
+RenderTemplatePreviewInput:
+  templateName:string modelTypeName:string modelJson:string
+ResetPasswordDto:
+  userId:guid resetToken:string password:string
+RestoreTemplateContentInput:
+  templateName:string cultureName:string
+SaasHostSettingDto:
+  enableTenantBasedConnectionStringManagement:bool
+SaasTenantDatabaseConnectionStringsDto:
+  extraProperties:object databaseName:string connectionString:string
+SaasTenantConnectionStringsDto:
+  extraProperties:object default:string databases:SaasTenantDatabaseConnectionStringsDto[]
+TenantActivationState:
+SaasTenantCreateDto:
+  extraProperties:object name:string editionId:guid activationState:TenantActivationState
+  activationEndDate:dt editionEndDateUtc:dt adminEmailAddress:string adminPassword:string
+  connectionStrings:SaasTenantConnectionStringsDto
+SaasTenantDatabasesDto:
+  extraProperties:object databases:string[]
+SaasTenantDto:
+  extraProperties:object id:guid name:string editionId:guid editionEndDateUtc:dt editionName:string
+  hasDefaultConnectionString:bool activationState:TenantActivationState activationEndDate:dt
+  concurrencyStamp:string
+SaasTenantSetPasswordDto:
+  username:string password:string
+SaasTenantUpdateDto:
+  extraProperties:object name:string editionId:guid activationState:TenantActivationState
+  activationEndDate:dt editionEndDateUtc:dt concurrencyStamp:string
+ScheduledExcelExportDto:
+  id:guid userId:guid filter:ExportFilterDto nextRunUtc:dt creationTime:dt
+ScopeDto:
+  extraProperties:object id:guid name:string displayName:string description:string buildIn:bool
+  resources:string[]
+SearchProviderKeyInfo:
+  providerKey:string providerDisplayName:string
+SearchProviderKeyListResultDto:
+  keys:SearchProviderKeyInfo[]
+SendEmailConfirmationCodeDto:
+  emailAddress:string userName:string captchaResponse:string
+SendEmailConfirmationTokenDto:
+  appName:string userId:guid returnUrl:string returnUrlHash:string
+SendMessageInput:
+  targetUserId:guid message:string
+SendOnEnterSettingDto:
+  sendOnEnter:bool
+SendPasswordResetCodeDto:
+  email:string appName:string returnUrl:string returnUrlHash:string
+SendPhoneNumberConfirmationTokenDto:
+  userId:guid phoneNumber:string
+SendTestEmailInput:
+  senderEmailAddress:string targetEmailAddress:string subject:string body:string
+SendTwoFactorCodeInput:
+  userId:guid provider:string token:string
+ShipmentActivityDto:
+  date:dt status:string
+ShipmentBaseDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid cargonerdsNumber:string
+  additionalReferences:ShipmentReferenceDto[] customsDataList:object[] parentCargonerdsNumber:string
+  discriminator:string houseBill:string serviceLevel:ServiceLevelDto incoTerm:IncoTermDto
+  transportMode:TransportModeDto transportModeId:guid containerMode:ContainerModeDto containerModeId:guid
+  paymentTerms:PaymentTermDto portOfLoading:PortDto portOfFirstArrival:PortDto portOfDischarge:PortDto
+  origin:PortDto destination:PortDto firstConsolLegDeparturePort:PortDto lastConsolLegArrivalPort:PortDto
+  actualChargeable:num addresses:object[] state:ShipmentStateDto estimatedCargoReady:dt estimatedPickup:dt
+  estimatedDelivery:dt actualPickup:dt actualDelivery:dt estimatedDeparture:dt actualDeparture:dt
+  estimatedArrival:dt actualArrival:dt cutOffDocument:dt cutOffCargo:dt pickupReceived:dt
+  transportationVehicle:string travelNumber:string detailedGoodsDescription:string
+  detailedMarksAndNumbers:string co2EmissionsTotal:string co2EmissionsPickup:string co2EmissionsP2P:string
+  co2EmissionsDelivery:string quoteNumber:string outerPackQuantity:int outerPackType:PackTypeDto
+  innerPackQuantity:int innerPackType:PackTypeDto shipmentType:ShipmentTypeDto exportingCompanyCode:string
+  shipmentLegs:object[] events:EventDto[] containers:object[] containerShipmentBases:object[]
+  totalWeight:Dimension<WeightUnitDto> totalVolume:Dimension<VolumeUnitDto> packLines:object[]
+  dangerousGoodsInfo:DangerousGoodsInfoDto[] documents:ShipmentBaseDocumentDto[] notes:ShipmentNoteDto[]
+  invoices:InvoiceDto[] revenues:object[] tags:TagDto[]
+  magayaDocumentIdentifiers:ExternalMagayaDocumentIdentifierDto[] isActive:bool isTransferredToReporting:bool
+  isExportedToMagaya:bool isMagayaTrackingEnabled:bool referenceNumberDisplay:string
+ShortenedUrlDto:
+  id:guid creationTime:dt creatorId:guid source:string target:string isRegex:bool
+StatusUpdateDto:
+  shipment:object previousState:EventDto newState:EventDto
+StorageSizeInfoDto:
+  totalUsedSize:int maxStorageSize:int availableSize:int formattedUsedSize:string formattedMaxSize:string
+  formattedAvailableSize:string
+SubmitPollInput:
+  pollOptionIds:guid[]
+ServiceType:
+ExternalTagIdentifier:
+  id:guid extraProperties:object concurrencyStamp:string creationTime:dt creatorId:guid
+  lastModificationTime:dt lastModifierId:guid cargonerdsCustomerId:guid identifier:string
+  serviceType:ServiceType isActive:bool tag:object tagId:guid
+Tag:
+  id:guid extraProperties:object concurrencyStamp:string creationTime:dt creatorId:guid
+  lastModificationTime:dt lastModifierId:guid name:string color:string organizationUnitId:guid userId:guid
+  shipmentBases:object[] externalIdentifiers:ExternalTagIdentifier[]
+TagCreateDto:
+  extraProperties:object entityType:string name:string
+TagDefinitionDto:
+  entityType:string displayName:string
+TagUpdateDto:
+  extraProperties:object name:string concurrencyStamp:string
+TemplateDefinitionDto:
+  name:string displayName:string isLayout:bool layout:string isInlineLocalized:bool defaultCultureName:string
+TextTemplateContentDto:
+  name:string cultureName:string content:string
+TrackingLocationDto:
+  latitude:num longitude:num
+LocationDto:
+  latitude:num longitude:num
+EventClassifierCodeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+EventSourceDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+IotEventCodeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+VizionEventCodeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+VizionEventDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid shipmentId:guid
+  locationUnlocode:string versionNumber:int expectedDate:dt actualDate:dt rawDescription:string
+  location:TrackingLocationDto terminalCode:string voyage:string isPlanned:bool source:EventSourceDto
+  vizionEventCode:VizionEventCodeDto transportMode:TransportModeDto vessel:object
+VesselDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid imo:int name:string mmsi:int
+  trackingLegs:object[] events:VizionEventDto[]
+TrackingLegDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid location:LocationDto
+  reference:string eventDateTime:dt trackingContainerId:guid eventClassifierCode:EventClassifierCodeDto
+  eventSource:EventSourceDto iotEventCode:IotEventCodeDto vessel:VesselDto
+HapagLloydSubscriptionDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid callbackUrl:string
+  trackingContainers:object[]
+VizionParentSubscriptionDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid bookingReference:string
+  callbackUrl:string childSubscriptions:object[]
+VizionChildSubscriptionDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid bookingReference:string
+  callbackUrl:string parentSubscriptionId:guid parentSubscription:VizionParentSubscriptionDto
+  trackingContainer:object
+EquipmentEventCodeDto:
+  lastModificationTime:dt creationTime:dt id:guid isFrozen:bool code:string description:string
+  cargonerdsCustomerId:guid isVisibleInSpark:bool
+PredictionDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid location:string
+  estimatedTimeOfArrival:dt equipmentEventCode:EquipmentEventCodeDto isEmpty:bool trackingContainer:object
+TrackingContainerDto:
+  lastModificationTime:dt creationTime:dt id:guid cargonerdsCustomerId:guid shipmentIds:guid[]
+  containerReference:string bookingReference:string isTransmitting:bool lastLocation:TrackingLocationDto
+  lastEventDateTime:dt containerIso:string trackingLegs:TrackingLegDto[] inlandOrigin:PortDto origin:PortDto
+  destination:PortDto inlandDestination:PortDto hapagLloydSubscriptionId:guid vizionChildSubscriptionId:guid
+  hapagLloydSubscription:HapagLloydSubscriptionDto vizionChildSubscription:VizionChildSubscriptionDto
+  predictions:PredictionDto[]
+TrackingLegNewDto:
+  id:string reference:string eventDateTime:dt location:LocationDto
+TrackingContainerNewDto:
+  id:string containerReference:string bookingReference:string trackingLegs:TrackingLegNewDto[]
+TriggerSendMode:
+TriggerVariant:
+TriggerNotificationInput:
+  eventType:NotificationEventType entityId:guid inputs:object variant:TriggerVariant
+TriggerBatchInput:
+  mode:TriggerSendMode items:TriggerNotificationInput[]
+TriggerBatchItemResultDto:
+  index:int success:bool error:string
+TriggerBatchResultDto:
+  items:TriggerBatchItemResultDto[]
+InputKind:
+NotificationInputDescriptor:
+  name:string label:string kind:InputKind required:bool options:string[]
+TriggerableNotificationDto:
+  eventType:NotificationEventType displayName:string category:string entityTypeName:string
+  inputs:NotificationInputDescriptor[] isServiceBus:bool hasInternalVariant:bool
+TriggerGuardStatusDto:
+  emailAllowed:bool inAppAllowed:bool domain:string redirectAddress:string
+TriggerPageInitDto:
+  notifications:TriggerableNotificationDto[] guardStatus:TriggerGuardStatusDto
+TriggerPreviewRecipientDto:
+  userId:guid userName:string email:string channels:string reason:string organizationUnitName:string
+TriggerPreviewResultDto:
+  external:TriggerPreviewRecipientDto[] internal:TriggerPreviewRecipientDto[] error:string
+UnLinkUserInput:
+  userId:guid tenantId:guid
+UpdateApiKeyDto:
+  description:string isActive:bool expirationTime:dt
+UpdateApplicationInput:
+  extraProperties:object applicationType:string clientId:string displayName:string clientType:string
+  clientSecret:string consentType:string extensionGrantTypes:string[] postLogoutRedirectUris:string[]
+  redirectUris:string[] frontChannelLogoutUri:string allowPasswordFlow:bool allowClientCredentialsFlow:bool
+  allowAuthorizationCodeFlow:bool allowRefreshTokenFlow:bool allowHybridFlow:bool allowImplicitFlow:bool
+  allowTokenExchangeFlow:bool allowEndSessionEndpoint:bool allowDeviceAuthorizationEndpoint:bool
+  forcePkce:bool allowPushedAuthorizationEndpoint:bool forcePushedAuthorization:bool scopes:string[]
+  clientUri:string logoUri:string
+UpdateBlogDto:
+  extraProperties:object name:string slug:string concurrencyStamp:string
+UpdateBlogPostDto:
+  extraProperties:object title:string slug:string shortDescription:string content:string
+  coverImageMediaId:guid concurrencyStamp:string
+UpdateClaimTypeDto:
+  extraProperties:object name:string required:bool regex:string regexDescription:string description:string
+  valueType:IdentityClaimValueType concurrencyStamp:string
+UpdateCmsKitContactSettingDto:
+  receiverEmailAddress:string
+UpdateCmsKitPageFeedbackSettingDto:
+  isAutoHandled:bool requireCommentsForNegativeFeedback:bool
+UpdateCommentInput:
+  extraProperties:object text:string concurrencyStamp:string captchaToken:guid captchaAnswer:int
+UpdateDynamicReportDto:
+  name:string description:string visibility:ReportVisibility allowedOrgUnitIds:guid[]
+UpdateEmailSettingsDto:
+  smtpHost:string smtpPort:int smtpUserName:string smtpPassword:string smtpDomain:string smtpEnableSsl:bool
+  smtpUseDefaultCredentials:bool defaultFromAddress:string defaultFromDisplayName:string
+UpdateFaqGroupDto:
+  extraProperties:object name:string
+UpdateFaqQuestionDto:
+  extraProperties:object title:string text:string order:int
+UpdateFaqSectionDto:
+  extraProperties:object groupId:guid name:string order:int
+UpdateFeatureDto:
+  name:string value:string
+UpdateFeaturesDto:
+  features:UpdateFeatureDto[]
+UpdateLanguageDto:
+  extraProperties:object displayName:string isEnabled:bool concurrencyStamp:string
+UpdateLeptonXThemeSettingsDto:
+  applicationLayout:LeptonXApplicationLayout
+UpdateNotificationSettingDto:
+  eventType:NotificationEventType scope:SubscriptionScope channels:NotificationChannel
+UpdatePageFeedbackDto:
+  isHandled:bool adminNote:string
+UpdatePageFeedbackSettingDto:
+  id:guid entityType:string emailAddresses:string
+UpdatePageFeedbackSettingsInput:
+  settings:UpdatePageFeedbackSettingDto[]
+UpdatePageInputDto:
+  extraProperties:object title:string slug:string layoutName:string content:string script:string style:string
+  status:PageStatus concurrencyStamp:string
+UpdatePermissionDto:
+  name:string isGranted:bool
+UpdatePermissionsDto:
+  permissions:UpdatePermissionDto[]
+UpdatePollDto:
+  extraProperties:object question:string code:string widget:string name:string showVoteCount:bool
+  showResultWithoutGivingVote:bool showHoursLeft:bool startDate:dt endDate:dt resultShowingEndDate:dt
+  pollOptions:PollOptionDto[]
+PreferenceDetailsDto:
+  preference:string isEnabled:bool
+UpdatePreferenceInput:
+  emailAddress:string preferenceDetails:PreferenceDetailsDto[] source:string sourceUrl:string
+UpdatePreferenceRequestInput:
+  emailAddress:string preferenceDetails:PreferenceDetailsDto[] source:string sourceUrl:string
+  securityCode:string
+UpdateProfileDto:
+  extraProperties:object userName:string email:string name:string surname:string phoneNumber:string
+  timezone:string concurrencyStamp:string appName:string returnUrl:string returnUrlHash:string
+UpdateResourcePermissionsDto:
+  providerName:string providerKey:string permissions:string[]
+UpdateScopeInput:
+  extraProperties:object name:string displayName:string description:string resources:string[]
+UpdateShortenedUrlDto:
+  target:string
+UpdateTemplateContentInput:
+  templateName:string cultureName:string content:string
+UserData:
+  id:guid tenantId:guid userName:string name:string surname:string isActive:bool email:string
+  emailConfirmed:bool phoneNumber:string phoneNumberConfirmed:bool extraProperties:object
+UserDelegationDto:
+  id:guid userName:string startTime:dt endTime:dt
+UserImportFileSchemaDto:
+  propertyNames:string[] recordCount:int sampleValues:object
+UserLookupDto:
+  id:guid userName:string
+UserPreferences:
+  timezone:string dateFormat:string currency:string measurementSystem:MeasurementSystem language:string
+VerifyAuthenticatorCodeDto:
+  recoveryCodes:string[]
+VerifyAuthenticatorCodeInput:
+  code:string
+VerifyChangeEmailTokenInput:
+  userId:guid newEmailAddress:string token:string
+VerifyEmailConfirmationTokenInput:
+  userId:guid token:string
+VerifyLinkLoginTokenInput:
+  userId:guid tenantId:guid token:string
+VerifyLinkTokenInput:
+  userId:guid tenantId:guid token:string
+VerifyPasswordResetTokenInput:
+  userId:guid resetToken:string
+WidgetDataDto:
+  scalar:num rows:object[] totalCount:int error:string query:string
+WidgetDataRequest:
+  entitySet:string type:WidgetType config:WidgetConfig filter:string skip:int take:int
