@@ -39,7 +39,28 @@ claude plugin install realtime-lean@realtime-lean-local
 
 Then remove (or disable) the stock `realtime` entry in `~/.claude.json` `mcpServers`, otherwise both servers load and the 38 stock tools come back. Restart Claude Code.
 
-## Install (any MCP client)
+## Hosted endpoint (any MCP client, no install)
+
+The same proxy runs as a streamable-HTTP MCP server on the aisolutions VM. Each client sends its own realtime API key; the host stores none.
+
+```
+URL     https://aisolutions.cargonerds.dev/lean/mcp
+Header  X-Api-Key: <your key from admin.mcp.cargonerds.dev/api-keys>   (or Authorization: Bearer <key>)
+Health  https://aisolutions.cargonerds.dev/lean/healthz
+```
+
+Claude Code: `claude mcp add --transport http realtime https://aisolutions.cargonerds.dev/lean/mcp --header "X-Api-Key: <key>"`
+
+Claude Desktop, Cursor, Codex, custom agents: add an HTTP MCP server with that URL and header. The `initialize` response carries the skill as `instructions`; clients that ignore instructions can pull the `realtime-lean` prompt.
+
+Operations: service `realtime-lean` in `~/n8n-compose/docker-compose.yml` on the VM (block in `deploy/docker-compose.realtime-lean.yml`, image from `Dockerfile`, 256 MB limit, Traefik strips `/lean`). Redeploy after a change:
+
+```
+tar --exclude=.git --exclude=tests/bench/runs --exclude=scripts/.cache -czf - . | ssh azureuser@aisolutions.cargonerds.dev 'tar -xzf - -C ~/n8n-compose/realtime-lean'
+ssh azureuser@aisolutions.cargonerds.dev 'cd ~/n8n-compose && docker compose up -d --build realtime-lean'
+```
+
+## Local stdio (any MCP client that spawns processes)
 
 ```json
 { "mcpServers": { "realtime": {
@@ -48,7 +69,7 @@ Then remove (or disable) the stock `realtime` entry in `~/.claude.json` `mcpServ
     "env": { "RT_API_KEY": "<key>" } } } }
 ```
 
-The server's `initialize` response carries the skill as `instructions`; clients that ignore instructions can pull the `realtime-lean` prompt. For runtimes that read a context file, point them at `AGENTS.md`.
+For runtimes that read a context file, point them at `AGENTS.md`.
 
 ## Tools
 

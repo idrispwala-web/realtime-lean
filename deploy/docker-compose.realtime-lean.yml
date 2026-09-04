@@ -1,0 +1,18 @@
+# Service block for ~/n8n-compose/docker-compose.yml on the aisolutions VM (Traefik conventions of that file).
+# Public endpoint: https://${SUBDOMAIN}.${DOMAIN_NAME}/lean/mcp   health: /lean/healthz
+# The container holds no API key: each client sends its own X-Api-Key, forwarded upstream.
+  realtime-lean:
+    build: ./realtime-lean
+    restart: unless-stopped
+    environment:
+      - RT_BASE_URL=https://api.mcp.cargonerds.dev
+    mem_limit: 256m
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.realtime-lean.rule=Host(`${SUBDOMAIN}.${DOMAIN_NAME}`) && PathPrefix(`/lean`)"
+      - "traefik.http.routers.realtime-lean.entrypoints=websecure"
+      - "traefik.http.routers.realtime-lean.tls=true"
+      - "traefik.http.routers.realtime-lean.tls.certresolver=mytlschallenge"
+      - "traefik.http.routers.realtime-lean.middlewares=lean-strip"
+      - "traefik.http.middlewares.lean-strip.stripprefix.prefixes=/lean"
+      - "traefik.http.services.realtime-lean.loadbalancer.server.port=8787"
