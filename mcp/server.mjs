@@ -21,9 +21,20 @@ const instructions = fs
   .readFileSync(path.join(ROOT, "skills", "realtime-lean", "SKILL.md"), "utf8")
   .replace(/^---[\s\S]*?---\s*/, "");
 
+// Keys are 48 hex chars. Tolerate what shells do to a file: UTF-16 (PowerShell Out-File default), BOM, quotes, CRLF.
+function extractKey(text) {
+  const m = text.match(/[0-9a-fA-F]{32,64}/);
+  return m ? m[0] : text.replace(/^[\s"']+|[\s"']+$/g, "");
+}
+let keySource = "none";
 function apiKey() {
-  if (process.env.RT_API_KEY) return process.env.RT_API_KEY.trim();
-  try { return fs.readFileSync(KEY_FILE, "utf8").trim(); } catch { return ""; }
+  if (process.env.RT_API_KEY) { keySource = "env RT_API_KEY"; return extractKey(process.env.RT_API_KEY); }
+  try {
+    const buf = fs.readFileSync(KEY_FILE);
+    const text = buf[0] === 0xff && buf[1] === 0xfe ? buf.toString("utf16le") : buf.toString("utf8");
+    keySource = KEY_FILE;
+    return extractKey(text);
+  } catch { keySource = "none"; return ""; }
 }
 
 const FIELDS_DESC = "Dot paths to keep from the response (e.g. id, consignee.name). REQUIRED for GET: a record carries every field its type declares.";
@@ -117,7 +128,7 @@ async function upstreamNow(name, args) {
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name, arguments: args } }),
   });
   const raw = await res.text();
-  if (res.status === 401) throw new Error("upstream 401: the API key was rejected. Re-run /realtime-lean:setup with a valid key.");
+  if (res.status === 401) throw new Error(`upstream 401: the API key was rejected. Key read from ${keySource}, ${key.length} chars, starts ${key.slice(0, 4)}. Expected 48 hex chars from https://admin.mcp.cargonerds.dev/api-keys; re-run /realtime-lean:setup <key>.`);
   const data = raw.split("\n").filter((l) => l.startsWith("data: ")).map((l) => l.slice(6)).join("") || raw;
   let msg;
   try { msg = JSON.parse(data); } catch { throw new Error(`upstream ${res.status}: ${raw.slice(0, 300)}`); }

@@ -8,7 +8,7 @@
       "name": "realtime-lean",
       "source": "./",
       "description": "Token-lean access to the Cargonerds realtime MCP.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "category": "mcp",
       "keywords": [
         "cargonerds",
