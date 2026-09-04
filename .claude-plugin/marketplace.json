@@ -1,5 +1,5 @@
 {
-  "name": "realtime-lean-local",
+  "name": "cargonerds",
   "owner": {
     "name": "Idris Presswala"
   },
@@ -8,7 +8,7 @@
       "name": "realtime-lean",
       "source": "./",
       "description": "Token-lean access to the Cargonerds realtime MCP.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "category": "mcp",
       "keywords": [
         "cargonerds",
@@ -18,5 +18,5 @@
       ]
     }
   ],
-  "description": "Local marketplace for the realtime-lean plugin (Cargonerds realtime MCP, token-lean)."
+  "description": "Cargonerds plugins: realtime-lean, the token-efficient connector to the realtime MCP."
 }

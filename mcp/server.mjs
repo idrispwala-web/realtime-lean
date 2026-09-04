@@ -1,14 +1,12 @@
 #!/usr/bin/env node
-// realtime-lean: zero-dependency MCP proxy in front of the Cargonerds realtime MCP.
+// realtime-lean: zero-dependency stdio MCP connector in front of the Cargonerds realtime MCP.
+// Runs on the user's machine, talks straight to api.mcp.cargonerds.dev with the user's own key.
 // 4 lean tools instead of 38, responses compacted, skill shipped as server instructions.
 //
-//   node mcp/server.mjs                 stdio transport; key from env RT_API_KEY
-//   node mcp/server.mjs --http 8787     streamable-HTTP transport on POST /mcp; key from the caller's
-//                                       X-Api-Key (or Authorization: Bearer) header, forwarded upstream.
-//                                       The hosted proxy holds no credential of its own.
-// Env: RT_BASE_URL (default https://api.mcp.cargonerds.dev), RT_API_KEY (stdio only)
+// Key lookup, per call: env RT_API_KEY, else the file ~/.realtime-lean/key (written by /realtime-lean:setup).
+// Env: RT_BASE_URL (default https://api.mcp.cargonerds.dev)
 import fs from "node:fs";
-import http from "node:http";
+import os from "node:os";
 import path from "node:path";
 import readline from "node:readline";
 import { fileURLToPath } from "node:url";
@@ -16,11 +14,17 @@ import { fileURLToPath } from "node:url";
 const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const REF = path.join(ROOT, "skills", "realtime-lean", "reference");
 const BASE = (process.env.RT_BASE_URL || "https://api.mcp.cargonerds.dev").replace(/\/$/, "");
+const KEY_FILE = path.join(os.homedir(), ".realtime-lean", "key");
 const VERSION = JSON.parse(fs.readFileSync(path.join(ROOT, ".claude-plugin", "plugin.json"), "utf8")).version;
 
 const instructions = fs
   .readFileSync(path.join(ROOT, "skills", "realtime-lean", "SKILL.md"), "utf8")
   .replace(/^---[\s\S]*?---\s*/, "");
+
+function apiKey() {
+  if (process.env.RT_API_KEY) return process.env.RT_API_KEY.trim();
+  try { return fs.readFileSync(KEY_FILE, "utf8").trim(); } catch { return ""; }
+}
 
 const FIELDS_DESC = "Dot paths to keep from the response (e.g. id, consignee.name). REQUIRED for GET: a record carries every field its type declares.";
 const TOOLS = [
@@ -96,23 +100,24 @@ const TOOLS = [
 
 // ---- upstream -----------------------------------------------------------------
 // The upstream host fails ("The request failed. Reference ...") when several calls hit it at once;
-// one at a time succeeds. Serialise per API key, so one agent may still issue rt_* calls in parallel
-// without one tenant queueing behind another.
-const chains = new Map();
-function upstream(name, args, key) {
-  const prev = chains.get(key) || Promise.resolve();
-  const run = prev.then(() => upstreamNow(name, args, key));
-  chains.set(key, run.catch(() => {}));
+// one at a time succeeds. Serialise, so an agent may still issue rt_* calls in parallel.
+let chain = Promise.resolve();
+function upstream(name, args) {
+  const run = chain.then(() => upstreamNow(name, args));
+  chain = run.catch(() => {});
   return run;
 }
 
-async function upstreamNow(name, args, key) {
+async function upstreamNow(name, args) {
+  const key = apiKey();
+  if (!key) throw new Error("no API key. Run /realtime-lean:setup <key> (creates ~/.realtime-lean/key) or set RT_API_KEY. Keys: https://admin.mcp.cargonerds.dev/api-keys");
   const res = await fetch(BASE + "/mcp", {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json, text/event-stream", "X-Api-Key": key },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name, arguments: args } }),
   });
   const raw = await res.text();
+  if (res.status === 401) throw new Error("upstream 401: the API key was rejected. Re-run /realtime-lean:setup with a valid key.");
   const data = raw.split("\n").filter((l) => l.startsWith("data: ")).map((l) => l.slice(6)).join("") || raw;
   let msg;
   try { msg = JSON.parse(data); } catch { throw new Error(`upstream ${res.status}: ${raw.slice(0, 300)}`); }
@@ -191,9 +196,7 @@ function hint(text) {
 }
 
 // ---- tool dispatch --------------------------------------------------------------
-async function call(name, a = {}, key) {
-  // the key is only validated upstream, but requiring one keeps the offline reference off the open internet
-  if (!key) throw new Error("no API key: set RT_API_KEY (stdio) or send X-Api-Key / Authorization: Bearer (http)");
+async function call(name, a = {}) {
   switch (name) {
     case "rt_ref":
       return ref(a.q, a.file);
@@ -201,17 +204,17 @@ async function call(name, a = {}, key) {
       if (!a.select) throw new Error("select is required: name the properties you will read");
       const bad = preflight(a);
       if (bad) throw new Error(bad);
-      const r = await upstream("query_odata", a, key);
+      const r = await upstream("query_odata", a);
       return r.isError ? hint(r.text) : compact(r.text);
     }
     case "rt_call": {
-      const r = await upstream("call_endpoint", a, key);
+      const r = await upstream("call_endpoint", a);
       return r.isError ? hint(r.text) : compact(r.text);
     }
     case "rt_describe": {
       const r = a.endpoint
-        ? await upstream("describe_endpoint", { id: a.endpoint }, key)
-        : await upstream("describe_odata_entity_set", { entitySet: a.entitySet }, key);
+        ? await upstream("describe_endpoint", { id: a.endpoint })
+        : await upstream("describe_odata_entity_set", { entitySet: a.entitySet });
       return r.isError ? r.text : compact(r.text);
     }
     default:
@@ -219,12 +222,16 @@ async function call(name, a = {}, key) {
   }
 }
 
-// ---- JSON-RPC dispatcher (transport independent) ----------------------------------
-// Returns a response object, or null for notifications.
-async function handle(req, key) {
-  if (req.id === undefined) return null;
-  const reply = (result) => ({ jsonrpc: "2.0", id: req.id, result });
-  const fail = (code, message) => ({ jsonrpc: "2.0", id: req.id, error: { code, message } });
+// ---- JSON-RPC over stdio ---------------------------------------------------------
+const send = (m) => process.stdout.write(JSON.stringify(m) + "\n");
+const rl = readline.createInterface({ input: process.stdin });
+rl.on("line", async (line) => {
+  if (!line.trim()) return;
+  let req;
+  try { req = JSON.parse(line); } catch { return; }
+  if (req.id === undefined) return; // notification
+  const reply = (result) => send({ jsonrpc: "2.0", id: req.id, result });
+  const fail = (code, message) => send({ jsonrpc: "2.0", id: req.id, error: { code, message } });
   try {
     switch (req.method) {
       case "initialize":
@@ -238,7 +245,7 @@ async function handle(req, key) {
       case "tools/list": return reply({ tools: TOOLS });
       case "tools/call": {
         try {
-          const text = await call(req.params.name, req.params.arguments, key);
+          const text = await call(req.params.name, req.params.arguments);
           return reply({ content: [{ type: "text", text }] });
         } catch (e) {
           return reply({ content: [{ type: "text", text: String(e.message || e) }], isError: true });
@@ -250,45 +257,6 @@ async function handle(req, key) {
       default: return fail(-32601, `method not found: ${req.method}`);
     }
   } catch (e) {
-    return fail(-32603, String(e.message || e));
+    fail(-32603, String(e.message || e));
   }
-}
-
-// ---- transports -------------------------------------------------------------------
-const httpIdx = process.argv.indexOf("--http");
-if (httpIdx < 0) {
-  // stdio: newline-delimited JSON-RPC, key from env
-  const KEY = process.env.RT_API_KEY || "";
-  const rl = readline.createInterface({ input: process.stdin });
-  rl.on("line", async (line) => {
-    if (!line.trim()) return;
-    let req;
-    try { req = JSON.parse(line); } catch { return; }
-    const res = await handle(req, KEY);
-    if (res) process.stdout.write(JSON.stringify(res) + "\n");
-  });
-} else {
-  // streamable HTTP (stateless): POST /mcp with JSON body, JSON response; GET /mcp is not a stream here.
-  const port = Number(process.argv[httpIdx + 1] || process.env.PORT || 8787);
-  const server = http.createServer(async (rq, rs) => {
-    const url = new URL(rq.url, "http://x");
-    const send = (code, body, type = "application/json") => { rs.writeHead(code, { "Content-Type": type }); rs.end(body); };
-    if (url.pathname === "/healthz") return send(200, JSON.stringify({ ok: true, version: VERSION }));
-    if (url.pathname !== "/mcp") return send(404, "not found", "text/plain");
-    if (rq.method === "GET" || rq.method === "DELETE") return send(405, "stateless server: POST /mcp only", "text/plain");
-    if (rq.method !== "POST") return send(405, "POST only", "text/plain");
-    let body = "";
-    for await (const chunk of rq) { body += chunk; if (body.length > 1e6) return send(413, "too large", "text/plain"); }
-    let req;
-    try { req = JSON.parse(body); } catch { return send(400, JSON.stringify({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "parse error" } })); }
-    const auth = rq.headers["authorization"] || "";
-    const key = rq.headers["x-api-key"] || (auth.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : "");
-    const t0 = Date.now();
-    const reqs = Array.isArray(req) ? req : [req];
-    const out = (await Promise.all(reqs.map((r) => handle(r, key)))).filter(Boolean);
-    for (const r of reqs) console.log(`${new Date().toISOString()} ${r.method}${r.params?.name ? " " + r.params.name : ""} key=${key.slice(0, 8) || "-"} ${Date.now() - t0}ms`);
-    if (!out.length) return send(202, "");
-    return send(200, JSON.stringify(Array.isArray(req) ? out : out[0]));
-  });
-  server.listen(port, () => console.log(`realtime-lean ${VERSION} listening on :${port} (POST /mcp, GET /healthz), upstream ${BASE}`));
-}
+});
