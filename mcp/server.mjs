@@ -90,7 +90,16 @@ const TOOLS = [
 ];
 
 // ---- upstream -----------------------------------------------------------------
-async function upstream(name, args) {
+// The upstream host fails ("The request failed. Reference ...") when several calls hit it at once;
+// one at a time succeeds. Serialise, so an agent may still issue rt_* calls in parallel.
+let chain = Promise.resolve();
+function upstream(name, args) {
+  const run = chain.then(() => upstreamNow(name, args));
+  chain = run.catch(() => {});
+  return run;
+}
+
+async function upstreamNow(name, args) {
   const res = await fetch(BASE + "/mcp", {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json, text/event-stream", "X-Api-Key": KEY },

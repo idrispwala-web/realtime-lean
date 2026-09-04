@@ -46,6 +46,8 @@ Every realtime call costs a full round trip of context. Discovery calls cost 0.5
 - A wrong property name inside a nested `$select` is dropped silently, not reported. Take nested names from odata.txt.
 - `$expand` depth is capped at 2: from Shipment you can reach `trackingContainers($expand=trackingLegs(...))` but not the legs' `eventClassifierCode`. Need level 3? Start from the middle entity (TrackingContainer) instead.
 - Server bugs (500) to avoid: `isMilestone` inside a nested `$select`; `$orderby`/`$top` inside `expand(...)`. Order at the top level instead.
+- Concurrent upstream calls fail with "The request failed. Reference ..." while the same call alone succeeds. The proxy serialises rt_* calls; with the raw server, issue one call per turn. A raw `filter` joining several `or` terms also failed; prefer one `where` per lookup.
+- A reference that is not a cargonerdsNumber (S + 14 digits) is probably not in Hub at all. Before hunting across houseBill/masterBill/bookingReference/additionalReferences, ask what system the number comes from.
 - Enum-like lookups (`state`, `orderStatus`...) are either an enum property with members listed in odata.txt `{A|B}` or a navigation (`orderStatusId` + `expand orderStatus($select=name)`). Check which before filtering.
 - No `select` = every column = 3-9x the tokens.
 - Proxy responses drop null-valued fields and `@odata.` prefixes: a selected key that is absent from a row is null (e.g. no ETA yet); `@odata.count` arrives as `count`.
