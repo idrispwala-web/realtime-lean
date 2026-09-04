@@ -1,5 +1,24 @@
 # Benchmark: stock realtime MCP vs realtime-lean skill
 
+## Phase 2 (2026-09-04, headless A/B harness, exact API usage) - see report.html
+
+`tests/bench/run.py`: 4 eval cases x 3 runs x 2 arms via `claude -p --output-format stream-json`, fresh config dir per arm,
+neutral cwd, file tools disallowed, prompt via stdin. `aggregate.py` merges batches (latest batch per case+arm).
+
+| arm | correct | avg input tokens (all turns) | avg output | avg cost USD | avg realtime calls | avg tool payload chars | avg turns |
+|---|---|---|---|---|---|---|---|
+| stock | 12/12 | 110,372 | 1,074 | 0.191 | 3.3 | 10,732 | 8.4 |
+| lean | 12/12 | 52,764 | 673 | 0.099 | 1.2 | 860 | 5.0 |
+
+Per case (stock -> lean, input tokens): containers-events 196k -> 54k; booked-count 91k -> 53k; track-house-bill 86k -> 49k;
+find-endpoint 68k -> 55k (lean loses here: skill invocation is an extra turn, both arms answer from a catalog).
+Mid-benchmark fix: before the proxy preflight for `isMilestone` in nested `$select`, one lean containers-events run wandered
+(12 tool calls, failed); the lean row above is the post-fix batch. Harness lessons: `--strict-mcp-config` drops plugin MCP
+servers (mount the proxy via `--mcp-config` instead); cwd must be outside the repo or the stock agent reads the reference
+files from disk; prompts with parentheses break `shell=True` argument passing on Windows.
+
+## Phase 1 (2026-09-04, in-session subagents, self-reported + transcript sizes)
+
 Method: one fresh general-purpose subagent per scenario in Claude Code, same prompt, same live data (2026-09-04).
 Baseline = stock MCP tools, no skill. With skill = agent told to read SKILL.md first and grep `reference/`.
 Numbers from the subagent transcripts (`analyze.py <agent-*.jsonl>`): realtime tool calls and the characters

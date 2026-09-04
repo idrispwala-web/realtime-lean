@@ -1,0 +1,166 @@
+<title>realtime-lean Token Audit</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#f6f7f4; --panel:#ffffff; --ink:#1b2a41; --muted:#5d6b7c; --line:#d9dee3;
+  --lean:#0f7c8c; --lean-soft:#dcedf0; --stock:#7a8699; --stock-soft:#e6e9ee; --warn:#b7791f; --good:#2f7d4f;
+  --code:#eef1ee;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ground:#10161d; --panel:#171f29; --ink:#e6ebf0; --muted:#9aa7b6; --line:#2a3542;
+  --lean:#3fb3c4; --lean-soft:#153a41; --stock:#8d99aa; --stock-soft:#232d3a; --warn:#d9a441; --good:#5cbf83; --code:#1f2933; }}
+:root[data-theme="dark"]{
+  --ground:#10161d; --panel:#171f29; --ink:#e6ebf0; --muted:#9aa7b6; --line:#2a3542;
+  --lean:#3fb3c4; --lean-soft:#153a41; --stock:#8d99aa; --stock-soft:#232d3a; --warn:#d9a441; --good:#5cbf83; --code:#1f2933; }
+body{background:var(--ground);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,Segoe UI,sans-serif;margin:0}
+main{max-width:76ch;margin:0 auto;padding:40px 20px 72px}
+h1,h2,h3{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:2.4rem;font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.45rem;font-weight:700;margin-top:56px;padding-top:18px;border-top:1px solid var(--line)}
+h3{font-size:1.05rem;font-weight:600;margin-top:28px}
+p{margin:12px 0;max-width:68ch}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{font-size:1.1rem;color:var(--muted);max-width:64ch}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:28px 0 8px}
+.kpi{background:var(--panel);border:1px solid var(--line);padding:16px 18px}
+.kpi b{display:block;font-family:"IBM Plex Sans Condensed",sans-serif;font-size:2rem;font-weight:700;color:var(--lean);font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi span{font-size:.85rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.92rem;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto;margin:16px 0;border:1px solid var(--line);background:var(--panel)}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.n,th.n{text-align:right}
+tr.lean td:first-child::before,tr.stock td:first-child::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:middle}
+tr.lean td:first-child::before{background:var(--lean)} tr.stock td:first-child::before{background:var(--stock)}
+tr.total td{font-weight:600;border-top:2px solid var(--line)}
+code,pre{font-family:"IBM Plex Mono",monospace;font-size:.86em}
+code{background:var(--code);padding:1px 5px;border-radius:3px}
+pre{background:var(--code);padding:14px 16px;overflow-x:auto;margin:14px 0;line-height:1.45;border:1px solid var(--line)}
+pre code{background:none;padding:0}
+.chart{background:var(--panel);border:1px solid var(--line);padding:18px 18px 10px;margin:18px 0}
+.chart svg{width:100%;height:auto;display:block}
+.chart .cap{font-size:.82rem;color:var(--muted);margin:6px 0 0}
+.legend{display:flex;gap:18px;font-size:.85rem;color:var(--muted);margin:0 0 8px}
+.legend i{display:inline-block;width:12px;height:12px;vertical-align:-2px;margin-right:6px}
+.mech{display:grid;gap:10px;margin:16px 0}
+.mech div{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--lean);padding:12px 16px}
+.mech b{display:block;font-weight:600}
+.mech small{color:var(--muted)}
+.note{border-left:4px solid var(--warn);padding:10px 16px;background:var(--panel);margin:16px 0;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+ul{padding-left:1.2em} li{margin:6px 0}
+.tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;padding:1px 7px;border:1px solid var(--line);border-radius:3px;color:var(--muted);margin-left:6px;vertical-align:middle}
+a{color:var(--lean)}
+</style>
+<main>
+<div class="eyebrow">Cargonerds realtime MCP · api.mcp.cargonerds.dev · 4 Sep 2026</div>
+<h1>realtime-lean Token Audit</h1>
+<p class="lede">Same questions, same live data, same model. One arm talks to the stock realtime MCP (38 tools, no guidance). The other talks through the realtime-lean plugin (4 proxy tools, offline reference, operating skill). Every number below is read from the API usage block of a headless Claude Code run, not estimated.</p>
+
+<div class="kpis">
+  <div class="kpi"><b>−52%</b><span>input tokens per question<br>110,372 → 52,764</span></div>
+  <div class="kpi"><b>−48%</b><span>cost per question<br>$0.191 → $0.099</span></div>
+  <div class="kpi"><b>−92%</b><span>tool payload into context<br>10,732 → 860 chars</span></div>
+  <div class="kpi"><b>3.3 → 1.2</b><span>realtime calls per question</span></div>
+  <div class="kpi"><b>12 / 12</b><span>correct answers, both arms</span></div>
+</div>
+<p class="cap" style="color:var(--muted);font-size:.85rem">Averages over 4 question types × 3 runs × 2 arms = 24 headless runs. Input tokens include prompt-cache reads and writes across every turn of a run, which is what the bill counts.</p>
+
+<h2>What was measured</h2>
+<p>Four operator questions were written as eval cases in <code>evals/</code>, each with regex graders so correctness is checked mechanically (the count question is graded by hand: all six runs answered 450). Each case ran three times per arm through <code>claude -p --output-format stream-json</code> in a fresh, empty config directory, so no other MCP servers, skills or project files were in context. File tools were disabled in both arms: the lean agent had to use <code>rt_ref</code>, the stock agent the server's own discovery tools.</p>
+<div class="tw"><table>
+<tr><th>arm</th><th>what the agent had</th><th>tools in the session</th></tr>
+<tr class="stock"><td>stock</td><td><code>npx mcp-remote https://api.mcp.cargonerds.dev/mcp</code>, no skill</td><td class="n">38</td></tr>
+<tr class="lean"><td>lean</td><td><code>mcp/server.mjs</code> proxy + <code>realtime-lean</code> skill (via <code>--plugin-dir</code>)</td><td class="n">4</td></tr>
+</table></div>
+<p>Runner: <code>tests/bench/run.py</code>. Aggregation: <code>tests/bench/aggregate.py</code>. Raw per-run JSON with every tool call and its result size sits in <code>tests/bench/runs/</code>.</p>
+
+<h2>Results per question</h2>
+<div class="chart">
+  <div class="legend"><span><i style="background:var(--stock)"></i>stock</span><span><i style="background:var(--lean)"></i>lean</span></div>
+  <svg viewBox="0 0 720 300" role="img" aria-label="Input tokens per question, stock versus lean">
+    <g font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--muted)">
+      <line x1="200" y1="10" x2="200" y2="262" stroke="var(--line)"/>
+      <line x1="325" y1="10" x2="325" y2="262" stroke="var(--line)" stroke-dasharray="2 3"/><text x="325" y="278" text-anchor="middle">50k</text>
+      <line x1="450" y1="10" x2="450" y2="262" stroke="var(--line)" stroke-dasharray="2 3"/><text x="450" y="278" text-anchor="middle">100k</text>
+      <line x1="575" y1="10" x2="575" y2="262" stroke="var(--line)" stroke-dasharray="2 3"/><text x="575" y="278" text-anchor="middle">150k</text>
+      <line x1="700" y1="10" x2="700" y2="262" stroke="var(--line)" stroke-dasharray="2 3"/><text x="700" y="278" text-anchor="middle">200k</text>
+      <text x="720" y="296" text-anchor="end">input tokens per run, all turns</text>
+    </g>
+    <g font-family="IBM Plex Sans, sans-serif" font-size="13" fill="var(--ink)">
+      <text x="190" y="36" text-anchor="end">containers + events</text>
+      <rect x="200" y="20" width="490" height="16" fill="var(--stock)"/><text x="696" y="33" font-size="11" fill="var(--muted)">196,078</text>
+      <rect x="200" y="39" width="135" height="16" fill="var(--lean)"/><text x="341" y="52" font-size="11" fill="var(--muted)">53,908</text>
+      <text x="190" y="98" text-anchor="end">booked count</text>
+      <rect x="200" y="82" width="228" height="16" fill="var(--stock)"/><text x="434" y="95" font-size="11" fill="var(--muted)">91,380</text>
+      <rect x="200" y="101" width="132" height="16" fill="var(--lean)"/><text x="338" y="114" font-size="11" fill="var(--muted)">52,731</text>
+      <text x="190" y="160" text-anchor="end">track by house bill</text>
+      <rect x="200" y="144" width="216" height="16" fill="var(--stock)"/><text x="422" y="157" font-size="11" fill="var(--muted)">86,374</text>
+      <rect x="200" y="163" width="123" height="16" fill="var(--lean)"/><text x="329" y="176" font-size="11" fill="var(--muted)">49,191</text>
+      <text x="190" y="222" text-anchor="end">find endpoint</text>
+      <rect x="200" y="206" width="169" height="16" fill="var(--stock)"/><text x="375" y="219" font-size="11" fill="var(--muted)">67,657</text>
+      <rect x="200" y="225" width="138" height="16" fill="var(--lean)"/><text x="344" y="238" font-size="11" fill="var(--muted)">55,228</text>
+    </g>
+  </svg>
+  <p class="cap">Scale: 2.5 px per 1,000 tokens. Each bar is the mean of three runs.</p>
+</div>
+
+<div class="tw"><table>
+<tr><th>question</th><th>arm</th><th class="n">correct</th><th class="n">turns</th><th class="n">realtime calls</th><th class="n">tool payload chars</th><th class="n">input tokens</th><th class="n">output tokens</th><th class="n">cost USD</th></tr>
+<tr class="stock"><td>Containers + milestone events of S240201013756</td><td>stock</td><td class="n">3/3</td><td class="n">14.7</td><td class="n">7.0</td><td class="n">24,198</td><td class="n">196,078</td><td class="n">2,185</td><td class="n">0.342</td></tr>
+<tr class="lean"><td></td><td>lean</td><td class="n">3/3</td><td class="n">5.0</td><td class="n">1.0</td><td class="n">1,732</td><td class="n">53,908</td><td class="n">871</td><td class="n">0.087</td></tr>
+<tr class="stock"><td>How many shipments are Booked, 3 newest</td><td>stock</td><td class="n">3/3</td><td class="n">6.7</td><td class="n">2.3</td><td class="n">8,197</td><td class="n">91,380</td><td class="n">730</td><td class="n">0.164</td></tr>
+<tr class="lean"><td></td><td>lean</td><td class="n">3/3</td><td class="n">5.0</td><td class="n">1.0</td><td class="n">278</td><td class="n">52,731</td><td class="n">554</td><td class="n">0.115</td></tr>
+<tr class="stock"><td>Track house bill S04668263</td><td>stock</td><td class="n">3/3</td><td class="n">7.3</td><td class="n">2.0</td><td class="n">8,113</td><td class="n">86,374</td><td class="n">820</td><td class="n">0.171</td></tr>
+<tr class="lean"><td></td><td>lean</td><td class="n">3/3</td><td class="n">3.7</td><td class="n">1.0</td><td class="n">421</td><td class="n">49,191</td><td class="n">559</td><td class="n">0.088</td></tr>
+<tr class="stock"><td>Which endpoint creates a Tag, body fields</td><td>stock</td><td class="n">3/3</td><td class="n">5.0</td><td class="n">2.0</td><td class="n">2,419</td><td class="n">67,657</td><td class="n">563</td><td class="n">0.085</td></tr>
+<tr class="lean"><td></td><td>lean</td><td class="n">3/3</td><td class="n">6.3</td><td class="n">1.7</td><td class="n">1,008</td><td class="n">55,228</td><td class="n">709</td><td class="n">0.107</td></tr>
+<tr class="total stock"><td>all four</td><td>stock</td><td class="n">12/12</td><td class="n">8.4</td><td class="n">3.3</td><td class="n">10,732</td><td class="n">110,372</td><td class="n">1,074</td><td class="n">0.191</td></tr>
+<tr class="total lean"><td></td><td>lean</td><td class="n">12/12</td><td class="n">5.0</td><td class="n">1.2</td><td class="n">860</td><td class="n">52,764</td><td class="n">673</td><td class="n">0.099</td></tr>
+</table></div>
+<p>The one place lean loses is the discovery question. Both arms answer from a catalog, so the payload is similar, and the lean agent spends an extra turn invoking the skill. That turn costs about 2k tokens; it is what buys the one-call behaviour on the data questions.</p>
+
+<h2>Where the tokens go, and where they stop going</h2>
+<p>A Claude Code run re-sends the whole conversation on every assistant turn. A tool result therefore costs its size once when it arrives and again on every later turn. Two levers move the bill: how many turns a question takes, and how many characters each tool result drops into the context. The plugin works on both.</p>
+<div class="mech">
+  <div><b>No discovery round trips</b>The stock agent called <code>describe_odata_entity_set Shipment</code> (7,428 chars) in 9 of 12 runs before its first real query, plus <code>list_odata_entity_sets</code> and <code>search_endpoints</code>. The lean agent reads names from the bundled reference through <code>rt_ref</code>, offline, 200 to 900 chars per lookup, and in the data questions did not look anything up at all: the skill's recipes carried the names.<small> Measured: 3.3 → 1.2 realtime calls per question.</small></div>
+  <div><b>One query with select and a nested expand</b>The skill's recipe fetches containers, events and event labels in one call: <code>expand containers($select=containerNumber),events($select=actualDate,expectedDate,locationUnlocode;$expand=code($select=code,actualLabel))</code>. The stock agent needed 7 calls and 24k chars for the same answer, including a 6k-char unselected <code>events</code> expand and a separate EventCode lookup.<small> Measured on containers + events: 196k → 54k input tokens, 14.7 → 5.0 turns.</small></div>
+  <div><b>select is mandatory, nulls and noise stripped</b><code>rt_query</code> refuses a call without <code>select</code>. Responses lose <code>@odata.context</code>, <code>concurrencyStamp</code> and every null field. A five-row Shipment page is 8,120 chars unselected, 908 chars selected, 149 chars selected and compacted.<small> Measured: tool payload per question 10,732 → 860 chars.</small></div>
+  <div><b>Known server bugs refused before the round trip</b><code>isMilestone</code> inside a nested <code>$select</code>, <code>$orderby</code> inside <code>expand()</code> and multi-<code>or</code> raw filters all return opaque 500s from the server. The proxy now rejects those shapes locally with the fix in the message, and appends the known causes to any other server error. Before this guard, one lean run wandered through 12 tool calls and failed; after it, all runs are one call.</div>
+  <div><b>Upstream calls serialised</b>The realtime host fails when several requests arrive at once while each alone succeeds. The proxy chains upstream calls, so an agent may still fire tools in parallel.</div>
+</div>
+
+<h2>Savings that depend on the client</h2>
+<p>Claude Code loads MCP tool schemas lazily through ToolSearch, so the 38 stock schemas are not in context until searched for. Clients without deferred loading (Claude Desktop, Cursor, Codex, ChatGPT connectors, most custom agents) inject every tool schema into every request. There the proxy's smaller surface is the largest single saving, and it is paid on every turn of every conversation.</p>
+<div class="tw"><table>
+<tr><th>per session, every turn</th><th class="n">stock</th><th class="n">lean</th></tr>
+<tr><td>tools exposed</td><td class="n">38</td><td class="n">4</td></tr>
+<tr><td>tools/list payload, chars</td><td class="n">39,701</td><td class="n">2,909</td></tr>
+<tr><td>≈ tokens (chars ÷ 4)</td><td class="n">≈ 9,900</td><td class="n">≈ 730</td></tr>
+<tr><td>guidance shipped with the server</td><td>none</td><td>skill as MCP <code>instructions</code> and a prompt</td></tr>
+</table></div>
+<p>The admin page at <code>/mcp-integration</code> lists the same 38 tools: 6 generic ones and 32 generated per-endpoint wrappers for identity users, orders and shipments. The proxy keeps the 6 behind 4 names and drops the wrappers, which <code>call_endpoint</code> already covers.</p>
+
+<h2>Evidence from the server side</h2>
+<ul>
+  <li><b>Audit logs.</b> Every <code>rt_query</code> and <code>rt_call</code> is exactly one <code>POST /mcp</code> in the ABP audit log (filter URL <code>mcp</code>, user <code>admin</code>). The proxy adds no requests; it removes the discovery ones. 543 <code>/mcp</code> requests logged since 28 Aug for this tenant, most of them today's reference build and benchmark.</li>
+  <li><b>API keys.</b> Three keys exist (n8n Test Key, ChatGPT Dennis, MyMCPKey). The plugin uses the first through the <code>RT_API_KEY</code> environment variable; the key is not in the repository.</li>
+  <li><b>Reference coverage.</b> 960 endpoints in the catalog, 62 OData entity sets, 40 nested types, 575 DTOs, regenerated by <code>scripts/build-reference.py</code>. Four entity sets the server lists but rejects (OrganizationUnit, IdentityUser, Tag, CalculatedRevenue) are flagged <code>!NOT-QUERYABLE</code> so agents do not spend a call on them.</li>
+</ul>
+
+<h2>Caveats</h2>
+<div class="note">
+<ul>
+  <li>Absolute token counts include Claude Code's own system prompt (roughly 15k tokens per turn in an empty config directory). The per-question saving is therefore mostly a turn-count saving; the payload saving compounds on top through re-sends.</li>
+  <li>Cost is sensitive to prompt-cache state (1-hour cache writes are billed higher than reads). Runs were interleaved per arm, not randomised. Treat the cost delta as indicative, the token and call deltas as exact.</li>
+  <li>Skill invocation is not deterministic: in 3 of 12 lean runs the agent went straight to the tools without invoking the skill. The proxy's tool descriptions and preflight guards now carry the critical recipes so the outcome no longer depends on it.</li>
+  <li><code>claude plugin eval</code> exists and would run this comparison natively, but it is early access and not enabled on this account. The harness reproduces its shape: fresh config dir per run, plugin under test only, regex graders, exact usage from the API.</li>
+</ul>
+</div>
+
+<h2>Reproduce</h2>
+<pre><code>set RT_API_KEY=&lt;key&gt;
+python tests/bench/run.py --runs 3          # 24 headless runs, ~25 min, ~$3.50
+python tests/bench/aggregate.py             # merges every batch, prints the tables above
+node tests/e2e.mjs                          # proxy smoke test</code></pre>
+<p>Repository: <a href="https://github.com/idrispwala-web/realtime-lean">github.com/idrispwala-web/realtime-lean</a> (private).</p>
+</main>
