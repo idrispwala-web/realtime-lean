@@ -22,13 +22,15 @@ const instructions = fs
   .replace(/^---[\s\S]*?---\s*/, "");
 
 // Keys are 48 hex chars. Tolerate what shells do to a file: UTF-16 (PowerShell Out-File default), BOM, quotes, CRLF.
+// An unexpanded "${RT_API_KEY}" placeholder or any other non-key text counts as no key.
 function extractKey(text) {
-  const m = text.match(/[0-9a-fA-F]{32,64}/);
-  return m ? m[0] : text.replace(/^[\s"']+|[\s"']+$/g, "");
+  const m = (text || "").match(/[0-9a-fA-F]{32,64}/);
+  return m ? m[0] : "";
 }
 let keySource = "none";
 function apiKey() {
-  if (process.env.RT_API_KEY) { keySource = "env RT_API_KEY"; return extractKey(process.env.RT_API_KEY); }
+  const fromEnv = extractKey(process.env.RT_API_KEY);
+  if (fromEnv) { keySource = "env RT_API_KEY"; return fromEnv; }
   try {
     const buf = fs.readFileSync(KEY_FILE);
     const text = buf[0] === 0xff && buf[1] === 0xfe ? buf.toString("utf16le") : buf.toString("utf8");

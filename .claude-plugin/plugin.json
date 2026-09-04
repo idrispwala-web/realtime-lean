@@ -1,6 +1,6 @@
 {
   "name": "realtime-lean",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Token-lean access to the Cargonerds realtime MCP: 4 tools instead of 38, bundled offline API reference, skill that forbids discovery round-trips and unselected records.",
   "author": {
     "name": "Idris Presswala",
