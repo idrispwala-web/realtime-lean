@@ -27,7 +27,8 @@ Every realtime call costs a full round trip of context. Discovery calls cost 0.5
 
 | Need | Call |
 |---|---|
-| Shipment by number | Shipment `where cargonerdsNumber eq X` `select cargonerdsNumber,state,estimatedArrival,actualArrival` |
+| Shipment by number | Shipment `where cargonerdsNumber eq X` (S+14 digits) or `where houseBill eq X` (S+8 digits) `select cargonerdsNumber,houseBill,state,estimatedArrival,actualArrival` |
+| Full track, one call | above + `expand portOfLoading($select=unLoCode),portOfDischarge($select=unLoCode),containers($select=containerNumber),events($select=actualDate,expectedDate,locationUnlocode;$expand=code($select=code,actualLabel)),trackingContainers($select=containerReference,lastEventDateTime)` |
 | Count | Shipment `where state eq Booked` `select id` `count true` `top 0` -> `@odata.count` |
 | Count + first N in one call | same with `top 10` `orderBy creationTime desc` `select cargonerdsNumber,creationTime` |
 | Containers of a shipment | `expand containers($select=containerNumber)` |
@@ -47,7 +48,8 @@ Every realtime call costs a full round trip of context. Discovery calls cost 0.5
 - `$expand` depth is capped at 2: from Shipment you can reach `trackingContainers($expand=trackingLegs(...))` but not the legs' `eventClassifierCode`. Need level 3? Start from the middle entity (TrackingContainer) instead.
 - Server bugs (500) to avoid: `isMilestone` inside a nested `$select`; `$orderby`/`$top` inside `expand(...)`. Order at the top level instead.
 - Concurrent upstream calls fail with "The request failed. Reference ..." while the same call alone succeeds. The proxy serialises rt_* calls; with the raw server, issue one call per turn. A raw `filter` joining several `or` terms also failed; prefer one `where` per lookup.
-- A reference that is not a cargonerdsNumber (S + 14 digits) is probably not in Hub at all. Before hunting across houseBill/masterBill/bookingReference/additionalReferences, ask what system the number comes from.
+- Two S-number formats: `S` + 14 digits is `cargonerdsNumber`; `S` + 8 digits (CW1 shipment number, what the Hub UI search matches) is `houseBill`. Query the right field first; then masterBill/bookingReference on CalculatedShipment.
+- `trackingLegs` is the whole AIS trail (hundreds of points, ~10k chars on a completed voyage). Expand it only when positions are asked for; for "where is it" use TrackingContainer `lastEventDateTime,lastLocation`.
 - Enum-like lookups (`state`, `orderStatus`...) are either an enum property with members listed in odata.txt `{A|B}` or a navigation (`orderStatusId` + `expand orderStatus($select=name)`). Check which before filtering.
 - No `select` = every column = 3-9x the tokens.
 - Proxy responses drop null-valued fields and `@odata.` prefixes: a selected key that is absent from a row is null (e.g. no ETA yet); `@odata.count` arrives as `count`.
